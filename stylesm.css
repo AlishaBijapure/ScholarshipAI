@@ -1,0 +1,382 @@
+/* -------------------- Reset -------------------- */
+* { margin:0; padding:0; box-sizing:border-box; font-family: 'Poppins', sans-serif; }
+body { line-height:1.6; color:#2c2c2c; background: #f6f8fc; }
+a { text-decoration:none; color: inherit; }
+
+/* -------------------- Navbar -------------------- */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 60px;
+  background: linear-gradient(90deg, #faebef, #e6ceff);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  transition: 0.3s ease-in-out;
+}
+
+/* Logo */
+.logo {
+  font-weight: 800;
+  font-size: 28px;
+  background: linear-gradient(45deg, #4365b5, #182848);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: transform 0.3s ease, letter-spacing 0.3s ease;
+}
+.logo:hover {
+  transform: scale(1.1);
+  letter-spacing: 1.5px;
+}
+
+/* Links */
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 35px;
+}
+
+.nav-links a {
+  font-weight: 600;
+  color: #435a90;
+  position: relative;
+  transition: color 0.3s ease;
+  text-decoration: none;
+}
+
+/* Hover color change */
+.nav-links a:hover {
+  color: #182848;
+}
+
+/* Underline animation */
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  width: 0%;
+  height: 2px;
+  background: linear-gradient(45deg, #4365b5, #182848);
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+/* Active link styling */
+.nav-links a.active {
+  color: #182848;
+  font-weight: 700;
+}
+
+
+/* -------------------- Hero -------------------- */
+.hero {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 100px 20px;
+  background: linear-gradient(135deg, #0d2651, #4b6cb7);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-image:
+    repeating-linear-gradient(to right, rgba(255,255,255,0.05) 0 1px, transparent 1px 50px),
+    repeating-linear-gradient(to bottom, rgba(255,255,255,0.05) 0 1px, transparent 1px 50px);
+  z-index: 0;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 10%, rgba(0,0,0,0.8) 100%);
+  z-index: 0;
+}
+
+.hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 62px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  background: linear-gradient(90deg, #ffb4c6, #b570ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+  letter-spacing: 1px;
+  position: relative;
+  z-index: 10;
+  animation: fadeInUp 1s ease-out forwards;
+}
+
+.hero p {
+  font-size: 18px;
+  margin-top: 15px;
+  color: #e0e0ff;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  z-index: 10;
+}
+
+/* -------------------- Form Section -------------------- */
+/* Add this to your CSS */
+.match-form {
+  padding: 70px 20px;
+  display: flex;
+  justify-content: center;
+
+  /* Background image with slight purple overlay */
+  background: 
+    linear-gradient(rgb(25, 47, 103), rgba(1, 6, 29, 0.862)), /* light purple overlay */
+    url('vecteezy_graduated-students-illustration_22527658.jpg'); /* your image path */
+    
+  background-size: cover;          /* cover the entire area */
+  background-position: center;     /* center the image */
+  background-repeat: no-repeat;    /* don't repeat */
+  background-attachment: fixed;    /* makes it unscrollable */
+}
+
+
+.form-container {
+  background: rgba(255, 255, 255, 0.9); /* slight transparency */
+  padding: 40px 30px;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  max-width: 650px;
+  width: 100%;
+}
+
+
+.form-container h2 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: #182848;
+}
+
+.form-container p {
+  margin-bottom: 25px;
+  color: #555;
+}
+
+form h3 {
+  font-size: 22px;
+  margin: 25px 0 15px;
+  color: #182848;
+  border-left: 4px solid #4b6cb7;
+  padding-left: 10px;
+}
+
+form h4 {
+  font-size: 18px;
+  margin: 20px 0 10px;
+  color: #444;
+}
+
+/* Labels */
+form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333;
+}
+
+form label i {
+  color: #4b6cb7;
+  margin-right: 6px;
+}
+
+/* Inputs and Selects */
+form input,
+form select,
+form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 22px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+  outline: none;
+  transition: 0.3s;
+  background: #fafafa;
+}
+
+form input:focus,
+form select:focus,
+form textarea:focus {
+  border-color: #4b6cb7;
+  box-shadow: 0 4px 12px rgba(75,108,183,0.2);
+  background: #fff;
+}
+
+/* Degree Blocks */
+.degree-block {
+  background: #f9f9ff;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  position: relative;
+}
+
+.degree-block h4 {
+  margin-bottom: 12px;
+  color: #4b6cb7;
+}
+
+/* Delete button for added degrees */
+.degree-block .delete-degree {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #ff5c75;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background 0.3s;
+
+  display: flex;              /* ✅ center trick */
+  align-items: center;
+  justify-content: center;
+  line-height: 1;             /* avoid vertical misalignment */
+  padding: 0;
+}
+
+
+.test-block {
+  background: #f9f9ff;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  position: relative;
+}
+
+.test-block .delete-test {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #ff5c75;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background 0.3s;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
+}
+
+.test-block .delete-test:hover {
+  background: #e04760;
+}
+
+
+.hidden {
+  display: none;
+}
+
+/* Add More Button */
+#all-education button {
+  margin-top: 10px;
+  padding: 10px 18px;
+  background: #4b6cb7;
+  color: #fff;
+  font-size: 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#all-education button:hover {
+  background: #3752a6;
+}
+
+/* Submit Button */
+.btn-primary {
+  background: linear-gradient(135deg, #ffb4c6, #b570ff);
+  color: #0f0e4ad3;
+  padding: 16px 38px;
+  border-radius: 50px;
+  border: none;
+  font-weight: 600;
+  transition: 0.4s;
+  box-shadow: 0 10px 25px rgba(255, 120, 140, 0.3);
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #fd89a4, #9b42fa);
+  box-shadow: 0 8px 20px rgba(255,120,140,0.4);
+}
+
+
+#test-list + button {
+  margin-top: 10px;
+  padding: 10px 18px;
+  background: #4b6cb7;
+  color: #fff;
+  font-size: 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#test-list + button:hover {
+  background: #3752a6;
+}
+
+
+/* -------------------- Footer -------------------- */
+footer {
+  background: #182848;
+  color: #fff;
+  padding: 55px 20px;
+  text-align: center;
+}
+
+footer a {
+  color: #fff;
+  margin: 0 12px;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+footer a:hover {
+  color: #ff758c;
+}
+
+footer .footer-links {
+  margin: 25px 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 18px;
+}

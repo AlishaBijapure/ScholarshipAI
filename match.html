@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale-1.0">
+  <title>AI-Powered Dream Matching - Scholarship Finder</title>
+  <link rel="stylesheet" href="stylesm.css">
+  <!-- ADDED: Link to the opportunities stylesheet to ensure cards are styled correctly -->
+  <link rel="stylesheet" href="styleso.css"> 
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar">
+  <div class="logo">Scholarship Finder</div>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="opportunities.html">Opportunities</a></li>
+    <li><a href="match.html" class="active">Match Me</a></li>
+    
+  </ul>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-content">
+    <h1>AI-Powered Dream Matching</h1>
+    <p>Tell us about your dreams, and our AI will find opportunities that match your profile perfectly.<br>
+    Your breakthrough is just one click away.</p>
+  </div>
+</section>
+
+<!-- Match Form Section -->
+<section class="match-form">
+  <div class="form-container">
+    <h2>Find Your Perfect Match</h2>
+    <p>Create your detailed profile so we can recommend scholarships & internships tailored to you.</p>
+    <form id="dreamForm">
+        <!-- ... Your entire form is here ... -->
+        <!-- Academic Information -->
+        <h3>🎓 Academic Information</h3>
+        <div class="degree-block">
+            <h4>📘 Degree 1 (Highest Degree)</h4>
+            <label><i class="fas fa-graduation-cap"></i> Degree Level *</label>
+            <select name="degree-level[]" required><option value="">Select degree</option><option value="highschool">High School / Secondary</option><option value="bachelors">Bachelor’s</option><option value="masters">Master’s</option><option value="phd">PhD</option><option value="other">Other</option></select>
+            <label><i class="fas fa-book"></i> Field of Study *</label>
+            <input type="text" name="field[]" placeholder="e.g., Computer Science" required>
+            <label><i class="fas fa-user-graduate"></i> Status *</label>
+            <select name="degree-status[]" onchange="toggleStatusFields(this)" required><option value="">Select status</option><option value="ongoing">Ongoing</option><option value="completed">Completed</option><option value="incomplete">Dropped / Incomplete</option></select>
+            <div class="expected-year hidden"><label><i class="fas fa-calendar-check"></i> Expected Completion Year *</label><input type="number" name="expected-year[]" min="2024" max="2100"></div>
+            <div class="completion-year hidden"><label><i class="fas fa-calendar-check"></i> Year of Completion *</label><input type="number" name="completed-year[]" min="1950" max="2100"></div>
+            <div class="attended-years hidden"><label><i class="fas fa-calendar"></i> Years Attended *</label><input type="text" name="attended[]" placeholder="e.g., 2019 – 2021"></div>
+            <label><i class="fas fa-chart-line"></i> GPA / Percentage *</label>
+            <input type="text" name="gpa[]" placeholder="e.g., 3.5 / 4.0 or 85%" required>
+        </div>
+        <hr>
+        <!-- Add More Degrees -->
+        <div id="all-education">
+            <h4>📚 Other Degrees</h4>
+            <div id="degree-list"></div>
+            <button type="button" onclick="addDegree()">+ Add Degree</button>
+        </div>
+        <br>
+        <!-- Standardized Tests Section -->
+        <h3>📑 Standardized Test Scores</h3>
+        <div id="test-list">
+            <div class="test-block">
+            <label><i class="fas fa-file-alt"></i> Test *</label>
+            <select name="test-name[]" required><option value="">Select test</option><option value="ielts">IELTS</option><option value="toefl">TOEFL</option><option value="pte">PTE</option><option value="gre">GRE</option><option value="gmat">GMAT</option><option value="sat">SAT</option><option value="act">ACT</option><option value="other">Other</option></select>
+            <label><i class="fas fa-star"></i> Score *</label>
+            <input type="text" name="test-score[]" placeholder="e.g., 7.5 / 9 or 320" required>
+            <button type="button" class="delete-test" onclick="removeTest(this)">×</button>
+            </div>
+        </div>
+        <button type="button" onclick="addTest()">+ Add Test</button>
+        <br><br>
+        <!-- Personal Background -->
+        <h3>👤 Personal Background</h3>
+        <label for="dob"><i class="fas fa-birthday-cake"></i> Date of Birth *</label>
+        <input type="date" id="dob" name="dob" required>
+        <label for="gender"><i class="fas fa-venus-mars"></i> Gender</label>
+        <select id="gender" name="gender"><option value="">Select gender</option><option value="female">Female</option><option value="male">Male</option><option value="nonbinary">Non-Binary</option><option value="prefer-not">Prefer not to say</option></select>
+        <label for="nationality"><i class="fas fa-flag"></i> Nationality *</label>
+        <select id="nationality" name="nationality" required><option value="">Select nationality</option></select>
+        <label for="disability"><i class="fas fa-wheelchair"></i> Disability Status</label>
+        <select id="disability" name="disability"><option value="">Select option</option><option value="yes">Yes</option><option value="no">No</option></select>
+        <!-- Financial Information -->
+        <h3>💰 Financial Information</h3>
+        <label for="income"><i class="fas fa-wallet"></i> Household Income Range</label>
+        <select id="income" name="income"><option value="">Select range</option><option value="low">Below $10,000</option><option value="mid">$10,000 – $30,000</option><option value="high">Above $30,000</option></select>
+        <label for="funding"><i class="fas fa-hand-holding-usd"></i> Funding Preference </label>
+        <select id="funding" name="funding"><option value="">Select preference</option><option value="need">Need-based</option><option value="merit">Merit-based</option><option value="both">Both</option></select>
+        <!-- Opportunity Preferences -->
+        <h3>🌍 Opportunity Preferences</h3>
+        <label for="opportunity"><i class="fas fa-briefcase"></i> What are you looking for? *</label>
+        <select id="opportunity" name="opportunity" required><option value="">Select opportunity type</option><option value="scholarship">Scholarship</option><option value="internship">Internship</option><option value="both">Both</option></select>
+        <label for="country"><i class="fas fa-globe"></i> Preferred Countries *</label>
+        <select id="country" name="country[]" multiple><option value="">Select Country</option></select>
+        <label for="mode"><i class="fas fa-laptop-house"></i> Mode of Study</label>
+        <select id="mode" name="mode"><option value="">Select mode</option><option value="on-campus">On-Campus</option><option value="online">Online</option><option value="hybrid">Hybrid</option></select>
+        <label for="deadline"><i class="fas fa-hourglass-half"></i> Deadline Preference *</label>
+        <select id="deadline" name="deadline" required><option value="">When do you want to apply?</option><option value="30">Next 30 days</option><option value="90">Next 3 months</option><option value="180">Next 6 months</option></select>
+        <!-- Extra Profile Details -->
+        <h3>📑 Extra Profile Details</h3>
+        <label for="languages"><i class="fas fa-language"></i> Languages Known *</label>
+        <select id="languages" name="languages[]" multiple required></select>
+        <label for="extracurricular"><i class="fas fa-trophy"></i> Extracurriculars / Achievements</label>
+        <textarea id="extracurricular" name="extracurricular" placeholder="Sports, volunteering, leadership, competitions..."></textarea>
+        <label for="research"><i class="fas fa-flask"></i> Research Experience</label>
+        <textarea id="research" name="research" placeholder="Publications, projects, research work..."></textarea>
+        <label for="work"><i class="fas fa-briefcase"></i> Work / Internship Experience</label>
+        <textarea id="work" name="work" placeholder="List internships, part-time jobs, or relevant experience..."></textarea>
+        <button type="submit" id="find-matches" class="btn-primary">Find My Perfect Matches</button>
+    </form>
+  </div>
+</section>
+
+<!-- ================================================================= -->
+<!-- ADDED: Section to Display Matched Opportunities -->
+<!-- ================================================================= -->
+<section id="results-section" class="opportunities" style="display: none;">
+  <div class="results-header">
+    <h2 id="results-title">Your Matched Opportunities</h2>
+  </div>
+  <div id="opportunities-container" class="opportunities-grid">
+      <!-- Matched cards will be injected here dynamically by JS -->
+  </div>
+</section>
+
+<!-- ================================================================= -->
+<!-- ADDED: Template for Opportunity Cards (copied from opportunities.html) -->
+<!-- ================================================================= -->
+<template id="opportunity-template">
+    <div class="opportunity-card">
+      <span class="badge"></span><br><br>
+      <h3 class="card-title"></h3>
+      <p class="card-about"></p>
+      <p class="card-status"><i class="fas fa-circle"></i></p>
+      <p class="card-location"><i class="fas fa-map-marker-alt"></i></p>
+      <p class="card-fields"><i class="fas fa-book"></i></p>
+      <p class="card-deadline"><i class="fas fa-hourglass-half"></i></p>
+      <p class="card-eligibility"><i class="fas fa-user-check"></i></p>
+      <p class="card-award" style="display: none;"><i class="fas fa-dollar-sign"></i></p>
+      <div class="card-footer">
+        <a href="#" class="btn-primary" target="_blank">View & Apply</a>
+      </div>
+    </div>
+</template>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-content">
+    <p>Scholarship Finder – Breaking financial barriers to unlock global education opportunities.</p>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="opportunities.html">Opportunities</a>
+      <a href="match.html">Match Me</a>
+      <a href="submit.html">Submit</a>
+      <a href="#">Support</a>
+      <a href="#">About Us</a>
+      <a href="#">Contact</a>
+      <a href="#">Privacy Policy</a>
+    </div>
+    <p>© 2025 Scholarship Finder. Turning dreams into reality, one opportunity at a time.</p>
+  </div>
+</footer>
+
+<script src="match.js"></script>
+
+</body>
+</html>
+
