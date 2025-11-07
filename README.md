@@ -1,18 +1,53 @@
-# Talent-Finder
-Millions of workers in the unstructured economy—such as domestic helpers, cooks, carpenters, tailors, and cleaners—struggle to find jobs due to the lack of formal resumes. Employers often rely on word-of-mouth, limiting opportunities.
+# ScholarshipAI
 
-This project focuses on making workers’ skills visible and searchable. Workers can record short videos demonstrating their skills, and AI analyzes these videos to generate Hire Cards that display key details such as skills, experience, availability, languages, and expected pay. Employers can search and filter workers by skill, location, and other criteria to find and hire the right talent efficiently.
+ScholarshipAI is a full-stack web application designed to solve a major problem for students: finding relevant, high-quality scholarships and internships. This "hassle-free" site prioritizes immediate value by providing personalized recommendations and a dynamic browsing experience without requiring a user to create an account.
 
-Core Features:
+The application runs on a Node.js/Express backend and connects to a curated MongoDB Atlas database populated with hundreds of verified international opportunities.
 
-Video-based skill demonstration
 
-AI-generated Hire Cards with worker details
 
-Search and filter functionality for employers
+Key Features -
 
-Mobile-first interface for easy access
+Personalized Matching ("Match Me"): A comprehensive student profile form (match.html) that takes a user's academic, personal, and financial details. On submission, it saves the profile and returns a personalized list of matching opportunities from the database, rendered dynamically on the page.
 
-This prototype demonstrates how AI can connect unstructured workers with job opportunities, turning informal skills into structured, hireable profiles.
+Dynamic Opportunity Browser ("Explore"): A public-facing dashboard (opportunities.html) that fetches and displays all opportunities from the database.
+
+Live Filtering & Search: The "Explore" page features a real-time search bar and filterable dropdowns for Opportunity Type, Country, and Field of Study.
+
+Hassle-Free Experience: The core features are available to all users instantly, with no login or signup required.
+
+Curated Database: The application is powered by a pre-populated MongoDB database, focusing on high-quality, verified scholarships and internships.
+
+
+
+Tech Stack -
+
+Frontend:
+
+HTML5
+
+CSS3 (Custom styling for all components)
+
+JavaScript (ES6+) (Vanilla JS for all DOM manipulation and logic)
+
+Choices.js (For searchable, multi-select dropdowns)
+
+Fetch API (For all asynchronous communication with the backend)
+
+Backend:
+
+Node.js
+
+Express.js (For the server and API routing)
+
+Mongoose (As the Object Data Modeler for MongoDB)
+
+CORS (To handle cross-origin requests from the frontend)
+
+dotenv (For secure environment variable management)
+
+Database:
+
+MongoDB Atlas (Cloud-hosted NoSQL database)
 
 Author - Alisha Bijapure
