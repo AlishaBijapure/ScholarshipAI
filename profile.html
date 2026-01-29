@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile - AI Counsellor</title>
+  <link rel="stylesheet" href="css/counsellor.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+  <style>
+    html {
+      background: var(--bg-gradient);
+      background-attachment: fixed;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      padding: 20px;
+      color: var(--text-dark);
+      height: auto;
+      display: block;
+      overflow-y: auto;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .profile-container {
+      max-width: 900px;
+      margin: 40px auto 60px auto;
+      padding: 0;
+    }
+
+    .profile-header {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 24px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.6), inset 0 0 0 1px var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-cyan));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: white;
+      box-shadow: 0 0 20px rgba(217, 70, 239, 0.5);
+    }
+
+    .profile-title h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      color: var(--text-medium);
+      font-weight: 600;
+    }
+
+    .profile-title p {
+      margin: 4px 0 0 0;
+      color: var(--text-light);
+      font-size: 0.95rem;
+    }
+
+    .info-section {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.4), inset 0 0 0 1px var(--border-color);
+      transition: transform 0.2s;
+    }
+
+    .info-section:hover {
+      transform: translateY(-2px);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 1.2rem;
+      color: var(--text-medium);
+      font-weight: 600;
+    }
+
+    .section-title i {
+      color: var(--accent-cyan);
+      font-size: 1.2rem;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .info-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-light);
+      opacity: 0.8;
+      font-weight: 500;
+    }
+
+    .info-value {
+      font-size: 1.05rem;
+      color: var(--text-medium);
+      font-weight: 500;
+      background: rgba(15, 23, 42, 0.6);
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      min-height: 24px;
+      display: flex;
+      align-items: center;
+    }
+
+    .tag-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      background: rgba(6, 182, 212, 0.15);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(6, 182, 212, 0.4);
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .score-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .score-badge.completed {
+      background: rgba(34, 197, 94, 0.15);
+      color: var(--success-color);
+      border: 1px solid rgba(34, 197, 94, 0.4);
+    }
+
+    .score-badge.pending {
+      background: rgba(234, 179, 8, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(234, 179, 8, 0.4);
+    }
+
+    .score-badge.not-started {
+      background: rgba(148, 163, 184, 0.15);
+      color: var(--text-light);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 12px;
+      }
+
+      .profile-container {
+        margin-top: 20px;
+      }
+
+      .profile-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 24px;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="logo">AI Counsellor</div>
+    <div class="burger-menu" id="burger-menu">
+      <i class="fas fa-bars"></i>
+    </div>
+    <ul class="nav-links">
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="counsellor.html">AI Counsellor</a></li>
+      <li><a href="universities.html">Universities</a></li>
+      <li><a href="profile.html">Profile</a></li>
+      <li><a href="#" onclick="logout(); return false;">Logout</a></li>
+    </ul>
+  </nav>
+
+  <div class="profile-container">
+    <div class="profile-header">
+      <div class="profile-avatar">
+        <i class="fas fa-user-graduate"></i>
+      </div>
+      <div class="profile-title">
+        <h1>Student Profile</h1>
+        <p>Your comprehensive academic portfolio and study goals</p>
+      </div>
+    </div>
+
+    <!-- Academic Background -->
+    <div class="info-section">
+      <div class="section-title">
+        <i class="fas fa-book-reader"></i>
+        <h2>Academic Background</h2>
+      </div>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Current Education Level</span>
+          <div class="info-value" id="currentEducationLevel">Loading...</div>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Field of Study / Major</span>
+          <div class="info-value" id="major">Loading...</div>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Graduation Year</span>
+          <div class="info-value" id="graduationYear">Loading...</div>
+        </div>
+        <div class="info-item">
+          <span class="info-label">GPA / Percentage</span>
+          <div class="info-value" id="gpa">Loading...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Study Goals -->
+    <div class="info-section">
+      <div class="section-title">
+        <i class="fas fa-bullseye"></i>
+        <h2>Study Goals</h2>
+      </div>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Intended Degree</span>
+          <div class="info-value" id="intendedDegree">Loading...</div>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Specialization</span>
+          <div class="info-value" id="fieldOfStudy">Loading...</div>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Target Intake Year</span>
+          <div class="info-value" id="targetIntakeYear">Loading...</div>
+        </div>
+      </div>
+
+      <div class="info-item" style="margin-top: 24px;">
+        <span class="info-label">Preferred Countries</span>
+        <div class="tag-container" id="preferredCountries">
+          <div class="info-value">Loading...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Budget & Funding -->
+    <div class="info-section">
+      <div class="section-title">
+        <i class="fas fa-wallet"></i>
+        <h2>Budget & Funding</h2>
+      </div>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Budget Range (Per Year)</span>
+          <div class="info-value" id="budgetRange">Loading...</div>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Funding Plan</span>
+          <div class="info-value" id="fundingPlan">Loading...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Exams & Readiness -->
+    <div class="info-section">
+      <div class="section-title">
+        <i class="fas fa-clipboard-check"></i>
+        <h2>Exams & Readiness</h2>
+      </div>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">IELTS Status</span>
+          <div class="info-value" id="ieltsStatus">Loading...</div>
+        </div>
+        <div class="info-item" id="ieltsScoreContainer" style="display: none;">
+          <span class="info-label">IELTS Score</span>
+          <div class="info-value" id="ieltsScore">-</div>
+        </div>
+
+        <div class="info-item">
+          <span class="info-label">TOEFL Status</span>
+          <div class="info-value" id="toeflStatus">Loading...</div>
+        </div>
+        <div class="info-item" id="toeflScoreContainer" style="display: none;">
+          <span class="info-label">TOEFL Score</span>
+          <div class="info-value" id="toeflScore">-</div>
+        </div>
+
+        <div class="info-item">
+          <span class="info-label">GRE Status</span>
+          <div class="info-value" id="greStatus">Loading...</div>
+        </div>
+        <div class="info-item" id="greScoreContainer" style="display: none;">
+          <span class="info-label">GRE Score</span>
+          <div class="info-value" id="greScore">-</div>
+        </div>
+
+        <div class="info-item">
+          <span class="info-label">SOP Status</span>
+          <div class="info-value" id="sopStatus">Loading...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+  <script>
+    if (!requireAuth()) {
+      // Redirect handled by requireAuth
+    }
+
+    async function loadProfile() {
+      try {
+        const profile = await apiRequest('/profiles');
+
+        // Helper text text helper
+        const setText = (id, value) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = value || 'Not provided';
+        };
+
+        // Populate fields
+        setText('currentEducationLevel', profile.currentEducationLevel);
+        setText('major', profile.major);
+        setText('graduationYear', profile.graduationYear);
+        setText('gpa', profile.gpa);
+
+        setText('intendedDegree', profile.intendedDegree);
+        setText('fieldOfStudy', profile.fieldOfStudy);
+        setText('targetIntakeYear', profile.targetIntakeYear);
+
+        setText('budgetRange', profile.budgetRange);
+        setText('fundingPlan', profile.fundingPlan);
+
+        // Countries
+        const countriesContainer = document.getElementById('preferredCountries');
+        if (profile.preferredCountries && profile.preferredCountries.length > 0) {
+          countriesContainer.innerHTML = '';
+          profile.preferredCountries.forEach(country => {
+            const tag = document.createElement('div');
+            tag.className = 'tag';
+            tag.textContent = country;
+            countriesContainer.appendChild(tag);
+          });
+        } else {
+          countriesContainer.innerHTML = '<div class="info-value">Not provided</div>';
+        }
+
+        // Exams status handling
+        const handleExam = (name) => {
+          const status = profile[`${name}Status`];
+          const score = profile[`${name}Score`];
+
+          const statusEl = document.getElementById(`${name}Status`);
+          if (statusEl) {
+            let badgeClass = 'not-started';
+            if (status === 'Completed') badgeClass = 'completed';
+            if (status === 'In progress') badgeClass = 'pending';
+
+            statusEl.innerHTML = `<span class="score-badge ${badgeClass}">${status || 'Not Started'}</span>`;
+            // Reset the styling of the container to be standard info-value default or transparent
+            statusEl.style.background = 'transparent';
+            statusEl.style.border = 'none';
+            statusEl.style.padding = '0';
+          }
+
+          const scoreContainer = document.getElementById(`${name}ScoreContainer`);
+          if ((status === 'Completed' || status === 'In progress') && score) {
+            scoreContainer.style.display = 'flex';
+            setText(`${name}Score`, score);
+          }
+        };
+
+        handleExam('ielts');
+        handleExam('toefl');
+        handleExam('gre');
+
+        const sopStatus = profile.sopStatus;
+        const sopEl = document.getElementById('sopStatus');
+        if (sopEl) {
+          let badgeClass = 'not-started';
+          if (sopStatus === 'Ready') badgeClass = 'completed';
+          if (sopStatus === 'Draft') badgeClass = 'pending';
+          sopEl.innerHTML = `<span class="score-badge ${badgeClass}">${sopStatus || 'Not Started'}</span>`;
+          sopEl.style.background = 'transparent';
+          sopEl.style.border = 'none';
+          sopEl.style.padding = '0';
+        }
+
+
+      } catch (error) {
+        if (error.message.includes('not found')) {
+          window.location.href = 'onboarding.html';
+        } else {
+          console.error('Error loading profile:', error);
+        }
+      }
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProfile();
+    });
+  </script>
+  <script src="js/navbar.js"></script>
+</body>
+
+</html>

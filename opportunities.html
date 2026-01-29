@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Opportunities - Scholarship Finder</title>
+  <link rel="stylesheet" href="styleso.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Cormorant+Garamond:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <!-- Add Choices.js CSS for the searchable dropdowns -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar">
+  <div class="logo">Scholarship Finder</div>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="opportunities.html" class="active">Opportunities</a></li>
+    <li><a href="match.html">Match Me</a></li>
+
+  </ul>
+</nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Explore Opportunities</h1>
+      <p>Thousands of verified scholarships & internships waiting for you. Don't let funding stop your dreams.</p>
+      <div class="hero-buttons">
+        <input type="text" id="search-bar" placeholder="Search by title, country, description..." class="search-bar">
+      </div>
+    </div>
+  </section>
+
+<!-- Filters Section -->
+<section class="filters">
+  <div class="filters-container">
+    <select id="type-filter" class="filter-select">
+      <option value="">All Types</option>
+      <option value="Scholarship">Scholarship</option>
+      <option value="Internship">Internship</option>
+    </select>
+
+    <!-- This select will be made searchable by Choices.js -->
+    <select id="country-filter" class="filter-select">
+      <option value="">All Countries</option>
+    </select>
+
+    <!-- This select will also be made searchable -->
+    <select id="field-filter" class="filter-select">
+      <option value="">All Fields</option>
+    </select>
+
+    <button id="reset-filters" class="apply-filters">Reset Filters</button>
+  </div>
+</section>
+
+<!-- Opportunities List -->
+<section class="opportunities">
+    <div id="loading-message" style="color: white; text-align: center; width: 100%;">Loading opportunities...</div>
+    <div id="opportunities-container" class="opportunities-grid">
+        <!-- Cards will be injected here dynamically -->
+    </div>
+</section>
+
+<!-- Template for JS -->
+<template id="opportunity-template">
+  <div class="opportunity-card">
+    <span class="badge"></span><br><br>
+    <h3 class="card-title"></h3>
+    <p class="card-about"></p>
+    <hr class="card-divider" style="border-color: rgba(255,255,255,0.1); margin: 15px 0;">
+    <p class="card-status"><i class="fas fa-circle"></i></p>
+    <p class="card-location"><i class="fas fa-map-marker-alt"></i></p>
+    <p class="card-fields"><i class="fas fa-book"></i></p>
+    <p class="card-deadline"><i class="fas fa-hourglass-half"></i></p>
+    <p class="card-eligibility"><i class="fas fa-user-check"></i></p>
+    <p class="card-award" style="display: none;"><i class="fas fa-dollar-sign"></i></p>
+    
+    <div class="card-footer">
+        <a href="#" class="btn-primary" target="_blank">View & Apply</a>
+    </div>
+  </div>
+</template>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <p>Scholarship Finder – Breaking financial barriers to unlock global education opportunities.</p>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="opportunities.html">Opportunities</a>
+        <a href="match.html">Match Me</a>
+        <a href="submit.html">Submit</a>
+        <a href="#">Support</a>
+        <a href="#">About Us</a>
+        <a href="#">Contact</a>
+        <a href="#">Privacy Policy</a>
+      </div>
+      <p>© 2025 Scholarship Finder. Turning dreams into reality, one opportunity at a time.</p>
+    </div>
+  </footer>
+
+  <!-- Add Choices.js script for searchable dropdowns -->
+  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+  <!-- Link to the correct JS file -->
+  <script src="maino.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Counsellor - Your Study Abroad Guide</title>
+  <link rel="stylesheet" href="styles.css">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+    rel="stylesheet">
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="logo">AI Counsellor</div>
+    <div class="menu-toggle" id="mobile-menu">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="login.html">Login</a></li>
+      <li><a href="signup.html" class="btn-primary" style="padding: 8px 20px; border-radius: 5px;">Get Started</a></li>
+    </ul>
+  </nav>
+
+  <script>
+    const menuToggle = document.getElementById('mobile-menu');
+    const navLinks = document.querySelector('.nav-links');
+
+    menuToggle.addEventListener('click', () => {
+      menuToggle.classList.toggle('is-active');
+      navLinks.classList.toggle('active');
+    });
+  </script>
+
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Plan Your Study-Abroad Journey with a Guided AI Counsellor</h1>
+
+      <p>From confusion to clarity — Get step-by-step guidance from an AI Counsellor that understands your goals,
+        budget, and readiness. Make confident decisions and unlock your global education journey.</p>
+      <div class="hero-buttons">
+        <a href="signup.html" class="btn-primary">Get Started</a>
+        <a href="login.html" class="btn-secondary">Login</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Highlights Section -->
+  <section class="highlights">
+    <div class="highlight-card">
+      <h3>100% Free Forever</h3>
+      <p>No Hidden Fees</p>
+    </div>
+    <div class="highlight-card">
+      <h3>Verified Opportunities</h3>
+      <p>Your Dreams Are Priceless</p>
+    </div>
+    <div class="highlight-card">
+      <h3>AI-Powered Guidance</h3>
+      <p>Intelligent counsellor that guides your decisions</p>
+    </div>
+  </section>
+
+  <!-- Why We're Different -->
+  <section class="why">
+    <h2>Why We're Different</h2>
+    <div class="why-cards">
+      <div class="why-card">
+        <h3>Verified Listings</h3>
+        <p>Every opportunity is hand-verified for authenticity and quality.</p>
+      </div>
+      <div class="why-card">
+        <h3>Deadline Alerts</h3>
+        <p>Never miss a due date. Get smart reminders for saved opportunities.</p>
+      </div>
+      <div class="why-card">
+        <h3>AI Counsellor</h3>
+        <p>Get personalized guidance, recommendations, and actionable steps from an AI that understands your journey.
+        </p>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- Footer -->
+  <footer>
+    
+      <p>© 2025 Scholarship Finder. Turning dreams into reality, one opportunity at a time.</p>
+    </div>
+  </footer>
+
+</body>
+
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - AI Counsellor</title>
+  <link rel="stylesheet" href="css/counsellor.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="logo">AI Counsellor</div>
+    <div class="burger-menu" id="burger-menu">
+      <i class="fas fa-bars"></i>
+    </div>
+    <ul class="nav-links">
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="counsellor.html">AI Counsellor</a></li>
+      <li><a href="universities.html">Universities</a></li>
+      <li><a href="profile.html">Profile</a></li>
+      <li><a href="#" onclick="logout(); return false;" class="btn-logout">Logout</a></li>
+    </ul>
+  </nav>
+
+  <div class="dashboard-container">
+    <!-- Prominent AI Counsellor CTA -->
+    <a href="counsellor.html" class="counsellor-banner">
+      <i class="fas fa-robot"></i> Go to AI Counsellor to Move to the Next Stage!
+    </a>
+
+    <div class="welcome-section">
+      <h1 id="welcomeName">Welcome!</h1>
+      <p id="welcomeStage">Loading your journey...</p>
+      <div class="stage-indicator" id="stageIndicator"></div>
+    </div>
+
+    <div class="dashboard-grid">
+      <!-- Profile Strength -->
+      <div class="dashboard-card">
+        <h3><i class="fas fa-chart-line"></i> Profile Strength</h3>
+        <div class="profile-strength" id="profileStrength">
+          <div class="strength-item">
+            <span class="strength-label">Academics</span>
+            <span class="strength-value" id="academicsStrength">-</span>
+          </div>
+          <div class="strength-item">
+            <span class="strength-label">Exams</span>
+            <span class="strength-value" id="examsStrength">-</span>
+          </div>
+          <div class="strength-item">
+            <span class="strength-label">SOP</span>
+            <span class="strength-value" id="sopStrength">-</span>
+          </div>
+          <div class="strength-item">
+            <span class="strength-label">Overall</span>
+            <span class="strength-value" id="overallStrength">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="dashboard-card">
+        <h3><i class="fas fa-chart-bar"></i> Your Progress</h3>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-number" id="shortlistedCount">0</div>
+            <div class="stat-label">Shortlisted</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number" id="lockedCount">0</div>
+            <div class="stat-label">Locked</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number" id="todosCount">0</div>
+            <div class="stat-label">Total Tasks</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number" id="completedTodosCount">0</div>
+            <div class="stat-label">Completed</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="dashboard-card">
+        <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+        <div class="quick-actions">
+          <a href="counsellor.html" class="action-btn">Talk to AI Counsellor</a>
+          <a href="universities.html" class="action-btn">Discover Universities</a>
+          <a href="profile.html" class="action-btn">Edit Profile</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Todos -->
+    <div class="dashboard-card">
+      <h3><i class="fas fa-tasks"></i> Recent Tasks</h3>
+      <div class="todo-list" id="recentTodos">
+        <p style="color: #7f8c8d; text-align: center;">No tasks yet. Start by talking to your AI Counsellor!</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/navbar.js"></script>
+  <script>
+    if (!requireAuth()) {
+      // Redirect handled
+    }
+
+    async function loadDashboard() {
+      try {
+        const data = await apiRequest('/dashboard');
+
+        // Welcome section
+        document.getElementById('welcomeName').textContent = `Welcome, ${data.user.fullName}!`;
+        document.getElementById('welcomeStage').textContent = `Current Stage: ${data.user.stageName}`;
+
+        // Stage indicator (driven by counsellor progress model)
+        const stages = data.journeyStages || [];
+
+        const stageIndicator = document.getElementById('stageIndicator');
+        stageIndicator.innerHTML = '';
+        stages.forEach((stage) => {
+          const className = stage.status || 'pending';
+          const badge = document.createElement('div');
+          badge.className = `stage-badge ${className}`;
+          badge.innerHTML = `
+            <span>${stage.name}</span>
+          `;
+          stageIndicator.appendChild(badge);
+        });
+
+        // Show Application Guidance as soon as at least one university is locked
+        const hasLocked = data.stats && data.stats.lockedCount > 0;
+        if (hasLocked) {
+          const quickActions = document.querySelector('.quick-actions');
+          if (quickActions && !quickActions.querySelector('.guidance-btn')) {
+            const guidanceBtn = document.createElement('a');
+            guidanceBtn.href = 'guidance.html';
+            guidanceBtn.className = 'action-btn guidance-btn';
+            guidanceBtn.style.background = 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)';
+            guidanceBtn.innerHTML = 'Application Guidance';
+            quickActions.appendChild(guidanceBtn);
+          }
+        } else {
+          // Remove guidance button if no locked universities
+          const existing = document.querySelector('.quick-actions .guidance-btn');
+          if (existing && existing.parentNode) {
+            existing.parentNode.removeChild(existing);
+          }
+        }
+
+        // Profile strength
+        const strength = data.profileStrength;
+        document.getElementById('academicsStrength').textContent = strength.academics;
+        document.getElementById('academicsStrength').className = `strength-value ${strength.academics.toLowerCase()}`;
+        document.getElementById('examsStrength').textContent = strength.exams;
+        document.getElementById('sopStrength').textContent = strength.sop;
+        document.getElementById('overallStrength').textContent = strength.overall;
+        document.getElementById('overallStrength').className = `strength-value ${strength.overall.toLowerCase()}`;
+
+        // Stats
+        document.getElementById('shortlistedCount').textContent = data.stats.shortlistedCount;
+        document.getElementById('lockedCount').textContent = data.stats.lockedCount;
+        document.getElementById('todosCount').textContent = data.stats.todosCount;
+        document.getElementById('completedTodosCount').textContent = data.stats.completedTodosCount;
+
+        // Recent tasks (from counsellor progress model)
+        const todosContainer = document.getElementById('recentTodos');
+        const recentTasks = data.recentTasks || [];
+        if (recentTasks.length > 0) {
+          todosContainer.innerHTML = '';
+          recentTasks.forEach(task => {
+            const todoItem = document.createElement('div');
+            const status = task.status || 'pending';
+            const isCompleted = status === 'completed';
+            const isActive = status === 'active';
+            todoItem.className = `todo-item ${isCompleted ? 'completed' : ''}`;
+            todoItem.innerHTML = `
+              <div>
+                <div class="todo-title ${isCompleted ? 'completed' : ''}">${task.name}</div>
+                <div class="todo-category">Counsellor Journey</div>
+              </div>
+              <span class="todo-status-pill ${isCompleted ? 'completed' : isActive ? 'active' : ''}">
+                ${isCompleted ? 'Completed' : isActive ? 'In Progress' : 'Upcoming'}
+              </span>
+            `;
+            todosContainer.appendChild(todoItem);
+          });
+        }
+      } catch (error) {
+        console.error('Error loading dashboard:', error);
+        if (error.message && (error.message.includes('onboarding') || error.message.includes('Complete onboarding'))) {
+          window.location.href = 'onboarding.html';
+          return;
+        }
+        document.getElementById('welcomeName').textContent = 'Error loading dashboard';
+        document.getElementById('welcomeStage').textContent = error.message || 'Please try again.';
+      }
+    }
+
+    loadDashboard();
+  </script>
+</body>
+
+</html>

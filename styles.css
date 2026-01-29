@@ -1,0 +1,467 @@
+/* =========================================
+   1. VARIABLES & RESET (DARK PUNK THEME)
+   ========================================= */
+:root {
+  /* Neon Punk Palette */
+  --primary-color: #d946ef;
+  /* Neon Fuchsia */
+  --primary-dark: #a21caf;
+  /* Deep Magenta */
+  --secondary-color: #8b5cf6;
+  /* Electric Violet */
+  --accent-cyan: #06b6d4;
+  /* Neon Cyan */
+  --success-color: #00ff9d;
+  /* Cyber Green */
+  --danger-color: #ff0055;
+  /* Cyber Red */
+
+  /* Deep Dark Backgrounds */
+  --bg-gradient: linear-gradient(135deg, #05010a 0%, #1a0b2e 50%, #0f0518 100%);
+  --card-bg: rgba(20, 10, 35, 0.65);
+  /* Glassy Deep Purple */
+  --chat-bg: transparent;
+
+  /* Text Colors (High Contrast) */
+  --text-dark: #f8fafc;
+  /* Almost White */
+  --text-medium: #e2e8f0;
+  /* Light Grey */
+  --text-light: #94a3b8;
+  /* Muted Blue-Grey */
+
+  /* Borders & Glows */
+  --border-color: rgba(139, 92, 246, 0.3);
+  --neon-shadow: 0 0 10px rgba(217, 70, 239, 0.4);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text-dark);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: 0.3s;
+}
+
+/* =========================================
+   2. NAVBAR
+   ========================================= */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 60px;
+  background: rgba(10, 5, 16, 0.8);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Logo */
+.logo {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  text-shadow: 0 0 10px rgba(217, 70, 239, 0.5);
+  background: none;
+  -webkit-text-fill-color: initial;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 35px;
+  align-items: center;
+}
+
+.nav-links a {
+  font-weight: 500;
+  color: var(--text-light);
+  font-size: 0.95rem;
+  position: relative;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--primary-color);
+  text-shadow: 0 0 8px var(--primary-color);
+}
+
+/* Button in Nav */
+.nav-links .btn-primary {
+  padding: 10px 24px !important;
+}
+
+/* Hamburger Menu Toggle (Hidden on Desktop) */
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.menu-toggle .bar {
+  width: 25px;
+  height: 3px;
+  background-color: var(--text-dark);
+  margin: 3px 0;
+  transition: 0.4s;
+}
+
+/* =========================================
+   3. HERO SECTION
+   ========================================= */
+.hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  min-height: 90vh;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  padding: 0 20px;
+
+  /* Dark Overlay + Values Image */
+  background:
+    linear-gradient(rgba(5, 1, 10, 0.487), rgba(26, 11, 46, 0.85)),
+    url('vecteezy_graduates-silhouetted-against-a-setting-sun-generated_60008322.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.hero-content {
+  z-index: 10;
+  max-width: 900px;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero h1 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 3.5rem;
+  line-height: 1.2;
+  font-weight: 700;
+  margin-bottom: 25px;
+  background: linear-gradient(to right, #fff, var(--text-medium));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  color: var(--text-light);
+  max-width: 700px;
+  margin: 0 auto 40px;
+  opacity: 0;
+  animation: fadeInUp 0.8s ease-out 0.3s forwards;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  opacity: 0;
+  animation: fadeInUp 0.8s ease-out 0.6s forwards;
+}
+
+/* BUTTONS */
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  color: white;
+  padding: 14px 32px;
+  border-radius: 50px;
+  font-weight: 600;
+  box-shadow: 0 0 15px rgba(217, 70, 239, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 25px rgba(217, 70, 239, 0.6);
+  background: linear-gradient(135deg, #e879f9, #c026d3);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 14px 32px;
+  border-radius: 50px;
+  font-weight: 600;
+  border: 1px solid var(--border-color);
+  color: var(--text-medium);
+  backdrop-filter: blur(12px);
+}
+
+.btn-secondary:hover {
+  background: rgba(139, 92, 246, 0.15);
+  border-color: var(--primary-color);
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+}
+
+/* =========================================
+   4. COMMON SECTIONS (Highlights, Why, Stats)
+   ========================================= */
+section {
+  padding: 80px 20px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Highlights and Why Section with Shared Background */
+.highlights,
+.why {
+  background:
+    linear-gradient(rgba(5, 1, 10, 0.632), rgba(26, 11, 46, 0.644)),
+    url('vecteezy_ai-generated-young-female-student-wearing-black-cap-and-gown_37040129.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+/* Cards Shared Styles */
+.highlight-card,
+.why-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-color);
+  padding: 40px;
+  border-radius: 24px;
+  text-align: center;
+  transition: 0.4s;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.highlight-card:hover,
+.why-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 50px rgba(139, 92, 246, 0.15);
+  border-color: var(--primary-color);
+}
+
+.highlight-card h3,
+.why-card h3 {
+  color: var(--text-dark);
+  margin-bottom: 15px;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.highlight-card p,
+.why-card p {
+  color: var(--text-light);
+  font-size: 1rem;
+}
+
+/* Specific Section Layouts */
+.highlights {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.highlight-card {
+  width: 300px;
+}
+
+.why {
+  text-align: center;
+}
+
+.why h2 {
+  font-size: 2.5rem;
+  margin-bottom: 50px;
+  color: var(--text-dark);
+  text-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+}
+
+.why-cards {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.why-card {
+  width: 300px;
+}
+
+/* =========================================
+   5. FOOTER
+   ========================================= */
+footer {
+  background: rgba(5, 1, 10, 0.95);
+  color: var(--text-light);
+  padding: 60px 20px;
+  text-align: center;
+  border-top: 1px solid var(--border-color);
+}
+
+footer a {
+  color: var(--text-medium);
+  margin: 0 15px;
+  font-size: 0.9rem;
+}
+
+footer a:hover {
+  color: var(--primary-color);
+}
+
+.footer-links {
+  margin: 30px 0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+
+/* =========================================
+   6. RESPONSIVE DESIGN (MOBILE)
+   ========================================= */
+@media (max-width: 768px) {
+
+  /* Navbar */
+  .navbar {
+    padding: 15px 20px;
+  }
+
+  .menu-toggle {
+    display: flex;
+    /* Show hamburger on mobile */
+    z-index: 101;
+  }
+
+  .nav-links {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 60px;
+    /* Below navbar */
+    right: -100%;
+    width: 100%;
+    background: rgba(10, 5, 16, 0.98);
+    backdrop-filter: blur(20px);
+    height: calc(100vh - 60px);
+    justify-content: flex-start;
+    padding-top: 50px;
+    transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 99;
+    border-left: 1px solid var(--border-color);
+  }
+
+  .nav-links.active {
+    right: 0;
+  }
+
+  .nav-links li {
+    margin: 20px 0;
+  }
+
+  .nav-links a {
+    font-size: 1.2rem;
+  }
+
+  /* Hamburger Animation */
+  .menu-toggle.is-active .bar:nth-child(2) {
+    opacity: 0;
+  }
+
+  .menu-toggle.is-active .bar:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+
+  .menu-toggle.is-active .bar:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+  }
+
+  /* Hero */
+  .hero h1 {
+    font-size: 2.2rem;
+  }
+
+  .hero p {
+    font-size: 1rem;
+    padding: 0 15px;
+  }
+
+  /* Fix Background Images on Mobile */
+  .hero,
+  .highlights,
+  .why {
+    background-attachment: scroll;
+    background-position: center;
+    background-size: cover;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    padding: 12px 24px;
+    text-align: center;
+  }
+
+  /* Sections */
+  section {
+    padding: 60px 20px;
+  }
+
+  .highlights,
+  .why-cards {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .highlight-card,
+  .why-card {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  /* Footer */
+  .footer-links {
+    flex-direction: column;
+    gap: 15px;
+  }
+}

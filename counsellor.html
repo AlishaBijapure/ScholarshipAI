@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Counsellor</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/counsellor.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+  <style>
+    /* Choices.js Dark Theme Overrides */
+    .choices {
+      margin-bottom: 0;
+      min-width: 250px;
+      position: relative;
+      z-index: 100;
+      overflow: visible !important;
+    }
+
+    .choices__inner {
+      background-color: var(--card-bg) !important;
+      border: 1px solid var(--border-color) !important;
+      border-radius: 999px !important;
+      color: var(--text-dark) !important;
+      padding: 4px 16px !important;
+      min-height: auto !important;
+      overflow: visible !important;
+    }
+
+    .choices__input {
+      background-color: transparent !important;
+      color: var(--text-dark) !important;
+    }
+
+    .choices__list--dropdown {
+      background-color: #1e293b !important;
+      border: 1px solid var(--border-color) !important;
+      color: var(--text-light) !important;
+      z-index: 1000 !important;
+    }
+
+    /* Handle upward opening (flipped) specifically */
+    .choices.is-flipped .choices__list--dropdown {
+      bottom: 100% !important;
+      top: auto !important;
+      margin-bottom: 5px !important;
+      border-radius: 12px 12px 0 0 !important;
+      box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    .choices__item--choice {
+      color: var(--text-light) !important;
+    }
+
+    .choices__item--choice.is-highlighted {
+      background-color: var(--primary-color) !important;
+      color: white !important;
+    }
+
+    /* Hide the default arrow if needed or style it */
+    .choices::after {
+      border-color: var(--text-light) transparent transparent transparent !important;
+    }
+
+    #searchActionArea {
+      overflow: visible !important;
+      position: relative;
+      z-index: 50;
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <div class="logo"><i class="fas fa-graduation-cap"></i> AI Counsellor</div>
+    <div class="burger-menu" id="burger-menu">
+      <i class="fas fa-bars"></i>
+    </div>
+    <ul class="nav-links">
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="counsellor.html" class="active">AI Counsellor</a></li>
+      <li><a href="universities.html">Universities</a></li>
+      <li><a href="profile.html">Profile</a></li>
+      <li><a href="#" onclick="logout(); return false;" class="btn-logout">Logout</a></li>
+    </ul>
+  </nav>
+
+  <div class="main-wrapper">
+
+    <div class="counsellor-header">
+      <div class="header-content">
+        <h1><i class="fas fa-robot"></i> Study Abroad Assistant</h1>
+        <p>I will guide you step-by-step from country selection to your SOPs.</p>
+      </div>
+
+      <div class="task-progress-container">
+        <div class="task-indicator" id="taskIndicator">
+          <div class="task-step" data-t="0"><span class="step-num">1</span> <span class="step-text">Country</span></div>
+          <div class="step-line"></div>
+          <div class="task-step" data-t="1"><span class="step-num">2</span> <span class="step-text">Universities</span>
+          </div>
+          <div class="step-line"></div>
+          <div class="task-step" data-t="2"><span class="step-num">3</span> <span class="step-text">Exams</span></div>
+          <div class="step-line"></div>
+          <div class="task-step" data-t="3"><span class="step-num">4</span> <span class="step-text">Docs</span></div>
+          <div class="step-line"></div>
+          <div class="task-step" data-t="4"><span class="step-num">5</span> <span class="step-text">Final</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="counsellor-body">
+      <div class="chat-interface">
+
+        <div class="chat-container" id="chatContainer"></div>
+
+        <div class="chat-footer">
+
+          <div id="instructionLabel" class="instruction-label"></div>
+
+          <div id="topActionsArea" class="actions-scroll-wrapper"></div>
+          <div id="searchActionArea" style="width: 100%; margin-top: 8px;"></div>
+
+          <div class="input-area">
+            <div class="input-wrapper">
+              <input type="text" id="messageInput" placeholder="Type your message here..."
+                onkeypress="if(event.key==='Enter') sendMessage()">
+              <button id="sendButton" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+          </div>
+
+          <div id="bottomPromptsArea" class="prompts-scroll-wrapper"></div>
+
+        </div>
+
+      </div>
+
+      <div class="task-sidebar" id="taskSidebar">
+        <h3>Task Focus</h3>
+        <div class="sidebar-content" id="sidebarContent">
+          <!-- Dynamically filled -->
+        </div>
+        <div class="sidebar-tip" id="sidebarTip">
+          <!-- Dynamically filled -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+  <script>
+    if (!requireAuth()) { /* redirect */ }
+
+    let progress = null;
+    let availableForDropdown = []; // Store dropdown items globally for Task 1
+    let allCountriesCache = null; // Cache for Task 0
+    let countryChoices = null;
+
+    // Fetch countries ONCE and cache them
+    async function loadAllCountries() {
+      if (allCountriesCache && allCountriesCache.length > 0) return allCountriesCache;
+      try {
+        console.log("Fetching countries from API...");
+        const data = await apiRequest('/universities/countries');
+        allCountriesCache = data || [];
+        return allCountriesCache;
+      } catch (err) {
+        console.error("Error loading countries:", err);
+        return [];
+      }
+    }
+
+    async function initCountrySearch() {
+      try {
+        const select = document.getElementById('countrySearchDropdown');
+        if (!select) return;
+
+        // Ensure we don't re-initialize on an already initialized element
+        if (select.classList.contains('choices__input')) return;
+
+        // Wait for cache
+        const countries = await loadAllCountries();
+
+        // Clear except placeholder
+        select.innerHTML = '<option value="" placeholder>Search country of your choice...</option>';
+
+        countries.forEach(c => {
+          const opt = document.createElement('option');
+          opt.value = c;
+          opt.textContent = c;
+          select.appendChild(opt);
+        });
+
+        if (countryChoices) {
+          countryChoices.destroy();
+          countryChoices = null;
+        }
+
+        if (typeof Choices === 'undefined') {
+          console.warn("Choices.js not loaded. Falling back to native select.");
+          return;
+        }
+
+        countryChoices = new Choices(select, {
+          searchEnabled: true,
+          placeholder: true,
+          placeholderValue: 'Search country of your choice...',
+          searchPlaceholderValue: 'Type to search...',
+          itemSelectText: '', // Hide "Press to select" text for cleaner look
+          shouldSort: false,
+          position: 'top',
+        });
+
+        // Listen for selection
+        select.addEventListener('change', (e) => {
+          const val = e.target.value;
+          if (val) {
+            runProgressAction('select_country', { country: val });
+          }
+        });
+
+      } catch (err) {
+        console.error("Failed to init country dropdown:", err);
+      }
+    }
+
+    // --- Helper to update the guidance text ---
+    function updateInstruction(text) {
+      const el = document.getElementById('instructionLabel');
+      if (!text) {
+        el.innerHTML = '';
+        el.style.display = 'none';
+      } else {
+        el.style.display = 'flex';
+        el.innerHTML = `<span>${text}</span> <i class="fas fa-level-down-alt"></i>`;
+      }
+    }
+
+    function updateTaskSidebar(taskIndex) {
+      const titleEl = document.querySelector('.task-sidebar h3');
+      const contentEl = document.getElementById('sidebarContent');
+      const tipEl = document.getElementById('sidebarTip');
+
+      const data = [
+        {
+          title: "Task 0: Country Selection",
+          points: [
+            "Select your primary study destination",
+            "Pick from AI recommendations or use the search bar",
+            "You can select only one country to proceed",
+            "Focus is strictly on country-level advice"
+          ],
+          tip: "AI suggests countries based on your profile budget and course choice."
+        },
+        {
+          title: "Task 1: University Curation",
+          points: [
+            "Build your shortlist of exactly 5 universities",
+            "Choose from Dream, Target, and Safe categories",
+            "Use the dropdown to add universities if you wish to change",
+            "AI provides personalized fit analysis for each selection"
+          ],
+          tip: "A balanced list (2 Dream, 2 Target, 1 Safe) ensures the best chance of admission."
+        },
+        {
+          title: "Task 2: Exam Planning",
+          points: [
+            "Review required exams (IELTS, GRE, etc.) for your list",
+            "Submit your actual scores or target scores",
+            "Mark 'Done' once all required scores are recorded",
+            "Ask AI for section-wise tips or syllabus details"
+          ],
+          tip: "Minimum scores vary by university. Aim for the highest 'Safe' score listed."
+        },
+        {
+          title: "Task 3: Documents Checklist",
+          points: [
+            "Arrange core paperwork (Transcripts, Passport, etc.)",
+            "AI guides on notarization and visa requirements",
+            "Use this checklist to track your physical prep",
+            "Mark 'All Docs Ready' once you have everything prepared"
+          ],
+          tip: "Start arranging transcripts early as they often take the longest to process."
+        },
+        {
+          title: "Task 4: Final Roadmap",
+          points: [
+            "Polish your SOP, LORs, and Resume",
+            "Strategic guidance provided for each chosen university",
+            "Follow the structure tips for a winning application",
+            "Finalizing your journey to submission"
+          ],
+          tip: "Tailor your SOP slightly for each university to show specific interest."
+        }
+      ];
+
+      const current = data[taskIndex] || data[0];
+      titleEl.textContent = current.title;
+
+      if (taskIndex === 4 && progress?.task4?.byUniversity) {
+        const by = progress.task4.byUniversity;
+        const currentIdx = progress.task4.currentUniIndex;
+        const currentDoc = progress.task4.currentDocType;
+
+        let html = '<div class="sidebar-doc-list">';
+        by.forEach((uni, i) => {
+          const isCurrentUni = i === currentIdx;
+          html += `
+            <div class="uni-doc-group ${isCurrentUni ? 'active-uni' : ''}">
+              <div class="uni-name"><strong>${i + 1}. ${uni.universityName}</strong></div>
+              <ul class="doc-status-list">
+                <li class="${uni.sop ? 'done' : (isCurrentUni && currentDoc === 'sop' ? 'working' : 'pending')}">
+                  <i class="fas ${uni.sop ? 'fa-check-circle' : 'fa-circle'}"></i> SOP
+                </li>
+                <li class="${uni.lors ? 'done' : (isCurrentUni && currentDoc === 'lors' ? 'working' : 'pending')}">
+                  <i class="fas ${uni.lors ? 'fa-check-circle' : 'fa-circle'}"></i> LORs
+                </li>
+                <li class="${uni.resume ? 'done' : (isCurrentUni && currentDoc === 'resume' ? 'working' : 'pending')}">
+                  <i class="fas ${uni.resume ? 'fa-check-circle' : 'fa-circle'}"></i> Resume
+                </li>
+              </ul>
+            </div>
+          `;
+        });
+        html += '</div>';
+        contentEl.innerHTML = html;
+      } else {
+        contentEl.innerHTML = `<ul>${current.points.map(p => `<li>${p}</li>`).join('')}</ul>`;
+      }
+
+      tipEl.textContent = current.tip;
+    }
+
+    function setTaskUI(p) {
+      progress = p || progress;
+      const t = progress?.currentTask ?? 0;
+
+      // Update sidebar content
+      updateTaskSidebar(t);
+
+      document.querySelectorAll('.task-step').forEach(el => {
+        const n = parseInt(el.dataset.t, 10);
+        el.classList.remove('active', 'completed');
+
+        if (n < t) {
+          el.classList.add('completed');
+          el.innerHTML = `<span class="step-num"><i class="fas fa-check"></i></span> <span class="step-text">${el.querySelector('.step-text').innerText}</span>`;
+        } else if (n === t) {
+          el.classList.add('active');
+          const map = ['1', '2', '3', '4', '5'];
+          const text = el.querySelector('.step-text').innerText;
+          el.innerHTML = `<span class="step-num">${map[n]}</span> <span class="step-text">${text}</span>`;
+        } else {
+          const map = ['1', '2', '3', '4', '5'];
+          const text = el.querySelector('.step-text').innerText;
+          el.innerHTML = `<span class="step-num">${map[n]}</span> <span class="step-text">${text}</span>`;
+        }
+      });
+      renderTaskButtons();
+    }
+
+    async function renderTaskButtons() {
+      const topContainer = document.getElementById('topActionsArea');
+      const searchContainer = document.getElementById('searchActionArea');
+      const bottomContainer = document.getElementById('bottomPromptsArea');
+
+      topContainer.innerHTML = '';
+      if (searchContainer) searchContainer.innerHTML = '';
+      bottomContainer.innerHTML = '';
+      updateInstruction(''); // Reset instruction
+
+      const t = progress?.currentTask ?? 0;
+
+      // ==========================
+      // TASK 0: COUNTRY SELECTION
+      // ==========================
+      if (t === 0) {
+        const proposedCountries = progress?.task0?.proposedCountries || [];
+        const selectedCountry = progress?.task0?.selectedCountry;
+        const isFinalized = progress?.task0?.finalized;
+
+        if (proposedCountries.length > 0) {
+
+          // Guidance
+          if (!selectedCountry) {
+            updateInstruction("Select a country or type to add one");
+          } else if (selectedCountry && !isFinalized) {
+            updateInstruction("Great choice! Click 'Finalize' to proceed");
+          } else if (isFinalized) {
+            updateInstruction("Country locked. Move to Next Step");
+          }
+
+          // 1. Bottom Prompts
+          const prompts = ['Which is best for me?', 'Compare costs', 'Job opportunities?', 'Visa rules?'];
+          prompts.forEach((promptText) => {
+            const chip = document.createElement('button');
+            chip.className = 'ui-chip chip-prompt';
+            chip.innerHTML = `<i class="far fa-lightbulb"></i> ${promptText}`;
+            chip.onclick = () => {
+              document.getElementById('messageInput').value = promptText;
+              sendMessage();
+            };
+            bottomContainer.appendChild(chip);
+          });
+
+          // 2. Top Actions (Countries)
+          let displayList = [...proposedCountries];
+          if (selectedCountry && !displayList.find(c => c.country === selectedCountry)) {
+            displayList.push({ country: selectedCountry });
+          }
+
+          displayList.forEach((country) => {
+            const btn = document.createElement('button');
+            const isSelected = selectedCountry === country.country;
+            btn.className = 'ui-chip ' + (isSelected ? 'chip-selected' : 'chip-country');
+            btn.textContent = country.country + (isSelected ? ' ✓' : '');
+            btn.onclick = () => runProgressAction('select_country', { country: country.country });
+            topContainer.appendChild(btn);
+          });
+
+          // Custom Searchable Dropdown (Choices.js)
+          if (!isFinalized) {
+            const dropdownDiv = document.createElement('div');
+            dropdownDiv.style.width = "100%"; // Full width in new container
+
+            const select = document.createElement('select');
+            select.id = 'countrySearchDropdown';
+            const opt = document.createElement('option');
+            opt.placeholder = true; // Use Choices placeholder behavior
+            opt.text = "Search country of your choice..."; // Placeholder text
+            opt.value = "";
+            select.appendChild(opt);
+
+            dropdownDiv.appendChild(select);
+
+            // Append to the NEW container that isn't clipped
+            if (searchContainer) {
+              searchContainer.appendChild(dropdownDiv);
+            } else {
+              topContainer.appendChild(dropdownDiv);
+            }
+
+            // Initialize the searchable dropdown
+            setTimeout(() => initCountrySearch(), 0);
+          }
+
+          // Finalize Button
+          if (selectedCountry && !isFinalized) {
+            const finBtn = document.createElement('button');
+            finBtn.className = 'ui-chip chip-action';
+            finBtn.innerHTML = 'Finalize <i class="fas fa-check"></i>';
+            finBtn.onclick = () => runProgressAction('finalize_country');
+            topContainer.appendChild(finBtn);
+          }
+
+          // Move Next
+          if (isFinalized) {
+            const moveBtn = document.createElement('button');
+            moveBtn.className = 'ui-chip chip-action';
+            moveBtn.innerHTML = 'Next Step <i class="fas fa-arrow-right"></i>';
+            moveBtn.onclick = () => runProgressAction('move_to_next_step');
+            topContainer.appendChild(moveBtn);
+
+            const reselectBtn = document.createElement('button');
+            reselectBtn.className = 'ui-chip chip-secondary';
+            reselectBtn.innerHTML = '<i class="fas fa-undo"></i> Reselect';
+            reselectBtn.onclick = () => { if (confirm('Reset country selection?')) runProgressAction('reselect_country'); };
+            topContainer.appendChild(reselectBtn);
+          }
+
+        } else {
+          bottomContainer.innerHTML = '<div class="loading-text">Loading suggestions...</div>';
+        }
+      }
+
+      // ==========================
+      // TASK 1: UNIVERSITY SELECTION
+      // ==========================
+      if (t === 1) {
+        const list = progress?.task1?.proposedList || [];
+        const isFinalized = progress?.task1?.finalized;
+
+        // Guidance
+        if (!isFinalized) {
+          updateInstruction("Review list or add via dropdown (need exactly 5 to finalize)");
+        } else {
+          updateInstruction("List finalized. Move to Next Step");
+        }
+
+        // 1. Bottom Prompts
+        const prompts = ['Why these universities?', 'Scholarship chances?', 'Rankings?', 'Placement stats?'];
+        prompts.forEach((promptText) => {
+          const chip = document.createElement('button');
+          chip.className = 'ui-chip chip-prompt';
+          chip.innerHTML = `<i class="far fa-lightbulb"></i> ${promptText}`;
+          chip.onclick = () => {
+            document.getElementById('messageInput').value = promptText;
+            sendMessage();
+          };
+          bottomContainer.appendChild(chip);
+        });
+
+        // 2. Render List as Chips with Remove Option
+        list.forEach(uni => {
+          const btn = document.createElement('div');
+          btn.className = 'ui-chip chip-selected'; // Style like a selected item
+          // Show Name + Category tag
+          btn.innerHTML = `${uni.name} <small style="opacity:0.7">(${uni.category})</small>`;
+
+          // Add Remove Icon if not finalized
+          if (!isFinalized) {
+            const closeBtn = document.createElement('span');
+            closeBtn.innerHTML = ' <i class="fas fa-times"></i>';
+            closeBtn.style.cursor = 'pointer';
+            closeBtn.style.marginLeft = '8px';
+            closeBtn.onclick = (e) => {
+              e.stopPropagation();
+              if (confirm(`Remove ${uni.name}?`)) runProgressAction('remove_university', { universityId: uni._id });
+            };
+            btn.appendChild(closeBtn);
+          }
+          topContainer.appendChild(btn);
+        });
+
+        // 3. Dropdown to Add University (Only if not finalized)
+        if (!isFinalized) {
+          const dropdownDiv = document.createElement('div');
+          dropdownDiv.className = 'ui-chip-input-group wide';
+
+          const select = document.createElement('select');
+          select.id = 'uniDropdown';
+
+          // Default Option
+          const defOpt = document.createElement('option');
+          defOpt.text = 'Select to add university...';
+          defOpt.value = '';
+          select.appendChild(defOpt);
+
+          // Populate from global variable (fetched from API)
+          if (availableForDropdown && availableForDropdown.length > 0) {
+            availableForDropdown.forEach(u => {
+              const opt = document.createElement('option');
+              opt.value = u._id;
+              opt.text = `${u.name} (${u.category || 'Target'})`;
+              select.appendChild(opt);
+            });
+          } else {
+            const opt = document.createElement('option');
+            opt.text = 'No other universities available';
+            select.appendChild(opt);
+          }
+
+          const addBtn = document.createElement('button');
+          addBtn.innerHTML = '<i class="fas fa-plus"></i>'; // Changed to just Icon for cleaner look in the bar
+          addBtn.onclick = () => {
+            const val = select.value;
+            if (val) runProgressAction('add_university', { universityId: val });
+            else alert("Please select a university from the dropdown.");
+          };
+
+          dropdownDiv.appendChild(select);
+          dropdownDiv.appendChild(addBtn);
+          topContainer.appendChild(dropdownDiv);
+
+          // Finalize Button
+          const finBtn = document.createElement('button');
+          finBtn.className = 'ui-chip chip-action';
+          finBtn.innerHTML = 'Finalize Unis <i class="fas fa-check"></i>';
+          // Keep clickable so we can prompt the user if not exactly 5
+          finBtn.disabled = list.length === 0;
+          finBtn.onclick = () => {
+            if (list.length !== 5) {
+              addMessage(`You currently have ${list.length} universities selected. Please select exactly 5 universities to finalize your list.`, 'ai');
+              return;
+            }
+            runProgressAction('finalize_list');
+          };
+          topContainer.appendChild(finBtn);
+        }
+
+        // 4. Move Next Step (Only if Finalized)
+        if (isFinalized) {
+          const moveBtn = document.createElement('button');
+          moveBtn.className = 'ui-chip chip-action';
+          moveBtn.innerHTML = 'Next Step <i class="fas fa-arrow-right"></i>';
+          moveBtn.onclick = () => runProgressAction('move_to_next_step');
+          topContainer.appendChild(moveBtn);
+
+          // Option to unlock/modify
+          const modBtn = document.createElement('button');
+          modBtn.className = 'ui-chip chip-secondary';
+          modBtn.textContent = 'Modify List';
+          modBtn.onclick = () => { if (confirm('Unlock list to modify?')) runProgressAction('modify_list'); };
+          topContainer.appendChild(modBtn);
+
+        }
+
+        // Always show Reselect Country in Task 1
+        const reCountryBtn = document.createElement('button');
+        reCountryBtn.className = 'ui-chip chip-secondary';
+        reCountryBtn.innerHTML = '<i class="fas fa-undo"></i> Reselect Country';
+        reCountryBtn.onclick = () => { if (confirm('Go back to country selection? This will reset your current university list.')) runProgressAction('reselect_country'); };
+        topContainer.appendChild(reCountryBtn);
+      }
+
+      // ==========================
+      // TASK 2: EXAMS
+      // ==========================
+      if (t === 2) {
+        const allScoresIn = !!progress?.task2?.completed;
+        const requiredExams = progress?.task2?.requiredExams || [];
+        updateInstruction(allScoresIn ? "All required exam scores recorded. Proceed when ready." : "Submit required exam scores; Mark Done unlocks after all required scores are recorded.");
+
+        const reUni = document.createElement('button');
+        reUni.className = 'ui-chip chip-secondary';
+        reUni.textContent = 'Reset Universities';
+        reUni.onclick = () => { if (confirm('Reset universities?')) runProgressAction('reselect_universities'); };
+        topContainer.appendChild(reUni);
+
+        // Default quick prompts (below the text bar)
+        const prompts = [
+          'What exams do I need for my 5 universities?',
+          'IELTS syllabus and section-wise tips',
+          'TOEFL syllabus and score targets',
+          'GRE vs GMAT: which one should I take?',
+          'How to improve my score in 30 days?',
+          'What score is considered safe for my universities?'
+        ];
+        prompts.forEach((promptText) => {
+          const chip = document.createElement('button');
+          chip.className = 'ui-chip chip-prompt';
+          chip.innerHTML = `<i class="far fa-lightbulb"></i> ${promptText}`;
+          chip.onclick = () => {
+            document.getElementById('messageInput').value = promptText;
+            sendMessage();
+          };
+          bottomContainer.appendChild(chip);
+        });
+
+        const examDiv = document.createElement('div');
+        examDiv.className = 'ui-chip-input-group wide';
+
+        const sel = document.createElement('select');
+        // Show only exams required by AI plan for this user/university list
+        if (requiredExams.length > 0) {
+          const placeholder = document.createElement('option');
+          placeholder.value = '';
+          placeholder.text = 'Select exam to enter score...';
+          sel.appendChild(placeholder);
+          requiredExams.forEach(r => {
+            if (!r || !r.exam) return;
+            const o = document.createElement('option');
+            o.value = r.exam;
+            o.text = r.minScore ? `${r.exam} (min ${r.minScore})` : r.exam;
+            sel.appendChild(o);
+          });
+        } else {
+          const o = document.createElement('option');
+          o.value = '';
+          o.text = 'Preparing required exams...';
+          sel.appendChild(o);
+          sel.disabled = true;
+        }
+
+        const scoreIn = document.createElement('input');
+        scoreIn.placeholder = 'Score';
+        scoreIn.style.width = '60px';
+
+        const submitBtn = document.createElement('button');
+        submitBtn.innerHTML = '<i class="fas fa-check"></i>';
+        submitBtn.onclick = () => {
+          if (!sel.value) {
+            addMessage('Please select an exam from the list above before entering a score.', 'ai');
+            return;
+          }
+          if (!scoreIn.value) {
+            addMessage(`Please enter your score for ${sel.value}.`, 'ai');
+            return;
+          }
+          runProgressAction('exam_score', { examType: sel.value, score: scoreIn.value });
+        };
+
+        examDiv.appendChild(sel);
+        examDiv.appendChild(scoreIn);
+        examDiv.appendChild(submitBtn);
+        topContainer.appendChild(examDiv);
+
+        const doneBtn = document.createElement('button');
+        doneBtn.className = 'ui-chip chip-primary';
+        doneBtn.textContent = 'Done';
+        doneBtn.disabled = !allScoresIn;
+        doneBtn.onclick = () => {
+          runProgressAction('exam_done', { examType: sel.value });
+        };
+        topContainer.appendChild(doneBtn);
+      }
+
+      // --- TASKS 3 & 4 (Simplified) ---
+      if (t === 3) {
+        updateInstruction("Confirm all documents are available or go back to update exams");
+
+        const backToExamsBtn = document.createElement('button');
+        backToExamsBtn.className = 'ui-chip chip-secondary';
+        backToExamsBtn.innerHTML = '<i class="fas fa-arrow-left"></i> Back to Exams';
+        backToExamsBtn.onclick = () => {
+          if (confirm('This will reset your exam data and you will need to enter scores again. Continue?')) {
+            runProgressAction('reset_exams');
+          }
+        };
+        topContainer.appendChild(backToExamsBtn);
+
+        const docsBtn = document.createElement('button');
+        docsBtn.className = 'ui-chip chip-action';
+        docsBtn.innerHTML = '<i class="fas fa-file-check"></i> All Docs Ready';
+        docsBtn.onclick = () => runProgressAction('all_docs_available');
+        topContainer.appendChild(docsBtn);
+
+        const reCountryBtn = document.createElement('button');
+        reCountryBtn.className = 'ui-chip chip-secondary';
+        reCountryBtn.innerHTML = '<i class="fas fa-undo"></i> Reselect Country';
+        reCountryBtn.onclick = () => { if (confirm('Go back to country selection? This will reset your current university and exam data.')) runProgressAction('reselect_country'); };
+        topContainer.appendChild(reCountryBtn);
+      }
+
+      if (t === 4) {
+        updateInstruction("Proceed to the final phase");
+
+        const backToDocsBtn = document.createElement('button');
+        backToDocsBtn.className = 'ui-chip chip-secondary';
+        backToDocsBtn.innerHTML = '<i class="fas fa-arrow-left"></i> Back to Documents';
+        backToDocsBtn.onclick = () => {
+          if (confirm('This will erase your current SOP/LOR/Resume progress and you will need to re-verify documents. Continue?')) {
+            runProgressAction('reset_docs');
+          }
+        };
+        topContainer.appendChild(backToDocsBtn);
+
+        const moveBtn = document.createElement('button');
+        moveBtn.className = 'ui-chip chip-action';
+        moveBtn.innerHTML = 'Move to Next Document <i class="fas fa-arrow-right"></i>';
+        moveBtn.onclick = () => runProgressAction('move_to_next_doc');
+        topContainer.appendChild(moveBtn);
+      }
+    }
+
+    // --- API & ACTION HANDLERS ---
+
+    async function runProgressAction(action, payload = {}) {
+      try {
+        const loadingMsg = addLoadingMessage();
+        const res = await apiRequest('/counsellor/progress/action', {
+          method: 'POST',
+          body: JSON.stringify({ action, ...payload })
+        });
+        removeLoadingMessage(loadingMsg);
+
+        // Update Progress
+        progress = res.progress;
+
+        // If we modified list or moved step, we might need to fetch Fresh Dropdown Data
+        // Specifically for Task 1 modifications
+        if (['add_university', 'remove_university', 'move_to_next_step', 'modify_list', 'finalize_list'].includes(action)) {
+          await fetchRecommendations(); // Refresh the dropdown list and sync progress
+        } else {
+          setTaskUI(progress);
+        }
+
+        if (res.message) addMessage(res.message, 'ai');
+
+        // Automatic AI Guidance for Task 4
+        const actionsTriggeringGuidance = ['move_to_next_doc', 'all_docs_available', 'move_to_next_step'];
+        if (actionsTriggeringGuidance.includes(action) && progress && progress.currentTask === 4 && !progress.task4?.completed) {
+          const by = Array.isArray(progress.task4?.byUniversity) ? progress.task4.byUniversity : [];
+          const idx = progress.task4?.currentUniIndex ?? 0;
+          const dtype = progress.task4?.currentDocType || 'sop';
+          const current = by[Math.min(idx, Math.max(0, by.length - 1))];
+          const uniName = current?.universityName || 'this university';
+          let docLabel = 'SOP';
+          if (dtype === 'lors') docLabel = 'LORs';
+          else if (dtype === 'resume') docLabel = 'Resume';
+
+          const autoPrompt = `Guide me on the ${docLabel} for ${uniName}. Show me the key points for this document based on the requirements.`;
+          sendMessage(autoPrompt, true);
+        }
+      } catch (e) {
+        removeLoadingMessage(document.getElementById('loading-message')?.id);
+        alert(e.message || 'Action failed.');
+      }
+    }
+
+    // Fetch Task 1 Data (Recommended + Dropdown)
+    async function fetchRecommendations() {
+      try {
+        const res = await apiRequest('/counsellor/recommend');
+        progress = res.progress; // Sync progress
+        availableForDropdown = res.availableForDropdown || []; // Update global dropdown list
+        setTaskUI(progress);
+        return res;
+      } catch (e) { console.error("Error fetching recs", e); }
+    }
+
+    async function loadProgress() {
+      try {
+        // We use the recommendation endpoint because it returns everything we need for Task 0 & 1
+        const res = await fetchRecommendations();
+        return res.progress;
+      } catch (_) { return null; }
+    }
+
+    async function sendMessage(text, isHidden) {
+      const input = document.getElementById('messageInput');
+      const message = (typeof text === 'string' ? text : null) || (input && input.value ? input.value.trim() : '');
+      if (!message) return;
+      const sendButton = document.getElementById('sendButton');
+      if (sendButton) sendButton.disabled = true;
+      if (!isHidden) {
+        addMessage(message, 'user');
+        if (input) input.value = '';
+      }
+      const loadingId = addLoadingMessage();
+      try {
+        const response = await apiRequest('/counsellor/chat', {
+          method: 'POST',
+          body: JSON.stringify({ message })
+        });
+        removeLoadingMessage(loadingId);
+        addMessage(response.message, 'ai');
+        if (response.progress) {
+          progress = response.progress;
+          setTaskUI(progress);
+        }
+      } catch (error) {
+        removeLoadingMessage(loadingId);
+        addMessage(error.message || "Error connecting.", 'ai');
+      } finally {
+        if (sendButton) sendButton.disabled = false;
+        if (input && !isHidden) input.focus();
+      }
+    }
+
+    function addMessage(text, type) {
+      const container = document.getElementById('chatContainer');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'message ' + type;
+
+      let htmlContent = '';
+      if (typeof marked !== 'undefined') {
+        htmlContent = marked.parse(text || '');
+      } else {
+        htmlContent = `<p>${(text || '').toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}</p>`;
+      }
+
+      if (type === 'ai') {
+        messageDiv.innerHTML = `<div class="message-avatar ai-avatar"><i class="fas fa-robot"></i></div><div class="message-content">${htmlContent}</div>`;
+      } else {
+        messageDiv.innerHTML = `<div class="message-content user-content">${htmlContent}</div>`;
+      }
+      container.appendChild(messageDiv);
+      container.scrollTop = container.scrollHeight;
+      return messageDiv;
+    }
+
+    function addLoadingMessage() {
+      const container = document.getElementById('chatContainer');
+      const div = document.createElement('div');
+      div.className = 'message ai';
+      div.id = 'loading-message';
+      div.innerHTML = `<div class="message-avatar ai-avatar"><i class="fas fa-robot"></i></div><div class="message-content loading-content"><div class="loading-dots"><span></span><span></span><span></span></div></div>`;
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+      return 'loading-message';
+    }
+
+    function removeLoadingMessage(id) {
+      const el = document.getElementById(id);
+      if (el) el.remove();
+    }
+
+    window.addEventListener('load', async function () {
+      try {
+        const me = await apiRequest('/auth/me');
+        if (!me.user) return;
+
+        // Start fetching countries immediately (background)
+        loadAllCountries();
+
+        await loadProgress(); // This loads recommendations + progress
+        sendMessage('START_SESSION', true).catch(e => console.log('Session start error', e));
+      } catch (err) { console.error(err); }
+    });
+  </script>
+  <script src="js/navbar.js"></script>
+</body>
+
+</html>

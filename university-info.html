@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Details - AI Counsellor</title>
+    <link rel="stylesheet" href="styles.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Page Specific Styles */
+        .uni-hero {
+            position: relative;
+            padding: 100px 20px 60px;
+            text-align: center;
+            background: linear-gradient(rgba(5, 1, 10, 0.85), rgba(26, 11, 46, 0.9)), url('vecteezy_graduates-silhouetted-against-a-setting-sun-generated_60008322.jpg');
+            background-size: cover;
+            background-position: center;
+            color: var(--text-dark);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .uni-title {
+            font-size: 3rem;
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #fff, #e2e8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .uni-meta {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 1.1rem;
+            color: var(--text-light);
+            flex-wrap: wrap;
+        }
+
+        .uni-meta span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .uni-meta i {
+            color: var(--primary-color);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .detail-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 25px;
+            transition: 0.3s;
+        }
+
+        .detail-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .detail-card h3 {
+            font-size: 1.2rem;
+            color: var(--accent-cyan);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-list {
+            list-style: none;
+        }
+
+        .detail-list li {
+            margin-bottom: 10px;
+            color: var(--text-medium);
+            display: flex;
+            gap: 10px;
+        }
+
+        .detail-list li i {
+            color: var(--secondary-color);
+            margin-top: 4px;
+        }
+
+        .description-section {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 40px;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+
+        .description-section h2 {
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .counsellor-cta {
+            text-align: center;
+            margin-top: 60px;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(217, 70, 239, 0.1), rgba(139, 92, 246, 0.1));
+            border-radius: 24px;
+            border: 1px solid var(--primary-color);
+        }
+
+        .counsellor-cta h2 {
+            margin-bottom: 15px;
+            color: var(--text-dark);
+        }
+
+        .counsellor-cta p {
+            color: var(--text-light);
+            margin-bottom: 25px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">AI Counsellor</div>
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="universities.html" class="active">Universities</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="#" id="logoutBtn" style="color: var(--danger-color);">Logout</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero -->
+    <header class="uni-hero" id="uniHero">
+        <!-- Dynamic Content -->
+        <div class="loader" style="color: white;">Loading details...</div>
+    </header>
+
+    <div class="container" id="uniContent" style="display: none;">
+
+        <!-- Description -->
+        <section class="description-section">
+            <h2>About the University</h2>
+            <p id="uniDescription"></p>
+        </section>
+
+        <!-- Details Grid -->
+        <div class="details-grid">
+            <!-- Key Stats -->
+            <div class="detail-card">
+                <h3><i class="fas fa-chart-line"></i> Key Statistics</h3>
+                <ul class="detail-list">
+                    <li><i class="fas fa-trophy"></i> Global Ranking: #<span id="uniRanking"></span></li>
+                    <li><i class="fas fa-check-circle"></i> Acceptance Rate: <span id="uniAcceptance"></span>%</li>
+                    <li><i class="fas fa-money-bill-wave"></i> Tuition: $<span id="uniTuition"></span> / year</li>
+                </ul>
+            </div>
+
+            <!-- Requirements -->
+            <div class="detail-card">
+                <h3><i class="fas fa-clipboard-list"></i> Requirements</h3>
+                <ul class="detail-list">
+                    <li><i class="fas fa-graduation-cap"></i> Min GPA: <span id="uniGPA"></span></li>
+                    <li id="uniExamsContainer"><i class="fas fa-file-alt"></i> Exams: <span id="uniExams"></span></li>
+                </ul>
+            </div>
+
+            <!-- Programs -->
+            <div class="detail-card">
+                <h3><i class="fas fa-book-open"></i> Programs</h3>
+                <ul class="detail-list">
+                    <li><i class="fas fa-layer-group"></i> Degree Levels: <span id="uniDegrees"></span></li>
+                    <li><i class="fas fa-flask"></i> Fields: <span id="uniFields"></span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="counsellor-cta">
+            <h2>Need Expert Guidance?</h2>
+            <p>Have questions about this university? creating your application? or scholarship opportunities? Chat with
+                our AI University Counsellor for instant answers.</p>
+            <button class="btn-primary" onclick="alert('Connecting to Counsellor... (Feature coming soon)')">
+                <i class="fas fa-robot"></i> Talk to University Counsellor
+            </button>
+        </div>
+
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>© 2025 Scholarship Finder. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/auth.js"></script>
+    <script>
+        // Navigation Toggle
+        const menuToggle = document.getElementById('mobile-menu');
+        const navLinks = document.querySelector('.nav-links');
+        if (menuToggle) {
+            menuToggle.addEventListener('click', () => {
+                menuToggle.classList.toggle('is-active');
+                navLinks.classList.toggle('active');
+            });
+        }
+
+        // Logout Logic
+        document.getElementById('logoutBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            logout();
+        });
+
+        // Fetch and Render
+        async function loadUniversityDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const uniId = urlParams.get('id');
+
+            if (!uniId) {
+                alert('No university specified.');
+                window.location.href = 'universities.html';
+                return;
+            }
+
+            try {
+                // Use apiRequest helper from js/auth.js (handles base URL which is localhost:3000)
+                const uni = await apiRequest(`/universities/${uniId}`);
+
+                // Populate Header
+                const heroHTML = `
+           <h1 class="uni-title">${uni.name}</h1>
+           <div class="uni-meta">
+             <span><i class="fas fa-map-marker-alt"></i> ${uni.city}, ${uni.country}</span>
+             ${uni.website ? `<span><i class="fas fa-globe"></i> <a href="${uni.website}" target="_blank" style="text-decoration:underline;">Website</a></span>` : ''}
+           </div>
+        `;
+                document.getElementById('uniHero').innerHTML = heroHTML;
+
+                // Populate Content
+                document.getElementById('uniDescription').textContent = uni.description || 'No description available.';
+
+                document.getElementById('uniRanking').textContent = uni.ranking || 'N/A';
+                document.getElementById('uniAcceptance').textContent = uni.acceptanceRate || 'N/A';
+                document.getElementById('uniTuition').textContent = uni.tuitionFee?.max?.toLocaleString() || 'N/A';
+
+                document.getElementById('uniGPA').textContent = uni.requirements?.gpa || 'N/A';
+
+                // Exams
+                const exams = uni.requirements?.exams || [];
+                document.getElementById('uniExams').textContent = exams.length ? exams.join(', ') : 'None specified';
+
+                // Programs
+                document.getElementById('uniDegrees').textContent = (uni.degreeLevels || []).join(', ');
+                document.getElementById('uniFields').textContent = (uni.fieldsOfStudy || []).slice(0, 5).join(', ') + ((uni.fieldsOfStudy?.length > 5) ? '...' : '');
+
+                // Show Content
+                document.getElementById('uniContent').style.display = 'block';
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById('uniHero').innerHTML = `<h2 style="color:var(--danger-color)">Error loading details</h2><p>${error.message}</p>`;
+            }
+        }
+
+        // Init
+        if (checkAuth()) {
+            loadUniversityDetails();
+        } else {
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+
+</html>

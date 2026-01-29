@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Onboarding - AI Counsellor</title>
+  <link rel="stylesheet" href="css/counsellor.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+  <style>
+    html {
+      background: var(--bg-gradient);
+      background-attachment: fixed;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      padding: 20px;
+      color: var(--text-dark);
+      height: auto;
+      display: block;
+      overflow-y: auto;
+    }
+
+    .onboarding-container {
+      max-width: 840px;
+      margin: 24px auto 40px auto;
+      padding: 26px 24px 22px 24px;
+      background: var(--card-bg);
+      border-radius: 20px;
+      box-shadow: 0 0 32px rgba(0, 0, 0, 0.6), inset 0 0 0 1px var(--border-color);
+      backdrop-filter: blur(20px);
+    }
+
+    .onboarding-container h1 {
+      text-align: center;
+      margin-bottom: 6px;
+      color: var(--text-medium);
+      font-size: 1.4rem;
+    }
+
+    .onboarding-container p {
+      text-align: center;
+      color: var(--text-light);
+      margin-bottom: 22px;
+      font-size: 0.9rem;
+    }
+
+    .form-section {
+      margin-bottom: 22px;
+      padding: 16px 16px 14px 16px;
+      background: rgba(15, 23, 42, 0.96);
+      border-radius: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+    }
+
+    .form-section h3 {
+      color: var(--text-medium);
+      margin-bottom: 12px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.5);
+      padding-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--text-light);
+      font-weight: 500;
+      font-size: 0.85rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      border-radius: 10px;
+      font-size: 0.9rem;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+      background: rgba(15, 23, 42, 0.98);
+      color: var(--text-medium);
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: var(--text-light);
+    }
+
+    .score-field {
+      display: none;
+    }
+
+    .score-field.visible {
+      display: block;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 1px var(--primary-color), 0 0 10px rgba(217, 70, 239, 0.4);
+    }
+
+    .form-group textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 6px;
+      box-shadow: 0 0 18px rgba(217, 70, 239, 0.7);
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-1px);
+      background: var(--primary-dark);
+    }
+
+    .error-message {
+      background: rgba(239, 68, 68, 0.08);
+      color: var(--danger-color);
+      padding: 10px 12px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      display: none;
+      border: 1px solid rgba(248, 113, 113, 0.7);
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 12px;
+      }
+
+      .onboarding-container {
+        padding: 20px 16px 18px 16px;
+        margin-top: 14px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Multi-step form styles */
+    .step {
+      display: none;
+    }
+
+    .step.active {
+      display: block;
+      animation: fadeIn 0.5s;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* Progress Bar */
+    .progress-container {
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .progressbar {
+      counter-reset: step;
+      display: flex;
+      justify-content: space-between;
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .progressbar::before {
+      content: '';
+      position: absolute;
+      top: 15px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: rgba(148, 163, 184, 0.3);
+      z-index: -1;
+    }
+
+    .progressbar li {
+      flex: 1;
+      text-align: center;
+      position: relative;
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
+
+    .progressbar li::before {
+      content: counter(step);
+      counter-increment: step;
+      width: 30px;
+      height: 30px;
+      line-height: 28px;
+      display: block;
+      margin: 0 auto 10px auto;
+      border-radius: 50%;
+      background: var(--card-bg);
+      border: 2px solid rgba(148, 163, 184, 0.5);
+      color: var(--text-light);
+      font-weight: 600;
+    }
+
+    .progressbar li.active {
+      color: var(--text-medium);
+    }
+
+    .progressbar li.active::before {
+      border-color: var(--primary-color);
+      background: var(--primary-color);
+      color: white;
+      box-shadow: 0 0 10px rgba(217, 70, 239, 0.4);
+    }
+
+    .progressbar li.completed::before {
+      content: '✓';
+      border-color: var(--primary-color);
+      background: var(--primary-color);
+      color: white;
+    }
+
+    /* Navigation Buttons */
+    .form-navigation {
+      overflow: auto;
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .btn-nav {
+      padding: 12px 24px;
+      border-radius: 999px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-prev {
+      background: rgba(148, 163, 184, 0.2);
+      color: var(--text-medium);
+    }
+
+    .btn-prev:hover {
+      background: rgba(148, 163, 184, 0.3);
+    }
+
+    .btn-next {
+      background: var(--primary-color);
+      color: white;
+      box-shadow: 0 0 15px rgba(217, 70, 239, 0.5);
+    }
+
+    .btn-next:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="onboarding-container">
+    <h1>Complete Your Profile</h1>
+  
+    <p>Help us understand your goals and background to provide personalized guidance</p>
+
+    <div class="progress-container">
+      <ul class="progressbar">
+        <li class="active">Academic</li>
+        <li>Study Goals</li>
+        <li>Budget</li>
+        <li>Exams</li>
+      </ul>
+    </div>
+
+    <div id="errorMessage" class="error-message"></div>
+
+    <form id="onboardingForm">
+      <!-- Academic Background -->
+      <div class="form-section">
+        <!-- Academic Background -->
+        <div class="form-section step">
+          <h3>📚 Academic Background</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="currentEducationLevel">Current Education Level *</label>
+              <select id="currentEducationLevel" name="currentEducationLevel" required>
+                <option value="">Select level</option>
+                <option value="High School">High School / Secondary</option>
+                <option value="Diploma">Diploma / Certificate</option>
+                <option value="Bachelor's">Bachelor's Degree</option>
+                <option value="Master's">Master's Degree</option>
+                <option value="PhD">PhD / Doctorate</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="major">Field of Study / Major *</label>
+              <select id="major" name="major" required>
+                <option value="">Select field</option>
+                <optgroup label="Engineering & Technology">
+                  <option value="Computer Science">Computer Science</option>
+                  <option value="Software Engineering">Software Engineering</option>
+                  <option value="Information Technology">Information Technology</option>
+                  <option value="Electrical Engineering">Electrical Engineering</option>
+                  <option value="Mechanical Engineering">Mechanical Engineering</option>
+                  <option value="Civil Engineering">Civil Engineering</option>
+                  <option value="Chemical Engineering">Chemical Engineering</option>
+                  <option value="Biomedical Engineering">Biomedical Engineering</option>
+                  <option value="Aerospace Engineering">Aerospace Engineering</option>
+                </optgroup>
+                <optgroup label="Business & Management">
+                  <option value="Business Administration">Business Administration</option>
+                  <option value="Finance">Finance</option>
+                  <option value="Accounting">Accounting</option>
+                  <option value="Marketing">Marketing</option>
+                  <option value="Management">Management</option>
+                  <option value="Economics">Economics</option>
+                  <option value="International Business">International Business</option>
+                </optgroup>
+                <optgroup label="Health & Medicine">
+                  <option value="Medicine">Medicine</option>
+                  <option value="Nursing">Nursing</option>
+                  <option value="Pharmacy">Pharmacy</option>
+                  <option value="Public Health">Public Health</option>
+                  <option value="Biomedical Sciences">Biomedical Sciences</option>
+                </optgroup>
+                <optgroup label="Sciences">
+                  <option value="Mathematics">Mathematics</option>
+                  <option value="Physics">Physics</option>
+                  <option value="Chemistry">Chemistry</option>
+                  <option value="Biology">Biology</option>
+                  <option value="Environmental Science">Environmental Science</option>
+                  <option value="Data Science">Data Science</option>
+                </optgroup>
+                <optgroup label="Arts & Humanities">
+                  <option value="English Literature">English Literature</option>
+                  <option value="History">History</option>
+                  <option value="Philosophy">Philosophy</option>
+                  <option value="Languages">Languages</option>
+                  <option value="Fine Arts">Fine Arts</option>
+                </optgroup>
+                <optgroup label="Social Sciences">
+                  <option value="Psychology">Psychology</option>
+                  <option value="Sociology">Sociology</option>
+                  <option value="Political Science">Political Science</option>
+                  <option value="International Relations">International Relations</option>
+                  <option value="Social Work">Social Work</option>
+                </optgroup>
+                <optgroup label="Other">
+                  <option value="Law">Law</option>
+                  <option value="Education">Education</option>
+                  <option value="Architecture">Architecture</option>
+                  <option value="Design">Design</option>
+                  <option value="Media & Communication">Media & Communication</option>
+                  <option value="Other">Other (specify in field of study)</option>
+                </optgroup>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="graduationYear">Graduation Year</label>
+              <input type="number" id="graduationYear" name="graduationYear" min="2020" max="2030" placeholder="2025">
+            </div>
+            <div class="form-group">
+              <label for="gpa">GPA / Percentage</label>
+              <input type="text" id="gpa" name="gpa" placeholder="e.g., 3.5 or 85%">
+            </div>
+          </div>
+        </div>
+
+        <!-- Study Goals -->
+        <div class="form-section">
+          <!-- Study Goals -->
+          <div class="form-section step">
+            <h3>🎯 Study Goals</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="intendedDegree">Intended Degree *</label>
+                <select id="intendedDegree" name="intendedDegree" required>
+                  <option value="">Select degree</option>
+                  <option value="Bachelor's">Bachelor's</option>
+                  <option value="Master's">Master's</option>
+                  <option value="MBA">MBA</option>
+                  <option value="PhD">PhD</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="fieldOfStudy">Specific Field / Specialization *</label>
+                <select id="fieldOfStudy" name="fieldOfStudy" required>
+                  <option value="">Select specialization</option>
+                  <optgroup label="Engineering & Technology">
+                    <option value="Computer Science">Computer Science</option>
+                    <option value="Software Engineering">Software Engineering</option>
+                    <option value="Information Technology">Information Technology</option>
+                    <option value="Electrical Engineering">Electrical Engineering</option>
+                    <option value="Mechanical Engineering">Mechanical Engineering</option>
+                    <option value="Civil Engineering">Civil Engineering</option>
+                    <option value="Chemical Engineering">Chemical Engineering</option>
+                    <option value="Biomedical Engineering">Biomedical Engineering</option>
+                    <option value="Aerospace Engineering">Aerospace Engineering</option>
+                  </optgroup>
+                  <optgroup label="Business & Management">
+                    <option value="Business Administration">Business Administration</option>
+                    <option value="Finance">Finance</option>
+                    <option value="Accounting">Accounting</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Management">Management</option>
+                    <option value="Economics">Economics</option>
+                    <option value="International Business">International Business</option>
+                  </optgroup>
+                  <optgroup label="Health & Medicine">
+                    <option value="Medicine">Medicine</option>
+                    <option value="Nursing">Nursing</option>
+                    <option value="Pharmacy">Pharmacy</option>
+                    <option value="Public Health">Public Health</option>
+                    <option value="Biomedical Sciences">Biomedical Sciences</option>
+                  </optgroup>
+                  <optgroup label="Sciences">
+                    <option value="Mathematics">Mathematics</option>
+                    <option value="Physics">Physics</option>
+                    <option value="Chemistry">Chemistry</option>
+                    <option value="Biology">Biology</option>
+                    <option value="Environmental Science">Environmental Science</option>
+                    <option value="Data Science">Data Science</option>
+                  </optgroup>
+                  <optgroup label="Arts & Humanities">
+                    <option value="English Literature">English Literature</option>
+                    <option value="History">History</option>
+                    <option value="Philosophy">Philosophy</option>
+                    <option value="Languages">Languages</option>
+                    <option value="Fine Arts">Fine Arts</option>
+                  </optgroup>
+                  <optgroup label="Social Sciences">
+                    <option value="Psychology">Psychology</option>
+                    <option value="Sociology">Sociology</option>
+                    <option value="Political Science">Political Science</option>
+                    <option value="International Relations">International Relations</option>
+                    <option value="Social Work">Social Work</option>
+                  </optgroup>
+                  <optgroup label="Other">
+                    <option value="Law">Law</option>
+                    <option value="Education">Education</option>
+                    <option value="Architecture">Architecture</option>
+                    <option value="Design">Design</option>
+                    <option value="Media & Communication">Media & Communication</option>
+                    <option value="Other">Other (specify in field of study)</option>
+                  </optgroup>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="targetIntakeYear">Target Intake Year *</label>
+                <input type="number" id="targetIntakeYear" name="targetIntakeYear" required min="2025" max="2030"
+                  placeholder="2025">
+              </div>
+              <div class="form-group">
+                <label for="preferredCountries">Preferred Countries *</label>
+                <select id="preferredCountries" name="preferredCountries" multiple required>
+                  <!-- Countries will be loaded dynamically -->
+                </select>
+                <small style="color: #7f8c8d;">Search and select multiple countries</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Budget -->
+          <div class="form-section">
+            <!-- Budget -->
+            <div class="form-section step">
+              <h3>💰 Budget</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="budgetRange">Budget Range (per year) *</label>
+                  <select id="budgetRange" name="budgetRange" required>
+                    <option value="">Select range</option>
+                    <option value="< $10,000">&lt; $10,000</option>
+                    <option value="$10,000 - $30,000">$10,000 - $30,000</option>
+                    <option value="$30,000 - $50,000">$30,000 - $50,000</option>
+                    <option value="$50,000 - $100,000">$50,000 - $100,000</option>
+                    <option value="> $100,000">&gt; $100,000</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="fundingPlan">Funding Plan *</label>
+                  <select id="fundingPlan" name="fundingPlan" required>
+                    <option value="">Select plan</option>
+                    <option value="Self-funded">Self-funded</option>
+                    <option value="Scholarship-dependent">Scholarship-dependent</option>
+                    <option value="Loan-dependent">Loan-dependent</option>
+                    <option value="Mixed">Mixed</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Exams & Readiness -->
+            <div class="form-section">
+              <!-- Exams & Readiness -->
+              <div class="form-section step">
+                <h3>📑 Exams & Readiness</h3>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="ieltsStatus">IELTS Status</label>
+                    <select id="ieltsStatus" name="ieltsStatus">
+                      <option value="Not started">Not started</option>
+                      <option value="In progress">In progress</option>
+                      <option value="Completed">Completed</option>
+                    </select>
+                  </div>
+                  <div class="form-group score-field" id="ieltsScoreField">
+                    <label for="ieltsScore">IELTS Score</label>
+                    <input type="number" id="ieltsScore" name="ieltsScore" step="0.5" min="0" max="9"
+                      placeholder="e.g., 7.5">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="toeflStatus">TOEFL Status</label>
+                    <select id="toeflStatus" name="toeflStatus">
+                      <option value="Not started">Not started</option>
+                      <option value="In progress">In progress</option>
+                      <option value="Completed">Completed</option>
+                    </select>
+                  </div>
+                  <div class="form-group score-field" id="toeflScoreField">
+                    <label for="toeflScore">TOEFL Score</label>
+                    <input type="number" id="toeflScore" name="toeflScore" min="0" max="120" placeholder="e.g., 100">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="greStatus">GRE Status</label>
+                    <select id="greStatus" name="greStatus">
+                      <option value="Not started">Not started</option>
+                      <option value="In progress">In progress</option>
+                      <option value="Completed">Completed</option>
+                    </select>
+                  </div>
+                  <div class="form-group score-field" id="greScoreField">
+                    <label for="greScore">GRE Score</label>
+                    <input type="number" id="greScore" name="greScore" min="260" max="340" placeholder="e.g., 320">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="sopStatus">SOP Status</label>
+                  <select id="sopStatus" name="sopStatus">
+                    <option value="Not started">Not started</option>
+                    <option value="Draft">Draft</option>
+                    <option value="Ready">Ready</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-navigation">
+                <button type="button" id="prevBtn" class="btn-nav btn-prev" onclick="nextPrev(-1)">Previous</button>
+                <button type="button" id="nextBtn" class="btn-nav btn-next" onclick="nextPrev(1)">Next</button>
+              </div>
+    </form>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+  <script>
+    if (!requireAuth()) {
+      // Redirect handled by requireAuth
+    }
+
+    // Initialize Choices.js for countries dropdown
+
+    let countriesChoices;
+    async function loadCountries() {
+      // Static list of top 15 study abroad countries
+      const countries = [
+        'United States', 'United Kingdom', 'Canada', 'Australia', 'Germany',
+        'France', 'Netherlands', 'Sweden', 'Switzerland', 'Singapore',
+        'Japan', 'South Korea', 'New Zealand', 'Ireland', 'Italy'
+      ].sort();
+
+      const countriesSelect = document.getElementById('preferredCountries');
+
+      // Clear existing options
+      countriesSelect.innerHTML = '';
+
+      countries.forEach(country => {
+        const option = document.createElement('option');
+        option.value = country;
+        option.textContent = country;
+        countriesSelect.appendChild(option);
+      });
+
+      // Initialize Choices.js
+      countriesChoices = new Choices('#preferredCountries', {
+        searchEnabled: true,
+        removeItemButton: true,
+        placeholder: true,
+        placeholderValue: 'Select countries...',
+        searchPlaceholderValue: 'Type to search...',
+        noResultsText: 'No results found',
+        noChoicesText: 'No more countries',
+        itemSelectText: 'Press to select'
+      });
+    }
+
+
+    // Show/hide score fields based on exam status
+    function toggleScoreFields() {
+      const exams = [
+        { statusId: 'ieltsStatus', scoreFieldId: 'ieltsScoreField' },
+        { statusId: 'toeflStatus', scoreFieldId: 'toeflScoreField' },
+        { statusId: 'greStatus', scoreFieldId: 'greScoreField' }
+      ];
+
+      exams.forEach(exam => {
+        const statusSelect = document.getElementById(exam.statusId);
+        const scoreField = document.getElementById(exam.scoreFieldId);
+
+        if (statusSelect && scoreField) {
+          // Function to update visibility
+          const updateVisibility = () => {
+            const status = statusSelect.value;
+            if (status === 'In progress' || status === 'Completed') {
+              scoreField.classList.add('visible');
+            } else {
+              scoreField.classList.remove('visible');
+              // Clear score if hidden
+              const scoreInput = scoreField.querySelector('input');
+              if (scoreInput) scoreInput.value = '';
+            }
+          };
+
+          // Set initial visibility
+          updateVisibility();
+
+          // Listen for changes
+          statusSelect.addEventListener('change', updateVisibility);
+        }
+      });
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      loadCountries();
+      toggleScoreFields();
+      showStep(currentStep); // Initialize first step
+    });
+
+    // Multi-step Form Logic
+    let currentStep = 0; // Current step index (0-based)
+
+    function showStep(n) {
+      const steps = document.getElementsByClassName("step");
+
+      // Safety check
+      if (n >= steps.length) n = steps.length - 1;
+      if (n < 0) n = 0;
+
+      // Hide all steps
+      for (let i = 0; i < steps.length; i++) {
+        steps[i].classList.remove("active");
+      }
+
+      // Show current step
+      steps[n].classList.add("active");
+
+      // Handle buttons
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+
+      if (n === 0) {
+        prevBtn.style.visibility = "hidden";
+      } else {
+        prevBtn.style.visibility = "visible";
+      }
+
+      if (n === steps.length - 1) {
+        nextBtn.innerHTML = "Complete Onboarding";
+      } else {
+        nextBtn.innerHTML = "Next";
+      }
+
+      // Update progress bar
+      updateProgressBar(n);
+    }
+
+    function updateProgressBar(n) {
+      const progressItems = document.querySelectorAll(".progressbar li");
+      progressItems.forEach((item, index) => {
+        item.classList.remove("active", "completed");
+        if (index < n) {
+          item.classList.add("completed");
+        } else if (index === n) {
+          item.classList.add("active");
+        }
+      });
+    }
+
+    function nextPrev(n) {
+      const steps = document.getElementsByClassName("step");
+
+      // If moving forward, validate
+      if (n === 1 && !validateForm()) return false;
+
+      // If valid or moving back
+      const nextStep = currentStep + n;
+
+      if (nextStep >= steps.length) {
+        // Submit form
+        document.getElementById("onboardingForm").requestSubmit();
+        return false;
+      }
+
+      currentStep = nextStep;
+      showStep(currentStep);
+    }
+
+    function validateForm() {
+      const steps = document.getElementsByClassName("step");
+      const currentStepElement = steps[currentStep];
+      const inputs = currentStepElement.querySelectorAll("input, select");
+      let valid = true;
+      let firstInvalid = null;
+
+      // Reset previous errors
+      const errorDiv = document.getElementById("errorMessage");
+      errorDiv.style.display = "none";
+
+      // Specific validation for countries choice which is a custom UI
+      if (currentStep === 1) { // Study Goals step (index 1) which has countries
+        // Check if countries field is visible and required
+        // Note: Choices.js hides the original select, so standard validation might fail or be tricky
+        const preferredCountries = document.getElementById('preferredCountries');
+        if (preferredCountries && preferredCountries.hasAttribute('required')) {
+          const val = countriesChoices ? countriesChoices.getValue(true) : preferredCountries.value;
+          if (!val || (Array.isArray(val) && val.length === 0)) {
+            valid = false;
+            if (!firstInvalid) firstInvalid = preferredCountries.parentElement; // box around it
+            // Show visual error
+          }
+        }
+      }
+
+      for (let i = 0; i < inputs.length; i++) {
+        const input = inputs[i];
+
+        // Skip hidden inputs (like score fields when not visible)
+        if (input.offsetParent === null) continue;
+
+        // Check standard validity
+        if (!input.checkValidity()) {
+          input.classList.add("invalid");
+          valid = false;
+          if (!firstInvalid) firstInvalid = input;
+        } else {
+          input.classList.remove("invalid");
+        }
+      }
+
+      if (!valid) {
+        errorDiv.textContent = "Please fill in all required fields.";
+        errorDiv.style.display = "block";
+        if (firstInvalid) firstInvalid.focus();
+      }
+
+      return valid;
+    }
+
+    document.getElementById('onboardingForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const errorDiv = document.getElementById('errorMessage');
+      errorDiv.style.display = 'none';
+
+      const formData = new FormData(e.target);
+      const data = {};
+
+      // Convert FormData to object
+      for (const [key, value] of formData.entries()) {
+        if (key === 'preferredCountries') {
+          if (!data[key]) data[key] = [];
+          data[key].push(value);
+        } else {
+          data[key] = value;
+        }
+      }
+
+      // Handle multiple select (using Choices.js values)
+      if (countriesChoices) {
+        data.preferredCountries = countriesChoices.getValue(true);
+      } else {
+        const countriesSelect = document.getElementById('preferredCountries');
+        data.preferredCountries = Array.from(countriesSelect.selectedOptions).map(opt => opt.value);
+      }
+
+      // Add major to data if selected
+      const major = document.getElementById('major').value;
+      if (major) {
+        data.major = major;
+      }
+
+      try {
+        const response = await apiRequest('/profiles', {
+          method: 'POST',
+          body: JSON.stringify(data)
+        });
+
+        // Update user in localStorage
+        const user = getCurrentUser();
+        if (user) {
+          user.onboardingCompleted = true;
+          setCurrentUser(user);
+        }
+
+        window.location.href = 'dashboard.html';
+      } catch (error) {
+        errorDiv.textContent = error.message;
+        errorDiv.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+
+</html>

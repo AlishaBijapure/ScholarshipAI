@@ -1,0 +1,5 @@
+# Secret environment variables
+backend/.env
+
+# Downloaded packages
+backend/node_modules/

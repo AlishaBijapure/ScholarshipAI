@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Universities - AI Counsellor</title>
+  <link rel="stylesheet" href="css/counsellor.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    html {
+      background: var(--bg-gradient);
+      background-attachment: fixed;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      padding: 20px;
+      color: var(--text-dark);
+      height: auto;
+      display: block;
+      overflow-y: auto;
+    }
+
+    .universities-container {
+      max-width: 1200px;
+      margin: 20px auto 40px auto;
+    }
+
+    .page-header {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border-radius: 18px;
+      padding: 22px 24px 18px 24px;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.5), inset 0 0 0 1px var(--border-color);
+      margin-bottom: 22px;
+    }
+
+    .page-header h1 {
+      margin: 0 0 6px 0;
+      font-size: 1.3rem;
+      color: var(--text-medium);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .page-header h1 i {
+      color: var(--primary-color);
+    }
+
+    .page-header p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+
+    .filters {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+      position: relative;
+      z-index: 100;
+    }
+
+    .choices {
+      margin-bottom: 0;
+    }
+
+    .choices__content {
+      z-index: 100 !important;
+    }
+
+    .page-header {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border-radius: 18px;
+      padding: 22px 24px 18px 24px;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.5), inset 0 0 0 1px var(--border-color);
+      margin-bottom: 22px;
+      z-index: 50;
+      position: relative;
+    }
+
+    .filters select,
+    .filters input {
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-medium);
+      font-size: 0.85rem;
+      outline: none;
+      min-width: 150px;
+    }
+
+    .filters input::placeholder {
+      color: var(--text-light);
+    }
+
+    .universities-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 18px;
+    }
+
+    .university-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border-radius: 16px;
+      padding: 18px 18px 16px 18px;
+      box-shadow: 0 0 22px rgba(0, 0, 0, 0.5), inset 0 0 0 1px var(--border-color);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      border-left: 3px solid rgba(148, 163, 184, 0.4);
+    }
+
+    .university-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 28px rgba(0, 0, 0, 0.7);
+    }
+
+    .university-card.dream {
+      border-left-color: var(--danger-color);
+    }
+
+    .university-card.target {
+      border-left-color: var(--accent-cyan);
+    }
+
+    .university-card.safe {
+      border-left-color: var(--success-color);
+    }
+
+    .university-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+      gap: 8px;
+    }
+
+    .university-name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 4px;
+    }
+
+    .university-location {
+      font-size: 0.8rem;
+      color: var(--text-light);
+    }
+
+    .category-badge {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      color: var(--text-medium);
+      white-space: nowrap;
+    }
+
+    .category-badge.dream {
+      border-color: var(--danger-color);
+      color: var(--danger-color);
+    }
+
+    .category-badge.target {
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+    }
+
+    .category-badge.safe {
+      border-color: var(--success-color);
+      color: var(--success-color);
+    }
+
+    .university-info {
+      margin: 10px 0 6px 0;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+      font-size: 0.8rem;
+      color: var(--text-medium);
+    }
+
+    .info-item i {
+      color: var(--accent-cyan);
+      font-size: 0.75rem;
+    }
+
+    .university-description {
+      color: var(--text-light);
+      font-size: 0.8rem;
+      margin: 8px 0 10px 0;
+      line-height: 1.6;
+    }
+
+    .university-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-action {
+      flex: 1;
+      min-width: 120px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: none;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-action i {
+      font-size: 0.8rem;
+    }
+
+    .btn-action:hover {
+      transform: translateY(-1px);
+      opacity: 0.95;
+    }
+
+    .btn-shortlist {
+      background: var(--accent-cyan);
+      color: #0b1120;
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.6);
+    }
+
+    .btn-lock {
+      background: var(--success-color);
+      color: #020617;
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.6);
+    }
+
+    .btn-locked {
+      background: rgba(148, 163, 184, 0.4);
+      color: var(--text-dark);
+      cursor: not-allowed;
+    }
+
+    .btn-unlock {
+      background: var(--primary-color);
+      color: #020617;
+      box-shadow: 0 0 10px rgba(217, 70, 239, 0.6);
+    }
+
+    .btn-remove {
+      background: var(--danger-color);
+      color: #020617;
+      box-shadow: 0 0 10px rgba(248, 113, 113, 0.6);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+      background: rgba(15, 23, 42, 0.9);
+      padding: 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      width: fit-content;
+    }
+
+    .tab {
+      padding: 8px 16px;
+      border: none;
+      background: transparent;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.85rem;
+      color: var(--text-light);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .tab.active {
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--primary-color);
+      box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      background: var(--card-bg);
+      border-radius: 16px;
+      color: var(--text-light);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5), inset 0 0 0 1px var(--border-color);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 12px;
+      }
+
+      .universities-container {
+        margin-top: 12px;
+      }
+
+      .page-header {
+        padding: 18px 16px 14px 16px;
+      }
+    }
+
+    /* Category Filters */
+    .category-filters {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .cat-filter {
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: rgba(15, 23, 42, 0.6);
+      color: var(--text-light);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .cat-filter:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .cat-filter.dream {
+      border-color: rgba(248, 113, 113, 0.5);
+      color: var(--danger-color);
+    }
+
+    .cat-filter.dream.active {
+      background: var(--danger-color);
+      color: #000;
+      box-shadow: 0 0 10px rgba(248, 113, 113, 0.6);
+    }
+
+    .cat-filter.target {
+      border-color: rgba(6, 182, 212, 0.5);
+      color: var(--accent-cyan);
+    }
+
+    .cat-filter.target.active {
+      background: var(--accent-cyan);
+      color: #000;
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.6);
+    }
+
+    .cat-filter.safe {
+      border-color: rgba(34, 197, 94, 0.5);
+      color: var(--success-color);
+    }
+
+    .cat-filter.safe.active {
+      background: var(--success-color);
+      color: #000;
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.6);
+    }
+
+    /* Pagination Styles */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin-top: 30px;
+      padding-bottom: 20px;
+    }
+
+    .btn-page {
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      color: var(--text-medium);
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .btn-page:hover:not(:disabled) {
+      background: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
+
+    .btn-page:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .page-info {
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="logo">AI Counsellor</div>
+    <div class="burger-menu" id="burger-menu">
+      <i class="fas fa-bars"></i>
+    </div>
+    <ul class="nav-links">
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="counsellor.html">AI Counsellor</a></li>
+      <li><a href="universities.html">Universities</a></li>
+      <li><a href="profile.html">Profile</a></li>
+      <li><a href="#" onclick="logout(); return false;">Logout</a></li>
+    </ul>
+  </nav>
+
+  <div class="universities-container">
+    <div class="page-header">
+      <h1><i class="fas fa-university"></i> Discover Universities</h1>
+      <p>Browse all universities and manage your saved and locked choices.</p>
+
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('all')">All Universities</button>
+        <button class="tab" onclick="switchTab('my')">My Universities</button>
+      </div>
+
+      <div class="category-filters">
+        <button class="cat-filter dream" onclick="toggleCategory('Dream')">Dream</button>
+        <button class="cat-filter target" onclick="toggleCategory('Target')">Target</button>
+        <button class="cat-filter safe" onclick="toggleCategory('Safe')">Safe</button>
+      </div>
+
+      <div class="filters" id="filters" style="display: none;">
+        <div style="flex: 1; min-width: 200px;">
+          <select id="countryFilter">
+            <option value="">All Countries</option>
+          </select>
+        </div>
+        <input type="text" id="searchFilter" placeholder="Search universities...">
+      </div>
+    </div>
+
+    <div class="universities-grid" id="universitiesGrid">
+      <div class="empty-state">
+        <i class="fas fa-spinner fa-spin" style="font-size: 48px; margin-bottom: 20px;"></i>
+        <p>Loading universities...</p>
+      </div>
+    </div>
+
+    <div class="pagination" id="pagination" style="display: none;">
+      <button class="btn-page" id="prevPage" onclick="changePage(-1)">Previous</button>
+      <span class="page-info" id="pageInfo">Page 1 of 1</span>
+      <button class="btn-page" id="nextPage" onclick="changePage(1)">Next</button>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+  <script>
+    if (!requireAuth()) {
+      // Redirect handled
+    }
+
+    let currentTab = 'all';
+    let allUniversities = [];
+    let myUniversities = [];
+    let countryChoices;
+
+    // Filter & Pagination state
+    let currentPage = 1;
+    const itemsPerPage = 12;
+    let selectedCategory = null;
+
+    async function switchTab(tab) {
+      currentTab = tab;
+      currentPage = 1;
+      selectedCategory = null; // Reset filters
+      updateFilterButtons();
+
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      if (event && event.target) {
+        event.target.classList.add('active');
+      }
+
+      const filters = document.getElementById('filters');
+      if (tab === 'all') {
+        filters.style.display = 'flex';
+        await loadAllUniversities();
+      } else if (tab === 'my') {
+        filters.style.display = 'none';
+        await loadMyUniversities();
+      }
+    }
+
+    function toggleCategory(category) {
+      if (selectedCategory === category) {
+        selectedCategory = null; // Toggle off
+      } else {
+        selectedCategory = category;
+      }
+      currentPage = 1; // Reset to first page
+      updateFilterButtons();
+
+      if (currentTab === 'all') {
+        displayUniversities(allUniversities);
+      } else {
+        displayMyUniversities(myUniversities);
+      }
+    }
+
+    function updateFilterButtons() {
+      document.querySelectorAll('.cat-filter').forEach(btn => {
+        btn.classList.remove('active');
+        // Case insensitive Check if needed, but here we pass Title Case strings
+        if (selectedCategory && btn.textContent === selectedCategory) {
+          btn.classList.add('active');
+        }
+      });
+    }
+
+    async function loadAllUniversities() {
+      try {
+        const params = new URLSearchParams();
+        const country = document.getElementById('countryFilter')?.value;
+        const search = document.getElementById('searchFilter')?.value;
+
+        if (country) params.append('country', country);
+        if (country && country !== 'All Countries') params.append('country', country);
+        if (search) params.append('search', search);
+
+        const universities = await apiRequest(`/universities?${params.toString()}`);
+        allUniversities = universities;
+        displayUniversities(universities);
+      } catch (error) {
+        console.error('Error loading universities:', error);
+        showError('Failed to load universities.');
+      }
+    }
+
+    async function loadMyUniversities() {
+      try {
+        const response = await apiRequest('/universities/my-universities');
+        myUniversities = response;
+        displayMyUniversities(response);
+      } catch (error) {
+        console.error('Error loading my universities:', error);
+        showError('Failed to load your universities.');
+      }
+    }
+
+    function displayUniversities(universities) {
+      const grid = document.getElementById('universitiesGrid');
+
+      // Filter first
+      let filtered = universities;
+      if (selectedCategory) {
+        filtered = universities.filter(u => (u.category || 'Target').toLowerCase() === selectedCategory.toLowerCase());
+      }
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div class="empty-state"><i class="fas fa-university" style="font-size: 48px; margin-bottom: 20px;"></i><p>No universities found.</p></div>';
+        document.getElementById('pagination').style.display = 'none';
+        return;
+      }
+
+      // Pagination Logic
+      const totalPages = Math.ceil(filtered.length / itemsPerPage);
+      const start = (currentPage - 1) * itemsPerPage;
+      const end = start + itemsPerPage;
+      const paginatedItems = filtered.slice(start, end);
+
+      grid.innerHTML = '';
+      paginatedItems.forEach(uni => {
+        const card = createUniversityCard(uni);
+        grid.appendChild(card);
+      });
+
+      renderPagination(filtered.length);
+    }
+
+    function renderPagination(totalItems) {
+      const pagination = document.getElementById('pagination');
+      if (totalItems <= itemsPerPage) {
+        pagination.style.display = 'none';
+        return;
+      }
+
+      pagination.style.display = 'flex';
+      const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+      const prevBtn = document.getElementById('prevPage');
+      const nextBtn = document.getElementById('nextPage');
+      const pageInfo = document.getElementById('pageInfo');
+
+      prevBtn.disabled = currentPage === 1;
+      nextBtn.disabled = currentPage === totalPages;
+
+      pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+    }
+
+    function changePage(step) {
+      let data = currentTab === 'all' ? allUniversities : myUniversities;
+
+      // Apply filter before calculating pages
+      if (selectedCategory) {
+        data = data.filter(u => {
+          return (u.category || 'Target').toLowerCase() === selectedCategory.toLowerCase();
+        });
+      }
+
+      const totalPages = Math.ceil(data.length / itemsPerPage);
+
+      const newPage = currentPage + step;
+      if (newPage >= 1 && newPage <= totalPages) {
+        currentPage = newPage;
+        if (currentTab === 'all') {
+          displayUniversities(allUniversities);
+        } else {
+          displayMyUniversities(myUniversities);
+        }
+        // Scroll to top of grid
+        document.querySelector('.filters').scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    function displayMyUniversities(userUniversities) {
+      const grid = document.getElementById('universitiesGrid');
+
+      let filtered = userUniversities;
+      if (selectedCategory) {
+        filtered = userUniversities.filter(item => (item.category || 'Target').toLowerCase() === selectedCategory.toLowerCase());
+      }
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div class="empty-state"><i class="fas fa-bookmark" style="font-size: 48px; margin-bottom: 20px;"></i><p>No ' + (selectedCategory || '') + ' saved universities found.</p></div>';
+        document.getElementById('pagination').style.display = 'none';
+        return;
+      }
+
+      // Pagination Logic for My Universities
+      const totalPages = Math.ceil(filtered.length / itemsPerPage);
+      const start = (currentPage - 1) * itemsPerPage;
+      const end = start + itemsPerPage;
+      const paginatedItems = filtered.slice(start, end);
+
+      grid.innerHTML = '';
+      paginatedItems.forEach(item => {
+        const uni = item.universityId;
+        const card = createUniversityCard(uni, item.status, item.category);
+        grid.appendChild(card);
+      });
+
+      renderPagination(filtered.length);
+    }
+
+    function createUniversityCard(uni, status = null, category = null) {
+      const card = document.createElement('div');
+
+      // Determine category with fallback
+      const rawCategory = category || uni.category || 'Target';
+      const actualCategory = rawCategory.charAt(0).toUpperCase() + rawCategory.slice(1).toLowerCase(); // Normalize Capitalization
+
+      card.className = `university-card ${actualCategory.toLowerCase()}`;
+      card.style.cursor = 'pointer';
+
+      // Navigate to details page on click
+      card.onclick = (e) => {
+        // Prevent navigation if clicking action buttons
+        if (e.target.closest('.university-actions') || e.target.closest('.btn-action')) return;
+        window.location.href = `university-info.html?id=${uni._id}`;
+      };
+
+      card.innerHTML = `
+        <div class="university-header">
+          <div>
+            <div class="university-name">${uni.name}</div>
+            <div class="university-location"><i class="fas fa-map-marker-alt"></i> ${uni.city}, ${uni.country}</div>
+          </div>
+          <div class="category-badge ${actualCategory.toLowerCase()}">${actualCategory}</div>
+        </div>
+        
+        <div class="university-description">${uni.description}</div>
+        
+        <div class="university-info">
+          ${uni.ranking ? `<div class="info-item"><i class="fas fa-trophy"></i> Ranking: #${uni.ranking}</div>` : ''}
+          ${uni.tuitionFee ? `<div class="info-item"><i class="fas fa-dollar-sign"></i> Tuition: ${uni.tuitionFee.currency} ${uni.tuitionFee.min.toLocaleString()}${uni.tuitionFee.max !== uni.tuitionFee.min ? ' - ' + uni.tuitionFee.max.toLocaleString() : ''}</div>` : ''}
+          ${uni.acceptanceRate ? `<div class="info-item"><i class="fas fa-percentage"></i> Acceptance Rate: ${uni.acceptanceRate}%</div>` : ''}
+          <div class="info-item"><i class="fas fa-graduation-cap"></i> ${uni.degreeLevels.join(', ')}</div>
+        </div>
+        
+        <div class="university-actions" id="actions-${uni._id}">
+          ${getActionButtons(uni._id, status)}
+        </div>
+      `;
+
+      return card;
+    }
+
+    function getActionButtons(uniId, status) {
+      if (status === 'locked') {
+        return `
+          <button class="btn-action btn-locked" disabled><i class="fas fa-lock"></i> Locked</button>
+        `;
+      } else if (status === 'shortlisted') {
+        return `
+          <button class="btn-action btn-remove" onclick="removeShortlist('${uniId}')"><i class="fas fa-times"></i> Remove</button>
+        `;
+      } else {
+        return `<button class="btn-action btn-shortlist" onclick="shortlistUniversity('${uniId}')"><i class="fas fa-bookmark"></i> Save University</button>`;
+      }
+    }
+
+    async function shortlistUniversity(uniId) {
+      try {
+        await apiRequest(`/universities/${uniId}/shortlist`, { method: 'POST' });
+        alert('University saved successfully!');
+        if (currentTab === 'my') {
+          await loadMyUniversities();
+        } else {
+          await loadAllUniversities();
+        }
+      } catch (error) {
+        alert(error.message || 'Failed to save university.');
+      }
+    }
+
+    async function lockUniversity(uniId) {
+      if (!confirm('Are you sure you want to lock this university? This will unlock application guidance.')) {
+        return;
+      }
+      try {
+        await apiRequest(`/universities/${uniId}/lock`, { method: 'POST' });
+        alert('University locked successfully! Application guidance is now available.');
+        if (currentTab === 'my') {
+          await loadMyUniversities();
+        } else {
+          await loadAllUniversities();
+        }
+      } catch (error) {
+        alert(error.message || 'Failed to lock university.');
+      }
+    }
+
+    async function removeShortlist(uniId) {
+      try {
+        await apiRequest(`/universities/${uniId}/shortlist`, { method: 'DELETE' });
+        alert('University removed from saved list.');
+        await loadMyUniversities();
+      } catch (error) {
+        alert(error.message || 'Failed to remove from shortlist.');
+      }
+    }
+
+    async function unlockUniversity(uniId) {
+      const msg = 'Unlocking removes your commitment. Application guidance may be affected. Continue?';
+      if (!confirm(msg)) return;
+      try {
+        await apiRequest(`/universities/${uniId}/unlock`, { method: 'POST' });
+        alert('University unlocked. It remains in your shortlist.');
+        await loadMyUniversities();
+      } catch (error) {
+        alert(error.message || 'Failed to unlock.');
+      }
+    }
+
+    function showError(message) {
+      const grid = document.getElementById('universitiesGrid');
+      grid.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 20px;"></i><p>${message}</p></div>`;
+    }
+
+    // Filter event listeners
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadCountries();
+
+      const countryFilter = document.getElementById('countryFilter');
+      const searchFilter = document.getElementById('searchFilter');
+
+      if (countryFilter) {
+        countryFilter.addEventListener('change', loadAllUniversities);
+      }
+      if (searchFilter) {
+        searchFilter.addEventListener('input', debounce(loadAllUniversities, 500));
+      }
+
+      // Default view: All universities
+      const allTab = document.querySelector('.tab');
+      if (allTab) {
+        allTab.classList.add('active');
+        // Ensure filters are visible for default tab
+        const filters = document.getElementById('filters');
+        if (filters) filters.style.display = 'flex';
+      }
+      loadAllUniversities();
+    });
+
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+
+    async function loadCountries() {
+      try {
+        // Fetch countries from our backend (only those with universities)
+        const countries = await apiRequest('/universities/countries');
+
+        const countriesSelect = document.getElementById('countryFilter');
+        countriesSelect.innerHTML = '<option value="">All Countries</option>'; // Reset
+
+        countries.forEach(country => {
+          const option = document.createElement('option');
+          option.value = country;
+          option.textContent = country;
+          countriesSelect.appendChild(option);
+        });
+
+        // Initialize Choices.js
+        countryChoices = new Choices('#countryFilter', {
+          searchEnabled: true,
+          removeItemButton: true,
+          placeholder: true,
+          placeholderValue: 'All Countries',
+          searchPlaceholderValue: 'Type to search countries...',
+          noResultsText: 'No countries found',
+          noChoicesText: 'No more countries',
+          itemSelectText: 'Press to select',
+        });
+
+      } catch (error) {
+        console.error('Error loading countries:', error);
+        // Fallback no longer needed as we rely on backend, but good to have empty state
+        const countriesSelect = document.getElementById('countryFilter');
+        // If apiRequest fails, we might not have auth token or server is down.
+        // Just leave it as "All Countries"
+
+        // Initialize Choices even on error so UI doesn't break
+        countryChoices = new Choices('#countryFilter', {
+          searchEnabled: true,
+          placeholder: true,
+          placeholderValue: 'All Countries'
+        });
+      }
+    }
+  </script>
+  <script src="js/navbar.js"></script>
+</body>
+
+</html>

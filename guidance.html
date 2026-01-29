@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Application Guidance - AI Counsellor</title>
+  <link rel="stylesheet" href="css/counsellor.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    html {
+      background: var(--bg-gradient);
+      background-attachment: fixed;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      padding: 20px;
+      color: var(--text-dark);
+      height: auto;
+      display: block;
+      overflow-y: auto;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 20px auto 40px auto;
+    }
+
+    .header-section {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      padding: 22px 24px 18px 24px;
+      border-radius: 18px;
+      margin-bottom: 22px;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.5), inset 0 0 0 1px var(--border-color);
+    }
+
+    .header-section h1 {
+      color: var(--text-medium);
+      margin-bottom: 8px;
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-section h1 i {
+      color: var(--primary-color);
+    }
+
+    .header-section p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+    @media (max-width: 768px) {
+      .grid-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      padding: 20px 18px 16px 18px;
+      border-radius: 16px;
+      box-shadow: 0 0 22px rgba(0, 0, 0, 0.6), inset 0 0 0 1px var(--border-color);
+      height: 100%;
+    }
+
+    .card h3 {
+      color: var(--text-medium);
+      margin-bottom: 14px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.4);
+      padding-bottom: 8px;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card h3 i {
+      color: var(--accent-cyan);
+    }
+
+    .doc-list, .timeline-list {
+      list-style: none;
+    }
+
+    .doc-item {
+      display: flex;
+      align-items: center;
+      padding: 8px 10px;
+      background: rgba(15, 23, 42, 0.9);
+      margin-bottom: 8px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      color: var(--text-medium);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    .doc-item i {
+      color: var(--accent-cyan);
+      margin-right: 10px;
+      font-size: 0.9rem;
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-left: 26px;
+      margin-bottom: 16px;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 4px;
+      width: 10px;
+      height: 10px;
+      background: var(--accent-cyan);
+      border-radius: 50%;
+      box-shadow: 0 0 8px rgba(6, 182, 212, 0.7);
+    }
+
+    .timeline-item::after {
+      content: '';
+      position: absolute;
+      left: 4px;
+      top: 15px;
+      width: 2px;
+      height: calc(100% + 8px);
+      background: rgba(148, 163, 184, 0.6);
+    }
+
+    .timeline-item:last-child::after {
+      display: none;
+    }
+
+    .timeline-date {
+      font-size: 0.7rem;
+      color: var(--text-light);
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .timeline-title {
+      font-weight: 500;
+      color: var(--text-medium);
+      font-size: 0.85rem;
+    }
+
+    .tasks-section {
+      background: var(--card-bg);
+      padding: 20px 18px 16px 18px;
+      border-radius: 16px;
+      box-shadow: 0 0 22px rgba(0, 0, 0, 0.6), inset 0 0 0 1px var(--border-color);
+    }
+
+    .tasks-section h3 {
+      color: var(--text-medium);
+      margin-bottom: 12px;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tasks-section h3 i {
+      color: var(--primary-color);
+    }
+
+    .task-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+      gap: 10px;
+    }
+
+    .task-item:last-child {
+      border-bottom: none;
+    }
+
+    .task-content h4 {
+      margin-bottom: 4px;
+      color: var(--text-medium);
+      font-size: 0.9rem;
+    }
+
+    .task-content p {
+      color: var(--text-light);
+      font-size: 0.8rem;
+    }
+
+    .task-meta {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .badge {
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+    .badge-sop { background: rgba(234, 179, 8, 0.18); color: #facc15; }
+    .badge-exams { background: rgba(56, 189, 248, 0.18); color: #38bdf8; }
+    .badge-forms { background: rgba(34, 197, 94, 0.18); color: var(--success-color); }
+    .badge-docs { background: rgba(129, 140, 248, 0.18); color: var(--accent-cyan); }
+    
+    .btn-complete {
+      padding: 8px 14px;
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-medium);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-complete:hover {
+      background: var(--success-color);
+      color: #020617;
+      border-color: var(--success-color);
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.6);
+    }
+
+    .btn-complete.completed {
+      background: var(--success-color);
+      color: #020617;
+      border-color: var(--success-color);
+    }
+
+    .btn-complete.completed:disabled {
+      opacity: 0.85;
+      cursor: default;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 12px;
+      }
+      .container {
+        margin-top: 12px;
+      }
+      .tasks-section, .card {
+        padding: 18px 14px 14px 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">AI Counsellor</div>
+    <ul class="nav-links">
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="guidance.html" class="active">Guidance</a></li>
+      <li><a href="counsellor.html">AI Counsellor</a></li>
+      <li><a href="universities.html">Universities</a></li>
+      <li><a href="profile.html">Profile</a></li>
+      <li><a href="#" onclick="logout(); return false;" class="btn-logout">Logout</a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <div class="header-section">
+      <h1><i class="fas fa-compass"></i> Application Guidance</h1>
+      <p>Follow this step-by-step guide to complete your applications for locked universities.</p>
+    </div>
+
+    <div class="grid-container">
+      <!-- Required Documents -->
+      <div class="card">
+        <h3><i class="fas fa-file-alt"></i> Required Documents</h3>
+        <ul class="doc-list">
+          <li class="doc-item"><i class="fas fa-check-circle"></i> Valid Passport</li>
+          <li class="doc-item"><i class="fas fa-check-circle"></i> Academic Transcripts</li>
+          <li class="doc-item"><i class="fas fa-check-circle"></i> Standardized Test Scores (IELTS/TOEFL/GRE)</li>
+          <li class="doc-item"><i class="fas fa-check-circle"></i> Statement of Purpose (SOP)</li>
+          <li class="doc-item"><i class="fas fa-check-circle"></i> Letters of Recommendation (2-3)</li>
+          <li class="doc-item"><i class="fas fa-check-circle"></i> Resume / CV</li>
+          <li class="doc-item"><i class="fas fa-check-circle"></i> Financial Proof / Bank Statement</li>
+        </ul>
+      </div>
+
+      <!-- Timeline -->
+      <div class="card">
+        <h3><i class="fas fa-calendar-alt"></i> High-Level Timeline</h3>
+        <div class="timeline-list">
+          <div class="timeline-item">
+            <div class="timeline-date">Sep - Oct</div>
+            <div class="timeline-title">Finalize University List & Take Exams</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">Nov - Dec</div>
+            <div class="timeline-title">Draft SOP & Request LORs</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">Dec - Jan</div>
+            <div class="timeline-title">Submit Applications</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">Feb - Mar</div>
+            <div class="timeline-title">Receive Decisions & Apply for Scholarships</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">Apr - Jun</div>
+            <div class="timeline-title">Finalize Visa & Accommodation</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Tasks -->
+    <div class="tasks-section">
+      <h3><i class="fas fa-tasks"></i> AI-Generated Action Plan</h3>
+      <div id="tasksList">
+        <p style="text-align: center; color: #7f8c8d;">Loading tasks...</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script>
+    if (!requireAuth()) {
+      // Redirect handled
+    }
+
+    async function loadTasks() {
+      const list = document.getElementById('tasksList');
+      try {
+        const stats = await apiRequest('/counsellor/stats');
+        if (stats.lockedCount === 0) {
+          list.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 20px;">Application guidance unlocks after you lock at least one university. <a href="universities.html">Discover & lock universities</a>.</p>';
+          return;
+        }
+        const [progress, myUniversities] = await Promise.all([
+          apiRequest('/counsellor/progress'),
+          apiRequest('/universities/my-universities')
+        ]);
+
+        // Build map of locked universities
+        const lockedItems = (myUniversities || []).filter(u => u.status === 'locked');
+        if (!lockedItems.length) {
+          list.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 20px;">No universities are locked right now. Lock at least one university to see its document checklist here.</p>';
+          return;
+        }
+
+        const byUniversity = (progress && progress.task4 && Array.isArray(progress.task4.byUniversity))
+          ? progress.task4.byUniversity
+          : [];
+        const byMap = {};
+        byUniversity.forEach(entry => {
+          if (entry.universityId) {
+            byMap[entry.universityId] = entry;
+          }
+        });
+
+        list.innerHTML = '';
+
+        lockedItems.forEach(item => {
+          const uni = item.universityId;
+          if (!uni) return;
+          const state = byMap[uni._id] || {
+            universityId: uni._id,
+            universityName: uni.name,
+            sop: false,
+            lors: false,
+            resume: false
+          };
+
+          const makeStatusPill = (done) => done
+            ? '<button class="btn-complete completed" disabled><i class="fas fa-check"></i> Done</button>'
+            : '<button class="btn-complete" disabled>Pending</button>';
+
+          const row = document.createElement('div');
+          row.className = 'task-item';
+          row.innerHTML = `
+            <div class="task-content">
+              <h4>${state.universityName || uni.name}</h4>
+              <p>${uni.country || ''}</p>
+              <div class="task-meta">
+                <span class="badge badge-docs">Documents</span>
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+              <div style="display:flex; gap:8px; align-items:center;">
+                <span class="badge badge-sop">SOP</span>
+                ${makeStatusPill(!!state.sop)}
+              </div>
+              <div style="display:flex; gap:8px; align-items:center;">
+                <span class="badge badge-forms">LORs</span>
+                ${makeStatusPill(!!state.lors)}
+              </div>
+              <div style="display:flex; gap:8px; align-items:center;">
+                <span class="badge badge-docs">Resume</span>
+                ${makeStatusPill(!!state.resume)}
+              </div>
+            </div>
+          `;
+          list.appendChild(row);
+        });
+      } catch (error) {
+        console.error('Error loading tasks:', error);
+        if (error.message && (error.message.includes('onboarding') || error.message.includes('Complete onboarding'))) {
+          list.innerHTML = '<p style="text-align: center; color: #7f8c8d;">Complete onboarding first. <a href="onboarding.html">Go to onboarding</a>.</p>';
+        } else {
+          list.innerHTML = '<p style="text-align: center; color: #e74c3c;">Failed to load tasks. Try again later.</p>';
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadTasks);
+  </script>
+</body>
+</html>
