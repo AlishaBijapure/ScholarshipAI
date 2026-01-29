@@ -628,17 +628,16 @@ ${uniDb}
         ${listStr}
         
         **RULES — TASK 1 ONLY. UNIVERSITIES ONLY.**
-        1. **STRICTLY ON-TOPIC**: Talk ONLY about universities. Ignore or briefly defer any questions about exams, visa processes, SOPs, documentation, visas, or anything not directly about universities. Your role in this task is ONLY to handle university-related queries.
-        2. **ANSWER ALL UNIVERSITY QUERIES IN DETAIL**: For ANY university the user asks about (whether or not it is in the recommended 5), if it exists in the "FULL UNIVERSITY DATABASE", include database-backed details when available (country & city, category if available, ranking, key courses/fields of study relevant to the user, tuition/fees range, and basic admission requirements) plus a short explanation of fit based on their GPA (${profile?.gpa}) and Major (${major}). You may ALSO add additional helpful university info from general knowledge (campus strengths, typical career outcomes, well-known departments), but clearly separate it from DB-backed facts.
-        3. **HANDLE QUICK PROMPTS PROPERLY (AND USE GENERAL KNOWLEDGE WHEN DB LACKS DATA)**: The UI sometimes sends short prompts like "Why these universities?", "Scholarship chances?", "Rankings?", or "Placement stats?". Treat these as full questions and respond with clear, structured, detailed university-focused answers. If the database does NOT contain the requested data (e.g., placement stats, average salary, recruiter lists, scholarship details), answer using your general knowledge and reasonable guidance, but explicitly say it is **not from the user's database** and recommend verifying via official sources (university career outcomes report, program page, LinkedIn alumni, etc.). Do NOT invent precise numbers; prefer ranges, typical patterns, and how to verify.
-        4. **IF UNIVERSITY NOT IN DATABASE**: If the user asks about a university that is NOT present in the "FULL UNIVERSITY DATABASE", say it is not in the current database (so you cannot verify DB-backed fields), but still answer in detail using general knowledge. Provide a structured overview (what it's known for, typical strengths, admissions competitiveness at a high level, cost expectations by country) and then suggest 2–4 similar alternatives that ARE present in the database (same country/field/ranking band), explaining why they are comparable.
-        5. **EXPLAIN YOUR 5 RECOMMENDATIONS WHEN ASKED**: If the user asks "Why these?" or similar, use the category (Dream/Target/Safe) and the logic that these best fit their GPA (${profile?.gpa}) and Major (${major}), and mention how each one differs (e.g., more ambitious, safer, more affordable, stronger ranking, etc.).
-        6. **ARRIVING AT TASK**: If the user just arrived at this step: Say "Excellent choice! Based on your academic profile and preferences, I've curated a list of top universities in your chosen country for you. I have selected 5 specific universities for you: 2 Dream (Ambitious), 2 Target (Good fit), and 1 Safe (Backup). Take a look below. Do you have questions about these, or would you like to discuss other universities as well?"
-        7. **HOW TO MOVE TO NEXT STEP**: If the user asks "how to move to next step" or similar, answer: "In this step, first click **Finalize Unis** to lock your university list. After that, click **Next Step** to continue."
-        8. **MODIFICATION / FINALIZATION**: If the user wants to change a university, verify the university exists in the database, help them compare options in detail, and then remind them to click **Finalize Unis** when they are satisfied. Do NOT talk about later tasks here; stay focused only on universities.
-        9. **ALWAYS END WITH CTA**: End every Task 1 reply with one short line reminding the user what to do next, based on context:
-           - If the list is not finalized: "When you're happy with the university list, click **Finalize Unis** to move to the next step."
-           - If the list is already finalized: "Your list is finalized—click **Next Step** to continue."
+        1. **STRICTLY ON-TOPIC**: Talk ONLY about universities. Ignore exams/visas for now.
+        2. **FOCUS ON THE 5 SELECTED**: Your primary job is to explain why these 5 specific universities (Dream/Target/Safe) were chosen for the user's profile. Use the DB details provided for these 5.
+        3. **ALL OTHER UNIVERSITIES = GENERAL KNOWLEDGE**:
+           - If the user asks about a university NOT in the 5 recommended ones, do **NOT** check the database (it won't be there).
+           - Answer purely from your **own AI training data** (General Knowledge).
+           - Do NOT say "it's not in the database". Just answer helpfully about ranking, reputation, and fit.
+        4. **QUICK PROMPTS**: Treat prompts like "Why these universities?" or "Rankings?" as requests to compare the 5 recommended options.
+        5. **MODIFYING**: If the user wants to add/remove, guide them to use the UI dropdown.
+        6. **ARRIVING AT TASK**: If start of task, say: "Based on your profile, I've selected these 5 universities for you (2 Dream, 2 Target, 1 Safe). Check them out below!"
+        7. **CTA**: Always end with: "Click **Finalize Unis** when you are happy with this list."
         `;
     } else if (task === 2) {
         const plan = progress?.task2?.requiredExamsPlan || [];
@@ -1260,17 +1259,11 @@ router.post('/chat', authMiddleware, async (req, res) => {
         // --- OPTIMIZED CONTEXT LOADING ---
         let universitiesContext = [];
 
-        // Task 1: Fetch filtered list (e.g., top 50 in selected country) to allow discussion without flooding context
-        if (progress.currentTask === 1 && progress.task0?.selectedCountry) {
-            universitiesContext = await University.find({ country: progress.task0.selectedCountry })
-                .sort({ ranking: 1 })
-                .limit(50)
-                .select('name country city ranking category requirements fieldsOfStudy degreeLevels tuitionFee acceptanceRate')
-                .lean();
-        }
-        // Task 2, 3, 4: Only fetch the relevant shortlisted/locked universities
-        else if (progress.currentTask > 1) {
-            const ids = progress.task1?.universityIds || [];
+        // Task 1, 2, 3, 4: Only fetch the relevant universities (Proposed or Finalized)
+        // This ensures prompt is tiny and fast.
+        if (progress.currentTask >= 1) {
+            const list = progress.task1?.proposedList || [];
+            const ids = list.map(u => u._id);
             if (ids.length) {
                 universitiesContext = await University.find({ _id: { $in: ids } })
                     .select('name country city ranking category requirements fieldsOfStudy degreeLevels tuitionFee acceptanceRate')
