@@ -545,8 +545,9 @@ async function getUserContext(userId) {
     const shortlisted = await UserUniversity.find({ userId, status: 'shortlisted' }).populate('universityId');
     const locked = await UserUniversity.find({ userId, status: 'locked' }).populate('universityId');
     const todos = await Todo.find({ userId, status: { $ne: 'completed' } });
-    const universities = await University.find({}, 'name country city ranking category requirements description tuitionFee acceptanceRate fieldsOfStudy degreeLevels');
-    return { user, profile, shortlisted: shortlisted.map(s => s.universityId), locked: locked.map(l => l.universityId), todos, universities };
+
+    // OPTIMIZATION: Do NOT fetch all universities here. It's too heavy.
+    return { user, profile, shortlisted: shortlisted.map(s => s.universityId), locked: locked.map(l => l.universityId), todos };
 }
 
 async function createTaskBasedPrompt(userMessage, context) {
@@ -596,24 +597,19 @@ ${uniDb}
         ${JSON.stringify(countriesList)}
 
         **SYSTEM INSTRUCTIONS:**
-        1. **SCOPE RESTRICTION (CRITICAL):**
-           - You are currently helping the user select a **Country**.
-           - You must **NOT** discuss specific Universities, Exams, SOPs, or Visas yet. 
-           - If the user asks about universities (e.g., "Is Harvard good?", "Suggest universities in UK"), you must politely refuse: "I can definitely help with universities, but first, we need to finalize your Country selection. Once you click 'Finalize Country', I will generate a personalized university list for you."
+        1. **SCOPE:**
+           - You are helping the user select a **Country**.
+           - **STRICTLY** stay on the topic of countries. Do NOT discuss universities, exams, or visas yet.
 
-        2. **YOUR GOAL:**
-           - Help the user decide between the recommended countries.
-           - Compare them based on Job Market, Cost of Living, and PR/Settlement opportunities for their specific course (${major}).
-           - Keep answers concise (bullet points preferred).
+        2. **YOUR BEHAVIOR:**
+           - **Straightforward Recommendations**: The user has been shown 5 top destinations (e.g., USA, UK, Canada, etc.). Focus on helping them choose one of these if they fit.
+           - **Be Flexible & Helpful**: If the user asks about ANY other country (e.g., "What about Finland?"), **DISCUSS IT FREELY**. Do *not* be stubborn. Provide a helpful, unbiased overview of that country for their course/budget.
+           - **Quick Prompts**: If the user clicks a quick prompt like "Compare costs" or "Job opportunities", give a clear comparison of the top destinations.
 
-        3. **CALL TO ACTION:**
-           - Always encourage them to select a country from the chips above and click **"Finalize Country"** to proceed.
-           - If the user just arrived (First interaction OR "START_SESSION"), say: "I've analyzed your profile and found these top 5 countries for your ${major} based on your budget. Which one interests you most?"
-
-        4. **HANDLING NON-RECOMMENDED COUNTRIES:**
-           - If the user asks about a country NOT in the recommended list, be polite.
-           - Acknowledge it is a nice option, but gently explain that the top 5 were chosen for their specific Budget/Course fit.
-           - Conclude by saying: "But if you have your heart set on [Country], you can certainly go with that too! My goal is to support your choice."
+        3. **GOAL:**
+           - Help the user feel confident in a country choice.
+           - Once they seem ready, encourage them to click **Select** on a country chip or type it in the search bar.
+           - **Call to Action**: End by asking: "Does one of these stand out to you, or are you considering another destination?"
 
         **USER MESSAGE:**
         "${userMessage}"
@@ -1260,10 +1256,33 @@ router.post('/chat', authMiddleware, async (req, res) => {
         }
 
         const ctx = await getUserContext(userId);
+
+        // --- OPTIMIZED CONTEXT LOADING ---
+        let universitiesContext = [];
+
+        // Task 1: Fetch filtered list (e.g., top 50 in selected country) to allow discussion without flooding context
+        if (progress.currentTask === 1 && progress.task0?.selectedCountry) {
+            universitiesContext = await University.find({ country: progress.task0.selectedCountry })
+                .sort({ ranking: 1 })
+                .limit(50)
+                .select('name country city ranking category requirements fieldsOfStudy degreeLevels tuitionFee acceptanceRate')
+                .lean();
+        }
+        // Task 2, 3, 4: Only fetch the relevant shortlisted/locked universities
+        else if (progress.currentTask > 1) {
+            const ids = progress.task1?.universityIds || [];
+            if (ids.length) {
+                universitiesContext = await University.find({ _id: { $in: ids } })
+                    .select('name country city ranking category requirements fieldsOfStudy degreeLevels tuitionFee acceptanceRate')
+                    .lean();
+            }
+        }
+
         const context = {
             ...ctx,
             progress,
-            proposedList: progress?.task1?.proposedList || []
+            proposedList: progress?.task1?.proposedList || [],
+            universities: universitiesContext
         };
         const prompt = await createTaskBasedPrompt(message, context);
 
