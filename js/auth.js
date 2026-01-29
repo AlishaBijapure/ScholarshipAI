@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:3000/api';
+const API_BASE_URL = 'https://scholarshipai.onrender.com/api';
 
 // Check if user is logged in
 function checkAuth() {
