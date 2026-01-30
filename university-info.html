@@ -375,7 +375,7 @@
 
                 document.getElementById(loadingId).remove();
                 if (data.message) {
-                    addMessage(data.message.replace(/\n/g, '<br>'), 'bot');
+                    addMessage(data.message, 'bot');
                 }
             } catch (error) {
                 console.error(error);
@@ -390,6 +390,21 @@
             }
         }
 
+        function formatMessage(text) {
+            if (!text) return '';
+            // 1. Sanitize HTML (basic) to prevent XSS if needed, 
+            // but here we trust the bot output mostly. 
+            // Let's just do markdown parsing first.
+
+            // 2. Bold **text** -> <strong>text</strong>
+            let formatted = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+            // 3. Newlines -> <br>
+            formatted = formatted.replace(/\n/g, '<br>');
+
+            return formatted;
+        }
+
         function addMessage(text, sender) {
             const container = document.getElementById('chatMessages');
 
@@ -400,7 +415,8 @@
 
             const msgDiv = document.createElement('div');
             msgDiv.className = `message ${sender}`;
-            msgDiv.innerHTML = `<div class="message-content">${text}</div>`;
+            // Use formatMessage to process the text
+            msgDiv.innerHTML = `<div class="message-content">${formatMessage(text)}</div>`;
             container.appendChild(msgDiv);
             container.scrollTop = container.scrollHeight;
         }
@@ -425,7 +441,9 @@
                 document.getElementById(loadingId).remove();
 
                 if (data.message) {
-                    addMessage(data.message.replace(/\n/g, '<br>'), 'bot');
+                    if (data.message) {
+                        addMessage(data.message, 'bot');
+                    }
                 }
 
             } catch (error) {
@@ -472,7 +490,9 @@
                 document.getElementById(loadingId).remove();
 
                 if (data.message) {
-                    addMessage(data.message.replace(/\n/g, '<br>'), 'bot');
+                    if (data.message) {
+                        addMessage(data.message, 'bot');
+                    }
                 } else {
                     addMessage("I didn't get a response. Please try again.", 'bot');
                 }
