@@ -551,7 +551,7 @@ async function getUserContext(userId) {
 }
 
 async function createTaskBasedPrompt(userMessage, context) {
-    const { user, profile, progress, proposedList, universities } = context;
+    const { user, profile, progress, proposedList, universities, focusedUniversity } = context;
     const task = progress?.currentTask ?? 0;
     const countries = (profile?.preferredCountries?.length) ? profile.preferredCountries.join(', ') : 'Any';
     const major = profile?.fieldOfStudy || profile?.major || 'Undecided';
@@ -560,7 +560,29 @@ async function createTaskBasedPrompt(userMessage, context) {
 
     const uniDb = universities.map(u => `- ${u.name} | ${u.country} | ${u.fieldsOfStudy?.join(', ')} | ${u.degreeLevels?.join(', ')} | requirements: ${JSON.stringify(u.requirements || {})}`).join('\n');
 
-    let prompt = `You are an AI Counsellor for study-abroad. You work **strictly by tasks**. You must NOT discuss or mention any task other than the current one.
+    let focusedUniStr = "";
+    if (focusedUniversity) {
+        focusedUniStr = `
+        **CURRENTLY VIEWING UNIVERSITY:**
+        Name: ${focusedUniversity.name}
+        Location: ${focusedUniversity.city}, ${focusedUniversity.country}
+        Global Rank: ${focusedUniversity.ranking || 'N/A'}
+        Acceptance Rate: ${focusedUniversity.acceptanceRate || 'N/A'}%
+        Tuition: ${JSON.stringify(focusedUniversity.tuitionFee || {})}
+        Requirements: ${JSON.stringify(focusedUniversity.requirements || {})}
+        
+        **INSTRUCTION**: The user is currently looking at this specific university. 
+        Focus your answers on ${focusedUniversity.name} unless asked otherwise.
+        Reliably answer questions about its courses, campus life, reputation, etc., using your general knowledge + the data above.
+        `;
+    }
+
+    let prompt = `You are a knowledgeable and helpful Study Abroad Assistant. 
+    your primary goal is to help the user studey abroad, so answer ANY question the user has about universities, countries, or the process.
+    
+    You interpret "tasks" as a guide, not a strict cage.
+    
+    ${focusedUniStr}
 
 USER: ${user.fullName}
 PROFILE: Education ${profile?.currentEducationLevel || 'N/A'} | GPA ${profile?.gpa || 'N/A'} | Field ${major} | Budget ${budget} | Preferred Countries ${countries} | Intake ${profile?.targetIntakeYear || 'not set'} | ${exams}
@@ -584,7 +606,6 @@ ${uniDb}
         }
 
         prompt += `
-        You are an expert AI Counsellor for study-abroad. 
         Current Status: **Task 0 (Country Selection)**.
 
         **USER PROFILE:**
@@ -599,17 +620,16 @@ ${uniDb}
         **SYSTEM INSTRUCTIONS:**
         1. **SCOPE:**
            - You are helping the user select a **Country**.
-           - **STRICTLY** stay on the topic of countries. Do NOT discuss universities, exams, or visas yet.
+           - Feel free to discuss countries, cities, and general study abroad topics.
 
         2. **YOUR BEHAVIOR:**
-           - **Straightforward Recommendations**: The user has been shown 5 top destinations (e.g., USA, UK, Canada, etc.). Focus on helping them choose one of these if they fit.
-           - **Be Flexible & Helpful**: If the user asks about ANY other country (e.g., "What about Finland?"), **DISCUSS IT FREELY**. Do *not* be stubborn. Provide a helpful, unbiased overview of that country for their course/budget.
-           - **Quick Prompts**: If the user clicks a quick prompt like "Compare costs" or "Job opportunities", give a clear comparison of the top destinations.
+           - **Straightforward Recommendations**: The user has been shown 5 top destinations. Help them choose.
+           - **Be Flexible & Helpful**: If the user asks about ANY other country (e.g., "What about Finland?"), **DISCUSS IT FREELY**. 
+           - **Knowledgeable**: Use your own training data to answer detailed questions about culture, safety, and post-study work visas.
 
         3. **GOAL:**
            - Help the user feel confident in a country choice.
-           - Once they seem ready, encourage them to click **Select** on a country chip or type it in the search bar.
-           - **Call to Action**: End by asking: "Does one of these stand out to you, or are you considering another destination?"
+           - Call to Action: "Does one of these stand out to you?"
 
         **USER MESSAGE:**
         "${userMessage}"
@@ -663,15 +683,15 @@ Per-university view (for transparency):
 ${uniExamStr}
 
 After reviewing this, ask the user to enter their exam scores using the score input area below the chat (dropdown + score box).
-
-**RULES — TASK 2 ONLY. DO NOT discuss documents, SOPs, or Task 4.**
-1. **STRICTLY ON TOPIC**: Only answer questions about exams and scores (IELTS/TOEFL/GRE/GMAT/SAT/ACT etc), preparation strategy, syllabus, sections, timelines, typical score expectations, and how to improve scores. Do NOT answer anything unrelated to exams.
-2. **OWN BRAIN, NOT DB**: Treat exam requirements/min scores as AI guidance based on general admission norms + the user's education level and intended course. Do NOT reference any database requirements as the source.
-3. **BE DETAILED**: When asked about an exam, give structured details: sections, syllabus outline, scoring, duration, recommended prep resources/plan, and what score range is competitive for the user's context.
-4. **SCORE COLLECTION**: Always remind the user to submit scores using the UI below. If a score is missing, tell them to enter it. If it's below the minimum, tell them the minimum and ask them to retake/enter an updated score.
-5. **GATING**: Do NOT allow moving to the next task until ALL required exams have acceptable scores recorded.
-        6. **ARRIVING AT TASK**: If the user just arrived at this step, say: "Based on the universities you've shortlisted, here are the requirements:\n\n[List Universities and their Exams]\n\nOverall, you need to provide scores for: **[Consolidated Exams]**. Please enter your actual or target scores below to build your roadmap." (Use the provided per-university and consolidated lists to fill in the message).
-7. **ALWAYS END WITH CTA**: If requirements are incomplete: "Please provide the missing exam scores below to continue." If complete: "All required exams are recorded—moving to documents next."
+        **RULES — TASK 2 (Exams)**
+        1. **PRIMARY FOCUS**: Help the user plan their exams.
+        2. **BE HELPFUL**: If the user asks about something else (e.g. "Do I need these exams for my visa?"), answer it! Don't refuse. Connect it back to the exams when possible.
+        3. **OWN BRAIN**: Use the list below as a guide, but rely on your own AI knowledge for exam details, strategies, and scoring norms.
+        4. **BE DETAILED**: Provide deep insights on exam sections, prep tips, and what scores are competitive.
+5. **SCORE COLLECTION**: Always remind the user to submit scores using the UI below. If a score is missing, tell them to enter it. If it's below the minimum, tell them the minimum and ask them to retake/enter an updated score.
+6. **GATING**: Do NOT allow moving to the next task until ALL required exams have acceptable scores recorded.
+7. **ARRIVING AT TASK**: If the user just arrived at this step, say: "Based on the universities you've shortlisted, here are the requirements:\n\n[List Universities and their Exams]\n\nOverall, you need to provide scores for: **[Consolidated Exams]**. Please enter your actual or target scores below to build your roadmap." (Use the provided per-university and consolidated lists to fill in the message).
+8. **ALWAYS END WITH CTA**: If requirements are incomplete: "Please provide the missing exam scores below to continue." If complete: "All required exams are recorded—moving to documents next."
 `;
     } else if (task === 3) {
         const uniList = Array.isArray(progress?.task1?.proposedList) ? progress.task1.proposedList : [];
@@ -703,12 +723,14 @@ ${docsPerUni}
 
 Once you have arranged these documents for all universities, you can click *All Docs Ready* in the UI to move ahead.
 
-*RULES — TASK 3 ONLY (DOCUMENTS).*
-1.⁠ ⁠*STRICTLY ON TOPIC*: Talk ONLY about documents and paperwork for applications and visas (what documents are needed, how to prepare them, how to organize them, notarization/translation, etc.). Do NOT answer questions about exams, universities, SOP content, or anything outside documentation.
-2.⁠ ⁠*USE GENERAL KNOWLEDGE*: When the user asks about a specific document (e.g., transcripts, LORs, financial proof), explain in detail what it is, who issues it, common formats, typical mistakes, and how to make it strong. If university-specific nuances exist, describe typical patterns and advise checking the official site.
-        3. **ARRIVING AT TASK**: If the user has just arrived at this step, say: "Based on your university list, here are the essential documents you'll need to prepare:\n\n- Passport (valid)\n- Academic Transcripts & Certificates\n- English Test Score Report\n- CV / Resume\n- Statement of Purpose (SOP)\n- 2-3 Letters of Recommendation (LORs)\n- Financial Proof (Bank Statements)\n\nPlease start collecting these. Once you have everything ready, click **All Docs Ready** Below to move to the final step (SOP, LORs, and Resume guidance)."
-4.⁠ ⁠*CTA / GATING: Frequently remind the user that clicking **All Docs Ready* will tell the system that documents are prepared and will move them to the next step (SOPs, LORs, Resume details).
-5.⁠ ⁠*QUICK PROMPTS*: Treat short prompts like "What documents do I need?" or "How should I organize my documents?" as full questions and reply with clear, structured guidance.
+        *RULES — TASK 3 (DOCUMENTS)*
+        1. **PRIMARY FOCUS**: Guide the user on gathering documents.
+        2. **BE INFORMATIONAL**: Answer any related question (e.g., "Do I need a visa for this?", "How strictly are transcripts checked?"). Don't be robotic.
+        3. **USE GENERAL KNOWLEDGE**: Explain what each document is, why it matters, and how to make it strong (e.g., for LORs or CVs).
+        4. **FORMATTING**: Use bullet points to make the checklist easy to read.
+5. **ARRIVING AT TASK**: If the user has just arrived at this step, say: "Based on your university list, here are the essential documents you'll need to prepare:\n\n- Passport (valid)\n- Academic Transcripts & Certificates\n- English Test Score Report\n- CV / Resume\n- Statement of Purpose (SOP)\n- 2-3 Letters of Recommendation (LORs)\n- Financial Proof (Bank Statements)\n\nPlease start collecting these. Once you have everything ready, click **All Docs Ready** Below to move to the final step (SOP, LORs, and Resume guidance)."
+6. *CTA / GATING*: Frequently remind the user that clicking **All Docs Ready* will tell the system that documents are prepared and will move them to the next step (SOPs, LORs, Resume details).
+7. *QUICK PROMPTS*: Treat short prompts like "What documents do I need?" or "How should I organize my documents?" as full questions and reply with clear, structured guidance.
 `;
     } else if (task === 4) {
         const by = progress?.task4?.byUniversity || [];
@@ -747,15 +769,15 @@ Your job now is:
 Progress: ${progStr}
 **Current:** University ${idx + 1}: ${current?.universityName || 'N/A'} — **${docLabel}**
 
-**RULES — TASK 4 ONLY.**
-1.⁠ ⁠Guide the user to complete *${docLabel}* for *${current?.universityName}*.
-2. Provide guidance in clear points based on the document type:
-   - **For SOP**: Focus on Motivation, Academic Background, Relevant Projects, Why this University, and Career Goals.
-   - **For LORs**: Advise on choosing recommenders, providing them with highlights, and ensuring they use specific examples of your skills.
-   - **For Resume**: Tips on reverse chronological order, emphasizing achievements, projects, internships, and technical skills.
-3.⁠ ⁠Stay focused strictly on SOPs, LORs, and Resume content/structure; do not discuss exams, country choice, or other tasks.
-4.⁠ ⁠After the user confirms they’re done for this item, say: "Click *Move to next* to continue."
-5.⁠ ⁠When all universities show SOP, LORs, and Resume as ✓, congratulate them and let them know the next click will move them into the final phase.
+        **RULES — TASK 4 (SOP, LORs, Resume)**
+        1. **HELPFUL GUIDE**: You are helping the user write their essays and potential application materials.
+        2. **DETAILED ADVICE**:
+           - **SOP**: Discuss story arcs, hooks, specific university details to mention, and structure.
+           - **LORs**: Advise on how to brief recommenders and what qualities to highlight.
+           - **Resume**: Focus on impact, quantification, and relevance to the degree.
+        3. **FLEXIBILITY**: If the user asks general questions about the application process here, answer them freely.
+4. After the user confirms they’re done for this item, say: "Click *Move to next* to continue."
+5. When all universities show SOP, LORs, and Resume as ✓, congratulate them and let them know the next click will move them into the final phase.
 `;
         }
     }
@@ -1237,7 +1259,7 @@ router.get('/recommend', authMiddleware, async (req, res) => {
 
 router.post('/chat', authMiddleware, async (req, res) => {
     try {
-        const { message } = req.body;
+        const { message, universityId } = req.body;
         const userId = req.userId;
 
         const user = await User.findById(userId);
@@ -1258,6 +1280,12 @@ router.post('/chat', authMiddleware, async (req, res) => {
 
         // --- OPTIMIZED CONTEXT LOADING ---
         let universitiesContext = [];
+        let focusedUniversity = null;
+
+        // NEW: Fetch specific university if user is viewing one
+        if (universityId) {
+            focusedUniversity = await University.findById(universityId).lean();
+        }
 
         // Task 1, 2, 3, 4: Only fetch the relevant universities (Proposed or Finalized)
         // This ensures prompt is tiny and fast.
@@ -1275,7 +1303,8 @@ router.post('/chat', authMiddleware, async (req, res) => {
             ...ctx,
             progress,
             proposedList: progress?.task1?.proposedList || [],
-            universities: universitiesContext
+            universities: universitiesContext,
+            focusedUniversity // Pass to prompt creator
         };
         const prompt = await createTaskBasedPrompt(message, context);
 

@@ -1,5 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const { GoogleGenAI } = require('@google/genai');
+
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 const University = require('../models/university.model');
 const UserUniversity = require('../models/userUniversity.model');
 const StudentProfile = require('../models/studentProfile.model');
@@ -400,6 +403,56 @@ router.post('/', async (req, res) => {
     }
 });
 
+
+// POST /api/universities/:id/chat - Chat with AI about specific university
+router.post('/:id/chat', authMiddleware, async (req, res) => {
+    try {
+        const { message } = req.body;
+        const universityId = req.params.id;
+
+        if (!message) return res.status(400).json({ message: 'Message is required.' });
+
+        const university = await University.findById(universityId);
+        if (!university) return res.status(404).json({ message: 'University not found.' });
+
+        const systemPrompt = `
+        You are an expert University Representative for **${university.name}**.
+        
+        **UNIVERSITY DETAILS:**
+        - Location: ${university.city}, ${university.country}
+        - Ranking: #${university.ranking || 'N/A'}
+        - Tuition: $${university.tuitionFee?.max?.toLocaleString() || 'N/A'} / year
+        - Acceptance Rate: ${university.acceptanceRate || 'N/A'}%
+        - GPA Requirement: ${university.requirements?.gpa || 'N/A'}
+        - Exams: ${(university.requirements?.exams || []).join(', ') || 'None specified'}
+        - Degrees: ${(university.degreeLevels || []).join(', ')}
+        - Fields: ${(university.fieldsOfStudy || []).join(', ')}
+        - Description: ${university.description}
+
+        **YOUR ROLE:**
+        - Answer the student's question specifically using the data above.
+        - Be friendly, professional, and encouraging.
+        - If the answer is not in the data, verify if it's a general admissions question you can answer (e.g. "What is an SOP?"). If it's specific data you lack (e.g. "Does this uni have a swimming pool?"), admit you don't have that specific info but suggest checking the official website.
+        - Keep answers concise (max 2-3 sentences unless asked for details).
+
+        **STUDENT MESSAGE:**
+        "${message}"
+        `;
+
+        const result = await ai.models.generateContent({
+            model: 'gemini-2.0-flash',
+            contents: systemPrompt,
+        });
+
+        const responseText = result.text ?? result.candidates?.[0]?.content?.parts?.[0]?.text ?? "I'm sorry, I couldn't process that.";
+
+        res.json({ reply: responseText });
+
+    } catch (error) {
+        console.error('Error in university chat:', error);
+        res.status(500).json({ message: 'AI service unavailable.' });
+    }
+});
 
 // GET /api/universities/:id - Get a single university by ID
 // (Placed at the end to avoid conflict with specific routes like /recommended or /my-universities)
