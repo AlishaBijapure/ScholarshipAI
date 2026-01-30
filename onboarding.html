@@ -5,599 +5,57 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Onboarding - AI Counsellor</title>
-  <link rel="stylesheet" href="css/counsellor.css">
+  <link rel="stylesheet" href="css/onboarding-chat.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
-  <style>
-    html {
-      background: var(--bg-gradient);
-      background-attachment: fixed;
-    }
-
-    body {
-      background: var(--bg-gradient);
-      min-height: 100vh;
-      padding: 20px;
-      color: var(--text-dark);
-      height: auto;
-      display: block;
-      overflow-y: auto;
-    }
-
-    .onboarding-container {
-      max-width: 840px;
-      margin: 24px auto 40px auto;
-      padding: 26px 24px 22px 24px;
-      background: var(--card-bg);
-      border-radius: 20px;
-      box-shadow: 0 0 32px rgba(0, 0, 0, 0.6), inset 0 0 0 1px var(--border-color);
-      backdrop-filter: blur(20px);
-    }
-
-    .onboarding-container h1 {
-      text-align: center;
-      margin-bottom: 6px;
-      color: var(--text-medium);
-      font-size: 1.4rem;
-    }
-
-    .onboarding-container p {
-      text-align: center;
-      color: var(--text-light);
-      margin-bottom: 22px;
-      font-size: 0.9rem;
-    }
-
-    .form-section {
-      margin-bottom: 22px;
-      padding: 16px 16px 14px 16px;
-      background: rgba(15, 23, 42, 0.96);
-      border-radius: 14px;
-      border: 1px solid rgba(148, 163, 184, 0.6);
-    }
-
-    .form-section h3 {
-      color: var(--text-medium);
-      margin-bottom: 12px;
-      border-bottom: 1px solid rgba(148, 163, 184, 0.5);
-      padding-bottom: 8px;
-      font-size: 0.95rem;
-    }
-
-    .form-group {
-      margin-bottom: 14px;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 6px;
-      color: var(--text-light);
-      font-weight: 500;
-      font-size: 0.85rem;
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid rgba(148, 163, 184, 0.8);
-      border-radius: 10px;
-      font-size: 0.9rem;
-      transition: border-color 0.3s, box-shadow 0.3s;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-      background: rgba(15, 23, 42, 0.98);
-      color: var(--text-medium);
-    }
-
-    .form-group input::placeholder,
-    .form-group textarea::placeholder {
-      color: var(--text-light);
-    }
-
-    .score-field {
-      display: none;
-    }
-
-    .score-field.visible {
-      display: block;
-    }
-
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-      outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 1px var(--primary-color), 0 0 10px rgba(217, 70, 239, 0.4);
-    }
-
-    .form-group textarea {
-      min-height: 80px;
-      resize: vertical;
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-
-    .btn-submit {
-      width: 100%;
-      padding: 14px;
-      background: var(--primary-color);
-      color: white;
-      border: none;
-      border-radius: 999px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      margin-top: 6px;
-      box-shadow: 0 0 18px rgba(217, 70, 239, 0.7);
-    }
-
-    .btn-submit:hover {
-      transform: translateY(-1px);
-      background: var(--primary-dark);
-    }
-
-    .error-message {
-      background: rgba(239, 68, 68, 0.08);
-      color: var(--danger-color);
-      padding: 10px 12px;
-      border-radius: 10px;
-      margin-bottom: 16px;
-      display: none;
-      border: 1px solid rgba(248, 113, 113, 0.7);
-      font-size: 0.85rem;
-    }
-
-    @media (max-width: 768px) {
-      body {
-        padding: 12px;
-      }
-
-      .onboarding-container {
-        padding: 20px 16px 18px 16px;
-        margin-top: 14px;
-      }
-
-      .form-row {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* Multi-step form styles */
-    .step {
-      display: none;
-    }
-
-    .step.active {
-      display: block;
-      animation: fadeIn 0.5s;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-
-      to {
-        opacity: 1;
-      }
-    }
-
-    /* Progress Bar */
-    .progress-container {
-      margin-bottom: 30px;
-      position: relative;
-    }
-
-    .progressbar {
-      counter-reset: step;
-      display: flex;
-      justify-content: space-between;
-      list-style-type: none;
-      padding: 0;
-      margin: 0;
-      position: relative;
-      z-index: 1;
-    }
-
-    .progressbar::before {
-      content: '';
-      position: absolute;
-      top: 15px;
-      left: 0;
-      width: 100%;
-      height: 2px;
-      background: rgba(148, 163, 184, 0.3);
-      z-index: -1;
-    }
-
-    .progressbar li {
-      flex: 1;
-      text-align: center;
-      position: relative;
-      font-size: 0.85rem;
-      color: var(--text-light);
-    }
-
-    .progressbar li::before {
-      content: counter(step);
-      counter-increment: step;
-      width: 30px;
-      height: 30px;
-      line-height: 28px;
-      display: block;
-      margin: 0 auto 10px auto;
-      border-radius: 50%;
-      background: var(--card-bg);
-      border: 2px solid rgba(148, 163, 184, 0.5);
-      color: var(--text-light);
-      font-weight: 600;
-    }
-
-    .progressbar li.active {
-      color: var(--text-medium);
-    }
-
-    .progressbar li.active::before {
-      border-color: var(--primary-color);
-      background: var(--primary-color);
-      color: white;
-      box-shadow: 0 0 10px rgba(217, 70, 239, 0.4);
-    }
-
-    .progressbar li.completed::before {
-      content: '✓';
-      border-color: var(--primary-color);
-      background: var(--primary-color);
-      color: white;
-    }
-
-    /* Navigation Buttons */
-    .form-navigation {
-      overflow: auto;
-      margin-top: 20px;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .btn-nav {
-      padding: 12px 24px;
-      border-radius: 999px;
-      border: none;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .btn-prev {
-      background: rgba(148, 163, 184, 0.2);
-      color: var(--text-medium);
-    }
-
-    .btn-prev:hover {
-      background: rgba(148, 163, 184, 0.3);
-    }
-
-    .btn-next {
-      background: var(--primary-color);
-      color: white;
-      box-shadow: 0 0 15px rgba(217, 70, 239, 0.5);
-    }
-
-    .btn-next:hover {
-      background: var(--primary-dark);
-      transform: translateY(-1px);
-    }
-  </style>
 </head>
 
 <body>
-  <div class="onboarding-container">
-    <h1>Complete Your Profile</h1>
-  
-    <p>Help us understand your goals and background to provide personalized guidance</p>
 
-    <div class="progress-container">
-      <ul class="progressbar">
-        <li class="active">Academic</li>
-        <li>Study Goals</li>
-        <li>Budget</li>
-        <li>Exams</li>
-      </ul>
+  <div class="split-container">
+    <!-- LEFT: CHAT PANEL -->
+    <div class="chat-panel">
+      <div class="bot-profile">
+        <div class="bot-avatar">
+          <i class="fas fa-graduation-cap"></i>
+        </div>
+        <div class="bot-info">
+          <h3>ScholarshipAI</h3>
+          <span><span style="color:#d946ef">●</span> Online</span>
+        </div>
+        <div style="flex:1"></div>
+        <button id="globalVoiceToggle" class="voice-btn" title="Bot Voice Output">
+          <i class="fas fa-volume-up"></i>
+        </button>
+        <button id="logoutBtn" onclick="logout()" class="voice-btn" style="margin-left: 8px;" title="Logout">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
+      </div>
+
+      <div class="chat-area" id="chatArea">
+        <!-- Messages will be injected here -->
+      </div>
+
+      <div class="typing-indicator" id="typingIndicator">
+        <span></span><span></span><span></span>
+      </div>
     </div>
 
-    <div id="errorMessage" class="error-message"></div>
-
-    <form id="onboardingForm">
-      <!-- Academic Background -->
-      <div class="form-section">
-        <!-- Academic Background -->
-        <div class="form-section step">
-          <h3>📚 Academic Background</h3>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="currentEducationLevel">Current Education Level *</label>
-              <select id="currentEducationLevel" name="currentEducationLevel" required>
-                <option value="">Select level</option>
-                <option value="High School">High School / Secondary</option>
-                <option value="Diploma">Diploma / Certificate</option>
-                <option value="Bachelor's">Bachelor's Degree</option>
-                <option value="Master's">Master's Degree</option>
-                <option value="PhD">PhD / Doctorate</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="major">Field of Study / Major *</label>
-              <select id="major" name="major" required>
-                <option value="">Select field</option>
-                <optgroup label="Engineering & Technology">
-                  <option value="Computer Science">Computer Science</option>
-                  <option value="Software Engineering">Software Engineering</option>
-                  <option value="Information Technology">Information Technology</option>
-                  <option value="Electrical Engineering">Electrical Engineering</option>
-                  <option value="Mechanical Engineering">Mechanical Engineering</option>
-                  <option value="Civil Engineering">Civil Engineering</option>
-                  <option value="Chemical Engineering">Chemical Engineering</option>
-                  <option value="Biomedical Engineering">Biomedical Engineering</option>
-                  <option value="Aerospace Engineering">Aerospace Engineering</option>
-                </optgroup>
-                <optgroup label="Business & Management">
-                  <option value="Business Administration">Business Administration</option>
-                  <option value="Finance">Finance</option>
-                  <option value="Accounting">Accounting</option>
-                  <option value="Marketing">Marketing</option>
-                  <option value="Management">Management</option>
-                  <option value="Economics">Economics</option>
-                  <option value="International Business">International Business</option>
-                </optgroup>
-                <optgroup label="Health & Medicine">
-                  <option value="Medicine">Medicine</option>
-                  <option value="Nursing">Nursing</option>
-                  <option value="Pharmacy">Pharmacy</option>
-                  <option value="Public Health">Public Health</option>
-                  <option value="Biomedical Sciences">Biomedical Sciences</option>
-                </optgroup>
-                <optgroup label="Sciences">
-                  <option value="Mathematics">Mathematics</option>
-                  <option value="Physics">Physics</option>
-                  <option value="Chemistry">Chemistry</option>
-                  <option value="Biology">Biology</option>
-                  <option value="Environmental Science">Environmental Science</option>
-                  <option value="Data Science">Data Science</option>
-                </optgroup>
-                <optgroup label="Arts & Humanities">
-                  <option value="English Literature">English Literature</option>
-                  <option value="History">History</option>
-                  <option value="Philosophy">Philosophy</option>
-                  <option value="Languages">Languages</option>
-                  <option value="Fine Arts">Fine Arts</option>
-                </optgroup>
-                <optgroup label="Social Sciences">
-                  <option value="Psychology">Psychology</option>
-                  <option value="Sociology">Sociology</option>
-                  <option value="Political Science">Political Science</option>
-                  <option value="International Relations">International Relations</option>
-                  <option value="Social Work">Social Work</option>
-                </optgroup>
-                <optgroup label="Other">
-                  <option value="Law">Law</option>
-                  <option value="Education">Education</option>
-                  <option value="Architecture">Architecture</option>
-                  <option value="Design">Design</option>
-                  <option value="Media & Communication">Media & Communication</option>
-                  <option value="Other">Other (specify in field of study)</option>
-                </optgroup>
-              </select>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="graduationYear">Graduation Year</label>
-              <input type="number" id="graduationYear" name="graduationYear" min="2020" max="2030" placeholder="2025">
-            </div>
-            <div class="form-group">
-              <label for="gpa">GPA / Percentage</label>
-              <input type="text" id="gpa" name="gpa" placeholder="e.g., 3.5 or 85%">
-            </div>
-          </div>
+    <!-- RIGHT: INPUT PANEL -->
+    <div class="input-panel">
+      <form id="onboardingForm">
+        <div class="input-stage-container" id="formContainer">
+          <!-- Dynamically Injected Fields -->
         </div>
 
-        <!-- Study Goals -->
-        <div class="form-section">
-          <!-- Study Goals -->
-          <div class="form-section step">
-            <h3>🎯 Study Goals</h3>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="intendedDegree">Intended Degree *</label>
-                <select id="intendedDegree" name="intendedDegree" required>
-                  <option value="">Select degree</option>
-                  <option value="Bachelor's">Bachelor's</option>
-                  <option value="Master's">Master's</option>
-                  <option value="MBA">MBA</option>
-                  <option value="PhD">PhD</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="fieldOfStudy">Specific Field / Specialization *</label>
-                <select id="fieldOfStudy" name="fieldOfStudy" required>
-                  <option value="">Select specialization</option>
-                  <optgroup label="Engineering & Technology">
-                    <option value="Computer Science">Computer Science</option>
-                    <option value="Software Engineering">Software Engineering</option>
-                    <option value="Information Technology">Information Technology</option>
-                    <option value="Electrical Engineering">Electrical Engineering</option>
-                    <option value="Mechanical Engineering">Mechanical Engineering</option>
-                    <option value="Civil Engineering">Civil Engineering</option>
-                    <option value="Chemical Engineering">Chemical Engineering</option>
-                    <option value="Biomedical Engineering">Biomedical Engineering</option>
-                    <option value="Aerospace Engineering">Aerospace Engineering</option>
-                  </optgroup>
-                  <optgroup label="Business & Management">
-                    <option value="Business Administration">Business Administration</option>
-                    <option value="Finance">Finance</option>
-                    <option value="Accounting">Accounting</option>
-                    <option value="Marketing">Marketing</option>
-                    <option value="Management">Management</option>
-                    <option value="Economics">Economics</option>
-                    <option value="International Business">International Business</option>
-                  </optgroup>
-                  <optgroup label="Health & Medicine">
-                    <option value="Medicine">Medicine</option>
-                    <option value="Nursing">Nursing</option>
-                    <option value="Pharmacy">Pharmacy</option>
-                    <option value="Public Health">Public Health</option>
-                    <option value="Biomedical Sciences">Biomedical Sciences</option>
-                  </optgroup>
-                  <optgroup label="Sciences">
-                    <option value="Mathematics">Mathematics</option>
-                    <option value="Physics">Physics</option>
-                    <option value="Chemistry">Chemistry</option>
-                    <option value="Biology">Biology</option>
-                    <option value="Environmental Science">Environmental Science</option>
-                    <option value="Data Science">Data Science</option>
-                  </optgroup>
-                  <optgroup label="Arts & Humanities">
-                    <option value="English Literature">English Literature</option>
-                    <option value="History">History</option>
-                    <option value="Philosophy">Philosophy</option>
-                    <option value="Languages">Languages</option>
-                    <option value="Fine Arts">Fine Arts</option>
-                  </optgroup>
-                  <optgroup label="Social Sciences">
-                    <option value="Psychology">Psychology</option>
-                    <option value="Sociology">Sociology</option>
-                    <option value="Political Science">Political Science</option>
-                    <option value="International Relations">International Relations</option>
-                    <option value="Social Work">Social Work</option>
-                  </optgroup>
-                  <optgroup label="Other">
-                    <option value="Law">Law</option>
-                    <option value="Education">Education</option>
-                    <option value="Architecture">Architecture</option>
-                    <option value="Design">Design</option>
-                    <option value="Media & Communication">Media & Communication</option>
-                    <option value="Other">Other (specify in field of study)</option>
-                  </optgroup>
-                </select>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="targetIntakeYear">Target Intake Year *</label>
-                <input type="number" id="targetIntakeYear" name="targetIntakeYear" required min="2025" max="2030"
-                  placeholder="2025">
-              </div>
-              <div class="form-group">
-                <label for="preferredCountries">Preferred Countries *</label>
-                <select id="preferredCountries" name="preferredCountries" multiple required>
-                  <!-- Countries will be loaded dynamically -->
-                </select>
-                <small style="color: #7f8c8d;">Search and select multiple countries</small>
-              </div>
-            </div>
-          </div>
-
-          <!-- Budget -->
-          <div class="form-section">
-            <!-- Budget -->
-            <div class="form-section step">
-              <h3>💰 Budget</h3>
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="budgetRange">Budget Range (per year) *</label>
-                  <select id="budgetRange" name="budgetRange" required>
-                    <option value="">Select range</option>
-                    <option value="< $10,000">&lt; $10,000</option>
-                    <option value="$10,000 - $30,000">$10,000 - $30,000</option>
-                    <option value="$30,000 - $50,000">$30,000 - $50,000</option>
-                    <option value="$50,000 - $100,000">$50,000 - $100,000</option>
-                    <option value="> $100,000">&gt; $100,000</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="fundingPlan">Funding Plan *</label>
-                  <select id="fundingPlan" name="fundingPlan" required>
-                    <option value="">Select plan</option>
-                    <option value="Self-funded">Self-funded</option>
-                    <option value="Scholarship-dependent">Scholarship-dependent</option>
-                    <option value="Loan-dependent">Loan-dependent</option>
-                    <option value="Mixed">Mixed</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <!-- Exams & Readiness -->
-            <div class="form-section">
-              <!-- Exams & Readiness -->
-              <div class="form-section step">
-                <h3>📑 Exams & Readiness</h3>
-                <div class="form-row">
-                  <div class="form-group">
-                    <label for="ieltsStatus">IELTS Status</label>
-                    <select id="ieltsStatus" name="ieltsStatus">
-                      <option value="Not started">Not started</option>
-                      <option value="In progress">In progress</option>
-                      <option value="Completed">Completed</option>
-                    </select>
-                  </div>
-                  <div class="form-group score-field" id="ieltsScoreField">
-                    <label for="ieltsScore">IELTS Score</label>
-                    <input type="number" id="ieltsScore" name="ieltsScore" step="0.5" min="0" max="9"
-                      placeholder="e.g., 7.5">
-                  </div>
-                </div>
-                <div class="form-row">
-                  <div class="form-group">
-                    <label for="toeflStatus">TOEFL Status</label>
-                    <select id="toeflStatus" name="toeflStatus">
-                      <option value="Not started">Not started</option>
-                      <option value="In progress">In progress</option>
-                      <option value="Completed">Completed</option>
-                    </select>
-                  </div>
-                  <div class="form-group score-field" id="toeflScoreField">
-                    <label for="toeflScore">TOEFL Score</label>
-                    <input type="number" id="toeflScore" name="toeflScore" min="0" max="120" placeholder="e.g., 100">
-                  </div>
-                </div>
-                <div class="form-row">
-                  <div class="form-group">
-                    <label for="greStatus">GRE Status</label>
-                    <select id="greStatus" name="greStatus">
-                      <option value="Not started">Not started</option>
-                      <option value="In progress">In progress</option>
-                      <option value="Completed">Completed</option>
-                    </select>
-                  </div>
-                  <div class="form-group score-field" id="greScoreField">
-                    <label for="greScore">GRE Score</label>
-                    <input type="number" id="greScore" name="greScore" min="260" max="340" placeholder="e.g., 320">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="sopStatus">SOP Status</label>
-                  <select id="sopStatus" name="sopStatus">
-                    <option value="Not started">Not started</option>
-                    <option value="Draft">Draft</option>
-                    <option value="Ready">Ready</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="form-navigation">
-                <button type="button" id="prevBtn" class="btn-nav btn-prev" onclick="nextPrev(-1)">Previous</button>
-                <button type="button" id="nextBtn" class="btn-nav btn-next" onclick="nextPrev(1)">Next</button>
-              </div>
-    </form>
+        <div class="action-bar">
+          <button type="button" id="nextBtn" class="btn-next" onclick="handleNextClick()">
+            Continue <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <script src="js/auth.js"></script>
@@ -607,256 +65,640 @@
       // Redirect handled by requireAuth
     }
 
-    // Initialize Choices.js for countries dropdown
+    // --- Data & State ---
+    const steps = [
+      {
+        id: 'academic',
+        question: "Let's start by getting to know your academic background. What is your current education level and field of study?",
+        html: `
+            <div class="custom-input-group">
+              <label for="currentEducationLevel">Current Education Level</label>
+              <div class="input-wrapper">
+                  <select id="currentEducationLevel" name="currentEducationLevel" class="custom-input" required>
+                    <option value="">Select level</option>
+                    <option value="High School">High School / Secondary</option>
+                    <option value="Diploma">Diploma / Certificate</option>
+                    <option value="Bachelor's">Bachelor's Degree</option>
+                    <option value="Master's">Master's Degree</option>
+                    <option value="PhD">PhD / Doctorate</option>
+                  </select>
+              </div>
+            </div>
+            <div class="custom-input-group">
+              <label for="major">Field of Study / Major</label>
+              <div class="input-wrapper">
+                  <select id="major" name="major" class="custom-input" required>
+                    <option value="">Select field</option>
+                    <optgroup label="Engineering & Technology">
+                      <option value="Computer Science">Computer Science</option>
+                      <option value="Software Engineering">Software Engineering</option>
+                      <option value="Information Technology">Information Technology</option>
+                      <option value="Data Science">Data Science</option>
+                      <option value="Artificial Intelligence">Artificial Intelligence</option>
+                      <option value="Cybersecurity">Cybersecurity</option>
+                      <option value="Mechanical Engineering">Mechanical Engineering</option>
+                      <option value="Electrical Engineering">Electrical Engineering</option>
+                      <option value="Electronics & Communication">Electronics & Communication</option>
+                      <option value="Civil Engineering">Civil Engineering</option>
+                      <option value="Chemical Engineering">Chemical Engineering</option>
+                      <option value="Aerospace Engineering">Aerospace Engineering</option>
+                      <option value="Biomedical Engineering">Biomedical Engineering</option>
+                      <option value="Robotocs">Robotics</option>
+                      <option value="Automotive Engineering">Automotive Engineering</option>
+                    </optgroup>
+                    <optgroup label="Business & Management">
+                      <option value="Business Administration">Business Administration</option>
+                      <option value="Finance">Finance</option>
+                      <option value="Marketing">Marketing</option>
+                      <option value="Accounting">Accounting</option>
+                      <option value="Economics">Economics</option>
+                      <option value="Management">Management</option>
+                      <option value="International Business">International Business</option>
+                      <option value="Supply Chain Management">Supply Chain Management</option>
+                      <option value="Human Resources">Human Resources</option>
+                      <option value="Entrepreneurship">Entrepreneurship</option>
+                    </optgroup>
+                    <optgroup label="Health & Medicine">
+                      <option value="Medicine (MBBS/MD)">Medicine (MBBS/MD)</option>
+                      <option value="Nursing">Nursing</option>
+                      <option value="Pharmacy">Pharmacy</option>
+                      <option value="Public Health">Public Health</option>
+                      <option value="Dentistry">Dentistry</option>
+                      <option value="Physiotherapy">Physiotherapy</option>
+                      <option value="Psychology">Psychology</option>
+                      <option value="Biotechnology">Biotechnology</option>
+                      <option value="Nutrition & Dietetics">Nutrition & Dietetics</option>
+                    </optgroup>
+                    <optgroup label="Sciences">
+                      <option value="Physics">Physics</option>
+                      <option value="Chemistry">Chemistry</option>
+                      <option value="Biology">Biology</option>
+                      <option value="Mathematics">Mathematics</option>
+                      <option value="Statistics">Statistics</option>
+                      <option value="Environmental Science">Environmental Science</option>
+                      <option value="Geology">Geology</option>
+                      <option value="Astronomy">Astronomy</option>
+                    </optgroup>
+                    <optgroup label="Arts, Humanities & Social Sciences">
+                      <option value="Law">Law</option>
+                      <option value="Political Science">Political Science</option>
+                      <option value="International Relations">International Relations</option>
+                      <option value="Sociology">Sociology</option>
+                      <option value="History">History</option>
+                      <option value="Philosophy">Philosophy</option>
+                      <option value="English Literature">English Literature</option>
+                      <option value="Journalism & Mass Comm">Journalism & Mass Comm</option>
+                      <option value="Design (Graphic/Industrial/Fashion)">Design</option>
+                      <option value="Architecture">Architecture</option>
+                      <option value="Fine Arts">Fine Arts</option>
+                      <option value="Education">Education</option>
+                    </optgroup>
+                    <option value="Other">Other</option>
+                  </select>
+              </div>
+            </div>
+            <div class="custom-input-group">
+                <label for="graduationYear">Year of Graduation</label>
+                <div class="input-wrapper">
+                    <input type="number" id="graduationYear" name="graduationYear" class="custom-input" placeholder="e.g. 2024" />
+                    <button type="button" class="mic-input-btn" onclick="startDictation('graduationYear')"><i class="fas fa-microphone"></i></button>
+                </div>
+            </div>
+            <div class="custom-input-group">
+                <label for="gpa">GPA / Percentage</label>
+                <div class="input-wrapper">
+                  <input type="text" id="gpa" name="gpa" class="custom-input" placeholder="e.g. 3.8 or 90%" />
+                  <button type="button" class="mic-input-btn" onclick="startDictation('gpa')"><i class="fas fa-microphone"></i></button>
+                </div>
+            </div>
+        `
+      },
+      {
+        id: 'goals',
+        question: "Great! Now, what are your future study goals? Tell me about the degree and specialization you're targeting.",
+        html: `
+            <div class="custom-input-group">
+              <label for="intendedDegree">Intended Degree</label>
+              <div class="input-wrapper">
+                  <select id="intendedDegree" name="intendedDegree" class="custom-input" required>
+                    <option value="">Select degree</option>
+                    <option value="Bachelor's">Bachelor's</option>
+                    <option value="Master's">Master's</option>
+                    <option value="MBA">MBA</option>
+                    <option value="PhD">PhD</option>
+                  </select>
+              </div>
+            </div>
+            <div class="custom-input-group">
+              <label for="fieldOfStudy">Target Specialization</label>
+              <div class="input-wrapper">
+                  <select id="fieldOfStudy" name="fieldOfStudy" class="custom-input" required>
+                    <option value="">Select specialization</option>
+                    <optgroup label="Engineering & Technology">
+                      <option value="Computer Science">Computer Science</option>
+                      <option value="Software Engineering">Software Engineering</option>
+                      <option value="Information Technology">Information Technology</option>
+                      <option value="Data Science">Data Science</option>
+                      <option value="Artificial Intelligence">Artificial Intelligence</option>
+                      <option value="Cybersecurity">Cybersecurity</option>
+                      <option value="Mechanical Engineering">Mechanical Engineering</option>
+                      <option value="Electrical Engineering">Electrical Engineering</option>
+                      <option value="Electronics & Communication">Electronics & Communication</option>
+                      <option value="Civil Engineering">Civil Engineering</option>
+                      <option value="Chemical Engineering">Chemical Engineering</option>
+                      <option value="Aerospace Engineering">Aerospace Engineering</option>
+                      <option value="Biomedical Engineering">Biomedical Engineering</option>
+                      <option value="Robotics">Robotics</option>
+                      <option value="Automotive Engineering">Automotive Engineering</option>
+                    </optgroup>
+                    <optgroup label="Business & Management">
+                      <option value="Business Administration">Business Administration</option>
+                      <option value="Finance">Finance</option>
+                      <option value="Marketing">Marketing</option>
+                      <option value="Accounting">Accounting</option>
+                      <option value="Economics">Economics</option>
+                      <option value="Management">Management</option>
+                      <option value="International Business">International Business</option>
+                      <option value="Supply Chain Management">Supply Chain Management</option>
+                      <option value="Human Resources">Human Resources</option>
+                      <option value="Entrepreneurship">Entrepreneurship</option>
+                      <option value="Business Analytics">Business Analytics</option>
+                    </optgroup>
+                    <optgroup label="Health & Medicine">
+                      <option value="Medicine (MBBS/MD)">Medicine (MBBS/MD)</option>
+                      <option value="Nursing">Nursing</option>
+                      <option value="Pharmacy">Pharmacy</option>
+                      <option value="Public Health">Public Health</option>
+                      <option value="Dentistry">Dentistry</option>
+                      <option value="Physiotherapy">Physiotherapy</option>
+                      <option value="Psychology">Psychology</option>
+                      <option value="Biotechnology">Biotechnology</option>
+                      <option value="Nutrition & Dietetics">Nutrition & Dietetics</option>
+                    </optgroup>
+                    <optgroup label="Sciences">
+                      <option value="Physics">Physics</option>
+                      <option value="Chemistry">Chemistry</option>
+                      <option value="Biology">Biology</option>
+                      <option value="Mathematics">Mathematics</option>
+                      <option value="Statistics">Statistics</option>
+                      <option value="Environmental Science">Environmental Science</option>
+                      <option value="Geology">Geology</option>
+                      <option value="Astronomy">Astronomy</option>
+                    </optgroup>
+                    <optgroup label="Arts, Humanities & Social Sciences">
+                      <option value="Law">Law</option>
+                      <option value="Political Science">Political Science</option>
+                      <option value="International Relations">International Relations</option>
+                      <option value="Sociology">Sociology</option>
+                      <option value="History">History</option>
+                      <option value="Philosophy">Philosophy</option>
+                      <option value="English Literature">English Literature</option>
+                      <option value="Journalism & Mass Comm">Journalism & Mass Comm</option>
+                      <option value="Design">Design (Graphic/Industrial/Fashion)</option>
+                      <option value="Architecture">Architecture</option>
+                      <option value="Fine Arts">Fine Arts</option>
+                      <option value="Education">Education</option>
+                    </optgroup>
+                    <option value="Other">Other</option>
+                  </select>
+              </div>
+            </div>
+            <div class="custom-input-group">
+                <label for="preferredCountries">Preferred Countries</label>
+                <select id="preferredCountries" name="preferredCountries" multiple required>
+                   <!-- Populated via JS -->
+                </select>
+            </div>
+            <div class="custom-input-group">
+                <label for="targetIntakeYear">Target Intake Year</label>
+                <div class="input-wrapper">
+                  <input type="number" id="targetIntakeYear" name="targetIntakeYear" class="custom-input" placeholder="2025" />
+                  <button type="button" class="mic-input-btn" onclick="startDictation('targetIntakeYear')"><i class="fas fa-microphone"></i></button>
+                </div>
+            </div>
+        `
+      },
+      {
+        id: 'budget',
+        question: "Understanding your budget is key to finding the right fit. What is your estimated annual budget and funding plan?",
+        html: `
+            <div class="custom-input-group">
+              <label for="budgetRange">Annual Budget (USD)</label>
+              <div class="input-wrapper">
+                  <select id="budgetRange" name="budgetRange" class="custom-input" required>
+                    <option value="">Select range</option>
+                    <option value="< $10,000">&lt; $10,000</option>
+                    <option value="$10,000 - $30,000">$10,000 - $30,000</option>
+                    <option value="$30,000 - $50,000">$30,000 - $50,000</option>
+                    <option value="$50,000 - $100,000">$50,000 - $100,000</option>
+                    <option value="> $100,000">&gt; $100,000</option>
+                  </select>
+              </div>
+            </div>
+             <div class="custom-input-group">
+              <label for="fundingPlan">Funding Source</label>
+              <div class="input-wrapper">
+                  <select id="fundingPlan" name="fundingPlan" class="custom-input" required>
+                    <option value="">Select plan</option>
+                    <option value="Self-funded">Self-funded</option>
+                    <option value="Scholarship-dependent">Scholarship-dependent</option>
+                    <option value="Loan-dependent">Loan-dependent</option>
+                    <option value="Mixed">Mixed</option>
+                  </select>
+              </div>
+            </div>
+        `
+      },
+      {
+        id: 'exams',
+        question: "Almost done! Do you have any exam scores yet? This helps us check eligibility.",
+        html: `
+            <div class="custom-input-group">
+              <label for="ieltsStatus">IELTS Status</label>
+              <div class="input-wrapper">
+                  <select id="ieltsStatus" name="ieltsStatus" class="custom-input" onchange="toggleScore('ieltsStatus', 'ieltsScoreWrapper')">
+                    <option value="Not started">Not started</option>
+                    <option value="In progress">In progress</option>
+                    <option value="Completed">Completed</option>
+                  </select>
+              </div>
+            </div>
+            <div id="ieltsScoreWrapper" class="custom-input-group" style="display:none; margin-left: 20px; border-left: 2px solid var(--accent); padding-left: 15px;">
+                <label for="ieltsScore">IELTS Score</label>
+                 <div class="input-wrapper">
+                    <input type="number" id="ieltsScore" name="ieltsScore" class="custom-input" step="0.5" placeholder="e.g. 7.5" />
+                    <button type="button" class="mic-input-btn" onclick="startDictation('ieltsScore')"><i class="fas fa-microphone"></i></button>
+                 </div>
+            </div>
 
-    let countriesChoices;
-    async function loadCountries() {
-      // Static list of top 15 study abroad countries
+            <div class="custom-input-group">
+              <label for="toeflStatus">TOEFL Status</label>
+              <div class="input-wrapper">
+                  <select id="toeflStatus" name="toeflStatus" class="custom-input" onchange="toggleScore('toeflStatus', 'toeflScoreWrapper')">
+                    <option value="Not started">Not started</option>
+                    <option value="In progress">In progress</option>
+                    <option value="Completed">Completed</option>
+                  </select>
+              </div>
+            </div>
+             <div id="toeflScoreWrapper" class="custom-input-group" style="display:none; margin-left: 20px; border-left: 2px solid var(--accent); padding-left: 15px;">
+                <label for="toeflScore">TOEFL Score</label>
+                 <div class="input-wrapper">
+                    <input type="number" id="toeflScore" name="toeflScore" class="custom-input" placeholder="e.g. 100" />
+                    <button type="button" class="mic-input-btn" onclick="startDictation('toeflScore')"><i class="fas fa-microphone"></i></button>
+                 </div>
+            </div>
+            
+             <div class="custom-input-group">
+              <label for="greStatus">GRE Status</label>
+              <div class="input-wrapper">
+                  <select id="greStatus" name="greStatus" class="custom-input" onchange="toggleScore('greStatus', 'greScoreWrapper')">
+                     <option value="Not started">Not started</option>
+                    <option value="In progress">In progress</option>
+                    <option value="Completed">Completed</option>
+                  </select>
+              </div>
+            </div>
+             <div id="greScoreWrapper" class="custom-input-group" style="display:none; margin-left: 20px; border-left: 2px solid var(--accent); padding-left: 15px;">
+                <label for="greScore">GRE Score</label>
+                 <div class="input-wrapper">
+                    <input type="number" id="greScore" name="greScore" class="custom-input" placeholder="e.g. 320" />
+                    <button type="button" class="mic-input-btn" onclick="startDictation('greScore')"><i class="fas fa-microphone"></i></button>
+                 </div>
+            </div>
+        `
+      }
+    ];
+
+    let currentStepIndex = 0;
+    let countriesChoicesInstance = null;
+    let voiceEnabled = true;
+    const profileData = {}; // Store data across steps
+
+    // ... (Voice Logic remains same) ...
+
+    // --- UI Logic ---
+    // ... (typeMessage remains same) ...
+    // ... (renderStep remains same) ...
+
+    // ... (initCountries remains same) ...
+    // ... (toggleScore remains same) ...
+
+    async function handleNextClick() {
+      const container = document.getElementById('formContainer');
+      const inputs = container.querySelectorAll('input, select');
+      let valid = true;
+
+      // 1. Validate
+      inputs.forEach(input => {
+        if (input.hasAttribute('required') && !input.value) {
+          if (input.id === 'preferredCountries') {
+            if (countriesChoicesInstance && countriesChoicesInstance.getValue(true).length === 0) {
+              valid = false;
+            }
+          } else {
+            valid = false;
+            input.style.borderColor = '#ef4444';
+            setTimeout(() => input.style.borderColor = 'rgba(148, 163, 184, 0.2)', 2000);
+          }
+        }
+      });
+
+      if (!valid && currentStepIndex < steps.length) {
+        typeMessage("Please fill in the required fields before we continue.");
+        return;
+      }
+
+      // 2. Save Data to State
+      inputs.forEach(input => {
+        if (input.id === 'preferredCountries' && countriesChoicesInstance) {
+          profileData['preferredCountries'] = countriesChoicesInstance.getValue(true);
+        } else {
+          // Only save if it has a name and value
+          if (input.name) {
+            profileData[input.name] = input.value;
+          }
+        }
+      });
+
+      // Echo User Answer
+      const summary = getUserSummary(currentStepIndex);
+      if (summary) {
+        appendUserMessage(summary);
+      }
+
+      // Move to next or submit
+      if (currentStepIndex < steps.length - 1) {
+        currentStepIndex++;
+        renderStep(currentStepIndex);
+      } else {
+        // Final submit
+        await submitProfile();
+      }
+    }
+
+    function getUserSummary(index) {
+      // Helper to format a nice summary string based on the step inputs
+      const container = document.getElementById('formContainer');
+      const inputs = Array.from(container.querySelectorAll('input, select'));
+
+      let parts = [];
+      inputs.forEach(input => {
+        if (!input.value) return;
+        // Skip hidden score fields if they are empty or hidden
+        if (input.offsetParent === null) return;
+
+        if (input.tagName === 'SELECT') {
+          // For multi-select specific handling
+          if (input.id === 'preferredCountries' && countriesChoicesInstance) {
+            const selected = countriesChoicesInstance.getValue(true);
+            if (selected.length) parts.push(selected.join(', '));
+          } else {
+            parts.push(input.value);
+          }
+        } else {
+          parts.push(input.value);
+        }
+      });
+      return parts.join(" | ");
+    }
+
+    async function submitProfile() {
+      const btn = document.getElementById('nextBtn');
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+      btn.disabled = true;
+
+      try {
+        // Use apiRequest from auth.js to handle Base URL and Token automatically
+        await apiRequest('/profiles', {
+          method: 'POST',
+          body: JSON.stringify(profileData)
+        });
+
+        typeMessage("Profile completed successfully! Redirecting you...", () => {
+          setTimeout(() => {
+            window.location.href = 'dashboard.html';
+          }, 1500);
+        });
+
+      } catch (e) {
+        console.error(e);
+        typeMessage(`Error: ${e.message}. Please try again.`);
+        btn.innerHTML = 'Try Again';
+        btn.disabled = false;
+      }
+    }
+    const synth = window.speechSynthesis;
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let recognition;
+
+    if (SpeechRecognition) {
+      recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+    }
+
+    function toggleVoice() {
+      voiceEnabled = !voiceEnabled;
+      const btn = document.getElementById('globalVoiceToggle');
+      if (voiceEnabled) {
+        btn.innerHTML = '<i class="fas fa-volume-up"></i>';
+        btn.classList.add('active');
+      } else {
+        btn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+        btn.classList.remove('active');
+        synth.cancel();
+      }
+    }
+
+    // Initialize toggle button
+    document.getElementById('globalVoiceToggle').addEventListener('click', toggleVoice);
+
+    function speak(text) {
+      if (!voiceEnabled) return;
+      if (synth.speaking) synth.cancel();
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      // Select a decent voice if available
+      const voices = synth.getVoices();
+      const preferred = voices.find(v => v.name.includes('Google US English') || v.name.includes('Samantha'));
+      if (preferred) utterance.voice = preferred;
+
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      synth.speak(utterance);
+    }
+
+    function startDictation(inputId) {
+      if (!recognition) {
+        alert("Speech Recognition is not supported in this browser. Try Chrome.");
+        return;
+      }
+
+      const btn = document.querySelector(`button[onclick="startDictation('${inputId}')"]`);
+      btn.classList.add('listening');
+
+      recognition.start();
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        const input = document.getElementById(inputId);
+        if (input) {
+          // Simple heuristics for numbers if input is number type
+          if (input.type === 'number') {
+            const num = transcript.match(/\d+(\.\d+)?/);
+            if (num) input.value = num[0];
+          } else {
+            input.value = transcript;
+          }
+        }
+        btn.classList.remove('listening');
+      };
+
+      recognition.onerror = (event) => {
+        console.error("Speech error", event.error);
+        btn.classList.remove('listening');
+      };
+
+      recognition.onend = () => {
+        btn.classList.remove('listening');
+      }
+    }
+
+    // --- UI Logic ---
+
+    function typeMessage(text, callback) {
+      const chatArea = document.getElementById('chatArea');
+      const indicators = document.getElementById('typingIndicator');
+
+      indicators.style.display = 'block';
+      chatArea.scrollTop = chatArea.scrollHeight;
+
+      // Artificial delay for "thinking"
+      setTimeout(() => {
+        indicators.style.display = 'none';
+
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'message bot';
+        msgDiv.innerHTML = `
+                <div class="chat-avatar bot">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="bubble">${text}</div>
+            `;
+        chatArea.appendChild(msgDiv);
+        requestAnimationFrame(() => {
+          chatArea.scrollTop = chatArea.scrollHeight;
+        });
+
+        if (voiceEnabled) speak(text);
+        if (callback) callback();
+      }, 1200);
+    }
+
+    function renderStep(index) {
+      const container = document.getElementById('formContainer');
+      const step = steps[index];
+
+      // Fade out
+      container.style.opacity = '0';
+
+      setTimeout(() => {
+        // Inject new form HTML
+        container.innerHTML = `<div class="form-step active" id="step-${index}">${step.html}</div>`;
+
+        // Re-initialize plugins (Choices.js) if needed
+        if (index === 1) { // Goals step
+          initCountries();
+        }
+        // Restore opacity
+        container.style.opacity = '1';
+
+        // Ask the question
+        typeMessage(step.question);
+
+        // Update button text
+        const btn = document.getElementById('nextBtn');
+        btn.innerHTML = (index === steps.length - 1) ?
+          'Finish Profile <i class="fas fa-check"></i>' :
+          'Continue <i class="fas fa-arrow-right"></i>';
+
+      }, 300);
+    }
+
+    function initCountries() {
       const countries = [
         'United States', 'United Kingdom', 'Canada', 'Australia', 'Germany',
         'France', 'Netherlands', 'Sweden', 'Switzerland', 'Singapore',
         'Japan', 'South Korea', 'New Zealand', 'Ireland', 'Italy'
-      ].sort();
-
-      const countriesSelect = document.getElementById('preferredCountries');
-
-      // Clear existing options
-      countriesSelect.innerHTML = '';
-
-      countries.forEach(country => {
-        const option = document.createElement('option');
-        option.value = country;
-        option.textContent = country;
-        countriesSelect.appendChild(option);
-      });
-
-      // Initialize Choices.js
-      countriesChoices = new Choices('#preferredCountries', {
-        searchEnabled: true,
-        removeItemButton: true,
-        placeholder: true,
-        placeholderValue: 'Select countries...',
-        searchPlaceholderValue: 'Type to search...',
-        noResultsText: 'No results found',
-        noChoicesText: 'No more countries',
-        itemSelectText: 'Press to select'
-      });
-    }
-
-
-    // Show/hide score fields based on exam status
-    function toggleScoreFields() {
-      const exams = [
-        { statusId: 'ieltsStatus', scoreFieldId: 'ieltsScoreField' },
-        { statusId: 'toeflStatus', scoreFieldId: 'toeflScoreField' },
-        { statusId: 'greStatus', scoreFieldId: 'greScoreField' }
       ];
+      const select = document.getElementById('preferredCountries');
+      if (!select) return;
 
-      exams.forEach(exam => {
-        const statusSelect = document.getElementById(exam.statusId);
-        const scoreField = document.getElementById(exam.scoreFieldId);
+      select.innerHTML = '';
+      countries.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c;
+        opt.textContent = c;
+        select.appendChild(opt);
+      });
 
-        if (statusSelect && scoreField) {
-          // Function to update visibility
-          const updateVisibility = () => {
-            const status = statusSelect.value;
-            if (status === 'In progress' || status === 'Completed') {
-              scoreField.classList.add('visible');
-            } else {
-              scoreField.classList.remove('visible');
-              // Clear score if hidden
-              const scoreInput = scoreField.querySelector('input');
-              if (scoreInput) scoreInput.value = '';
-            }
-          };
+      if (countriesChoicesInstance) {
+        countriesChoicesInstance.destroy();
+      }
 
-          // Set initial visibility
-          updateVisibility();
-
-          // Listen for changes
-          statusSelect.addEventListener('change', updateVisibility);
-        }
+      countriesChoicesInstance = new Choices(select, {
+        removeItemButton: true,
+        placeholderValue: 'Select countries...',
+        searchPlaceholderValue: 'Type to search...'
       });
     }
 
-    // Initialize on page load
+    // Helper to toggle Exam score fields
+    window.toggleScore = function (statusId, wrapperId) {
+      const status = document.getElementById(statusId).value;
+      const wrapper = document.getElementById(wrapperId);
+      if (status === 'In progress' || status === 'Completed') {
+        wrapper.style.display = 'block';
+      } else {
+        wrapper.style.display = 'none';
+      }
+    }
+
+
+
+    function appendUserMessage(text) {
+      const chatArea = document.getElementById('chatArea');
+      const msgDiv = document.createElement('div');
+      msgDiv.className = 'message user';
+      msgDiv.innerHTML = `
+            <div class="chat-avatar user">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="bubble">${text}</div>
+        `;
+      chatArea.appendChild(msgDiv);
+      requestAnimationFrame(() => {
+        chatArea.scrollTop = chatArea.scrollHeight;
+      });
+    }
+
+    // Initialize
     document.addEventListener('DOMContentLoaded', () => {
-      loadCountries();
-      toggleScoreFields();
-      showStep(currentStep); // Initialize first step
-    });
+      // Load voices
+      speechSynthesis.getVoices();
 
-    // Multi-step Form Logic
-    let currentStep = 0; // Current step index (0-based)
-
-    function showStep(n) {
-      const steps = document.getElementsByClassName("step");
-
-      // Safety check
-      if (n >= steps.length) n = steps.length - 1;
-      if (n < 0) n = 0;
-
-      // Hide all steps
-      for (let i = 0; i < steps.length; i++) {
-        steps[i].classList.remove("active");
-      }
-
-      // Show current step
-      steps[n].classList.add("active");
-
-      // Handle buttons
-      const prevBtn = document.getElementById("prevBtn");
-      const nextBtn = document.getElementById("nextBtn");
-
-      if (n === 0) {
-        prevBtn.style.visibility = "hidden";
-      } else {
-        prevBtn.style.visibility = "visible";
-      }
-
-      if (n === steps.length - 1) {
-        nextBtn.innerHTML = "Complete Onboarding";
-      } else {
-        nextBtn.innerHTML = "Next";
-      }
-
-      // Update progress bar
-      updateProgressBar(n);
-    }
-
-    function updateProgressBar(n) {
-      const progressItems = document.querySelectorAll(".progressbar li");
-      progressItems.forEach((item, index) => {
-        item.classList.remove("active", "completed");
-        if (index < n) {
-          item.classList.add("completed");
-        } else if (index === n) {
-          item.classList.add("active");
-        }
-      });
-    }
-
-    function nextPrev(n) {
-      const steps = document.getElementsByClassName("step");
-
-      // If moving forward, validate
-      if (n === 1 && !validateForm()) return false;
-
-      // If valid or moving back
-      const nextStep = currentStep + n;
-
-      if (nextStep >= steps.length) {
-        // Submit form
-        document.getElementById("onboardingForm").requestSubmit();
-        return false;
-      }
-
-      currentStep = nextStep;
-      showStep(currentStep);
-    }
-
-    function validateForm() {
-      const steps = document.getElementsByClassName("step");
-      const currentStepElement = steps[currentStep];
-      const inputs = currentStepElement.querySelectorAll("input, select");
-      let valid = true;
-      let firstInvalid = null;
-
-      // Reset previous errors
-      const errorDiv = document.getElementById("errorMessage");
-      errorDiv.style.display = "none";
-
-      // Specific validation for countries choice which is a custom UI
-      if (currentStep === 1) { // Study Goals step (index 1) which has countries
-        // Check if countries field is visible and required
-        // Note: Choices.js hides the original select, so standard validation might fail or be tricky
-        const preferredCountries = document.getElementById('preferredCountries');
-        if (preferredCountries && preferredCountries.hasAttribute('required')) {
-          const val = countriesChoices ? countriesChoices.getValue(true) : preferredCountries.value;
-          if (!val || (Array.isArray(val) && val.length === 0)) {
-            valid = false;
-            if (!firstInvalid) firstInvalid = preferredCountries.parentElement; // box around it
-            // Show visual error
-          }
-        }
-      }
-
-      for (let i = 0; i < inputs.length; i++) {
-        const input = inputs[i];
-
-        // Skip hidden inputs (like score fields when not visible)
-        if (input.offsetParent === null) continue;
-
-        // Check standard validity
-        if (!input.checkValidity()) {
-          input.classList.add("invalid");
-          valid = false;
-          if (!firstInvalid) firstInvalid = input;
-        } else {
-          input.classList.remove("invalid");
-        }
-      }
-
-      if (!valid) {
-        errorDiv.textContent = "Please fill in all required fields.";
-        errorDiv.style.display = "block";
-        if (firstInvalid) firstInvalid.focus();
-      }
-
-      return valid;
-    }
-
-    document.getElementById('onboardingForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const errorDiv = document.getElementById('errorMessage');
-      errorDiv.style.display = 'none';
-
-      const formData = new FormData(e.target);
-      const data = {};
-
-      // Convert FormData to object
-      for (const [key, value] of formData.entries()) {
-        if (key === 'preferredCountries') {
-          if (!data[key]) data[key] = [];
-          data[key].push(value);
-        } else {
-          data[key] = value;
-        }
-      }
-
-      // Handle multiple select (using Choices.js values)
-      if (countriesChoices) {
-        data.preferredCountries = countriesChoices.getValue(true);
-      } else {
-        const countriesSelect = document.getElementById('preferredCountries');
-        data.preferredCountries = Array.from(countriesSelect.selectedOptions).map(opt => opt.value);
-      }
-
-      // Add major to data if selected
-      const major = document.getElementById('major').value;
-      if (major) {
-        data.major = major;
-      }
-
-      try {
-        const response = await apiRequest('/profiles', {
-          method: 'POST',
-          body: JSON.stringify(data)
+      // Initial bot greeting
+      setTimeout(() => {
+        typeMessage("Hi there! I'm your AI Education Counsellor. I'll help you find the perfect university from my database. Ready to build your profile?", () => {
+          // Show first step after greeting
+          renderStep(0);
         });
-
-        // Update user in localStorage
-        const user = getCurrentUser();
-        if (user) {
-          user.onboardingCompleted = true;
-          setCurrentUser(user);
-        }
-
-        window.location.href = 'dashboard.html';
-      } catch (error) {
-        errorDiv.textContent = error.message;
-        errorDiv.style.display = 'block';
-      }
+      }, 500);
     });
+
   </script>
 </body>
 

@@ -154,8 +154,8 @@
             <span class="bar"></span>
         </div>
         <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="universities.html" class="active">Universities</a></li>
+            <!-- Home link removed as per request -->
+            <li><a href="universities.html" class="active">Back to Universities</a></li>
             <li><a href="dashboard.html">Dashboard</a></li>
             <li><a href="#" id="logoutBtn" style="color: var(--danger-color);">Logout</a></li>
         </ul>
@@ -211,7 +211,7 @@
             <h2>Need Expert Guidance?</h2>
             <p>Have questions about this university? creating your application? or scholarship opportunities? Chat with
                 our AI University Counsellor for instant answers.</p>
-            <button class="btn-primary" onclick="alert('Connecting to Counsellor... (Feature coming soon)')">
+            <button class="btn-primary" onclick="toggleChat()">
                 <i class="fas fa-robot"></i> Talk to University Counsellor
             </button>
         </div>
@@ -223,6 +223,29 @@
             <p>© 2025 Scholarship Finder. All rights reserved.</p>
         </div>
     </footer>
+
+    <!-- Chat Floating Action Button -->
+    <button class="chat-fab" onclick="toggleChat()" title="Chat with AI Counsellor">
+        <i class="fas fa-robot"></i>
+    </button>
+
+    <!-- Chat Panel -->
+    <div class="chat-panel" id="chatPanel">
+        <div class="chat-header">
+            <h3><i class="fas fa-robot"></i> AI Counsellor</h3>
+            <button class="close-chat" onclick="toggleChat()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot">
+                <div class="message-content">Hello! I'm here to help you with any questions about this university. Ask
+                    me anything!</div>
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" placeholder="Type your question..." onkeypress="handleEnter(event)">
+            <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
 
     <script src="js/auth.js"></script>
     <script>
@@ -256,6 +279,7 @@
             try {
                 // Use apiRequest helper from js/auth.js (handles base URL which is localhost:3000)
                 const uni = await apiRequest(`/universities/${uniId}`);
+                currentUniData = uni; // Store for chat context
 
                 // Populate Header
                 const heroHTML = `
@@ -293,11 +317,171 @@
             }
         }
 
+        // Check if university info is already known
+        let currentUniData = null;
+        let chatInitiated = false;
+
         // Init
         if (checkAuth()) {
             loadUniversityDetails();
         } else {
             window.location.href = 'login.html';
+        }
+
+        /* ====================
+           CHAT LOGIC
+           ==================== */
+        let chatInitialized = false;
+
+        function toggleChat() {
+            const panel = document.getElementById('chatPanel');
+            panel.classList.toggle('open');
+
+            if (panel.classList.contains('open')) {
+                document.getElementById('chatInput').focus();
+
+                // Trigger initial greeting if not done yet
+                if (!chatInitialized) {
+                    initChatGreeting();
+                    chatInitialized = true;
+                }
+            }
+        }
+
+        async function initChatGreeting() {
+            // Remove the hardcoded hello message
+            const container = document.getElementById('chatMessages');
+            container.innerHTML = '';
+
+            // Show Loading
+            const loadingId = 'loading-init';
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message bot';
+            loadingDiv.id = loadingId;
+            loadingDiv.innerHTML = `<div class="message-content"><i class="fas fa-ellipsis-h fa-fade"></i></div>`;
+            container.appendChild(loadingDiv);
+
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const uniId = urlParams.get('id');
+
+                const data = await apiRequest('/counsellor/chat', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        message: `I am currently viewing ${currentUniData ? currentUniData.name : 'this university'}. Please remind me of my current task status and give me a brief summary of this university.`,
+                        universityId: uniId
+                    })
+                });
+
+                document.getElementById(loadingId).remove();
+                if (data.message) {
+                    addMessage(data.message.replace(/\n/g, '<br>'), 'bot');
+                }
+            } catch (error) {
+                console.error(error);
+                document.getElementById(loadingId).remove();
+                addMessage("Hello! How can I help you with this university?", 'bot');
+            }
+        }
+
+        function handleEnter(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function addMessage(text, sender) {
+            const container = document.getElementById('chatMessages');
+
+            // Remove initial placeholder if still there
+            if (container.children.length === 1 && container.children[0].innerText.includes("Hello! I'm here")) {
+                container.innerHTML = '';
+            }
+
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${sender}`;
+            msgDiv.innerHTML = `<div class="message-content">${text}</div>`;
+            container.appendChild(msgDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function sendSystemMessage(systemText) {
+            // Show Loading
+            const loadingId = 'loading-' + Date.now();
+            const container = document.getElementById('chatMessages');
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message bot';
+            loadingDiv.id = loadingId;
+            loadingDiv.innerHTML = `<div class="message-content"><i class="fas fa-ellipsis-h fa-fade"></i></div>`;
+            container.appendChild(loadingDiv);
+            container.scrollTop = container.scrollHeight;
+
+            try {
+                const data = await apiRequest('/counsellor/chat', {
+                    method: 'POST',
+                    body: JSON.stringify({ message: systemText })
+                });
+
+                document.getElementById(loadingId).remove();
+
+                if (data.message) {
+                    addMessage(data.message.replace(/\n/g, '<br>'), 'bot');
+                }
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById(loadingId).remove();
+                // Silent fail for system message or show minimal error
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            // 1. Show User Message
+            addMessage(text, 'user');
+            input.value = '';
+
+            // 2. Show Loading
+            const loadingId = 'loading-' + Date.now();
+            const container = document.getElementById('chatMessages');
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message bot';
+            loadingDiv.id = loadingId;
+            loadingDiv.innerHTML = `<div class="message-content"><i class="fas fa-ellipsis-h fa-fade"></i></div>`;
+            container.appendChild(loadingDiv);
+            container.scrollTop = container.scrollHeight;
+
+            try {
+                // 3. Call API
+                const urlParams = new URLSearchParams(window.location.search);
+                const uniId = urlParams.get('id');
+
+                // apiRequest handles the base URL and token
+                const data = await apiRequest('/counsellor/chat', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        message: text,
+                        universityId: uniId
+                    })
+                });
+
+                // 4. Remove Loading & Show Response
+                document.getElementById(loadingId).remove();
+
+                if (data.message) {
+                    addMessage(data.message.replace(/\n/g, '<br>'), 'bot');
+                } else {
+                    addMessage("I didn't get a response. Please try again.", 'bot');
+                }
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById(loadingId).remove();
+                addMessage("Error connecting to Counsellor. Please try again.", 'bot');
+            }
         }
     </script>
 </body>

@@ -387,7 +387,6 @@
         const isFinalized = progress?.task0?.finalized;
 
         if (proposedCountries.length > 0) {
-
           // Guidance
           if (!selectedCountry) {
             updateInstruction("Select a country or type to add one");
@@ -424,58 +423,55 @@
             btn.onclick = () => runProgressAction('select_country', { country: country.country });
             topContainer.appendChild(btn);
           });
+        }
 
-          // Custom Searchable Dropdown (Choices.js)
-          if (!isFinalized) {
-            const dropdownDiv = document.createElement('div');
-            dropdownDiv.style.width = "100%"; // Full width in new container
+        // Custom Searchable Dropdown (Choices.js) - ALWAYS render if not finalized
+        if (!isFinalized) {
+          const dropdownDiv = document.createElement('div');
+          dropdownDiv.style.width = "100%"; // Full width in new container
 
-            const select = document.createElement('select');
-            select.id = 'countrySearchDropdown';
-            const opt = document.createElement('option');
-            opt.placeholder = true; // Use Choices placeholder behavior
-            opt.text = "Search country of your choice..."; // Placeholder text
-            opt.value = "";
-            select.appendChild(opt);
+          const select = document.createElement('select');
+          select.id = 'countrySearchDropdown';
+          const opt = document.createElement('option');
+          opt.placeholder = true; // Use Choices placeholder behavior
+          opt.text = "Search country of your choice..."; // Placeholder text
+          opt.value = "";
+          select.appendChild(opt);
 
-            dropdownDiv.appendChild(select);
+          dropdownDiv.appendChild(select);
 
-            // Append to the NEW container that isn't clipped
-            if (searchContainer) {
-              searchContainer.appendChild(dropdownDiv);
-            } else {
-              topContainer.appendChild(dropdownDiv);
-            }
-
-            // Initialize the searchable dropdown
-            setTimeout(() => initCountrySearch(), 0);
+          // Append to the NEW container that isn't clipped
+          if (searchContainer) {
+            searchContainer.appendChild(dropdownDiv);
+          } else {
+            topContainer.appendChild(dropdownDiv);
           }
 
-          // Finalize Button
-          if (selectedCountry && !isFinalized) {
-            const finBtn = document.createElement('button');
-            finBtn.className = 'ui-chip chip-action';
-            finBtn.innerHTML = 'Finalize <i class="fas fa-check"></i>';
-            finBtn.onclick = () => runProgressAction('finalize_country');
-            topContainer.appendChild(finBtn);
-          }
+          // Initialize the searchable dropdown
+          setTimeout(() => initCountrySearch(), 0);
+        }
 
-          // Move Next
-          if (isFinalized) {
-            const moveBtn = document.createElement('button');
-            moveBtn.className = 'ui-chip chip-action';
-            moveBtn.innerHTML = 'Next Step <i class="fas fa-arrow-right"></i>';
-            moveBtn.onclick = () => runProgressAction('move_to_next_step');
-            topContainer.appendChild(moveBtn);
+        // Finalize Button
+        if (selectedCountry && !isFinalized) {
+          const finBtn = document.createElement('button');
+          finBtn.className = 'ui-chip chip-action';
+          finBtn.innerHTML = 'Finalize <i class="fas fa-check"></i>';
+          finBtn.onclick = () => runProgressAction('finalize_country');
+          topContainer.appendChild(finBtn);
+        }
 
-            const reselectBtn = document.createElement('button');
-            reselectBtn.className = 'ui-chip chip-secondary';
-            reselectBtn.innerHTML = '<i class="fas fa-undo"></i> Reselect';
-            reselectBtn.onclick = () => { if (confirm('Reset country selection?')) runProgressAction('reselect_country'); };
-            topContainer.appendChild(reselectBtn);
-          }
+        // Move Next
+        if (isFinalized) {
+          const moveBtn = document.createElement('button');
+          moveBtn.className = 'ui-chip chip-action';
+          moveBtn.innerHTML = 'Next Step <i class="fas fa-arrow-right"></i>';
+          moveBtn.onclick = () => runProgressAction('move_to_next_step');
+          topContainer.appendChild(moveBtn);
 
-        } else {
+          // Reselect button removed as per user request
+        }
+
+        if (proposedCountries.length === 0 && !selectedCountry && !isFinalized) {
           bottomContainer.innerHTML = '<div class="loading-text">Loading suggestions...</div>';
         }
       }
@@ -692,14 +688,7 @@
         examDiv.appendChild(submitBtn);
         topContainer.appendChild(examDiv);
 
-        const doneBtn = document.createElement('button');
-        doneBtn.className = 'ui-chip chip-primary';
-        doneBtn.textContent = 'Done';
-        doneBtn.disabled = !allScoresIn;
-        doneBtn.onclick = () => {
-          runProgressAction('exam_done', { examType: sel.value });
-        };
-        topContainer.appendChild(doneBtn);
+        // Done button removed as per user request
       }
 
       // --- TASKS 3 & 4 (Simplified) ---
@@ -722,11 +711,7 @@
         docsBtn.onclick = () => runProgressAction('all_docs_available');
         topContainer.appendChild(docsBtn);
 
-        const reCountryBtn = document.createElement('button');
-        reCountryBtn.className = 'ui-chip chip-secondary';
-        reCountryBtn.innerHTML = '<i class="fas fa-undo"></i> Reselect Country';
-        reCountryBtn.onclick = () => { if (confirm('Go back to country selection? This will reset your current university and exam data.')) runProgressAction('reselect_country'); };
-        topContainer.appendChild(reCountryBtn);
+        // Reselect Country removed from Task 3 as per user request
       }
 
       if (t === 4) {

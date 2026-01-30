@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,25 +16,30 @@
       border-radius: 15px;
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
     }
+
     .auth-container h1 {
       text-align: center;
       margin-bottom: 10px;
       color: #2c3e50;
     }
+
     .auth-container p {
       text-align: center;
       color: #7f8c8d;
       margin-bottom: 30px;
     }
+
     .form-group {
       margin-bottom: 20px;
     }
+
     .form-group label {
       display: block;
       margin-bottom: 8px;
       color: #2c3e50;
       font-weight: 500;
     }
+
     .form-group input {
       width: 100%;
       padding: 12px;
@@ -43,10 +49,12 @@
       transition: border-color 0.3s;
       box-sizing: border-box;
     }
+
     .form-group input:focus {
       outline: none;
       border-color: #3498db;
     }
+
     .btn-submit {
       width: 100%;
       padding: 14px;
@@ -59,9 +67,11 @@
       cursor: pointer;
       transition: transform 0.2s;
     }
+
     .btn-submit:hover {
       transform: translateY(-2px);
     }
+
     .error-message {
       background: #fee;
       color: #c33;
@@ -70,42 +80,45 @@
       margin-bottom: 20px;
       display: none;
     }
+
     .auth-links {
       text-align: center;
       margin-top: 20px;
     }
+
     .auth-links a {
       color: #3498db;
       text-decoration: none;
     }
   </style>
 </head>
+
 <body>
   <div class="auth-container">
     <h1>Create Your Account</h1>
     <p>Start your study-abroad journey today</p>
-    
+
     <div id="errorMessage" class="error-message"></div>
-    
+
     <form id="signupForm">
       <div class="form-group">
         <label for="fullName">Full Name</label>
         <input type="text" id="fullName" name="fullName" required>
       </div>
-      
+
       <div class="form-group">
         <label for="email">Email</label>
         <input type="email" id="email" name="email" required>
       </div>
-      
+
       <div class="form-group">
         <label for="password">Password</label>
         <input type="password" id="password" name="password" required minlength="6">
       </div>
-      
+
       <button type="submit" class="btn-submit">Sign Up</button>
     </form>
-    
+
     <div class="auth-links">
       <p>Already have an account? <a href="login.html">Login</a></p>
       <p><a href="index.html">Back to Home</a></p>
@@ -132,15 +145,27 @@
       }
     });
 
-    // Redirect if already logged in
+    // Check if already logged in
     if (checkAuth()) {
       const user = getCurrentUser();
-      if (user && user.onboardingCompleted) {
-        window.location.href = 'dashboard.html';
-      } else {
-        window.location.href = 'onboarding.html';
-      }
+      const container = document.querySelector('.auth-container');
+
+      container.innerHTML = `
+        <h1>Welcome Back!</h1>
+        <p>You are already logged in as <strong>${user ? user.fullName : 'User'}</strong></p>
+        
+        <div style="text-align: center; margin-top: 30px;">
+          <a href="dashboard.html" class="btn-submit" style="display: inline-block; text-decoration: none; margin-bottom: 15px;">Go to Dashboard</a>
+          <br>
+          <button onclick="logout()" style="background: none; border: none; color: #7f8c8d; cursor: pointer; text-decoration: underline;">Logout & Create New Account</button>
+        </div>
+        
+        <div class="auth-links">
+          <p><a href="index.html">Back to Home</a></p>
+        </div>
+      `;
     }
   </script>
 </body>
+
 </html>
