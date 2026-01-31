@@ -307,18 +307,98 @@
         }
 
         function renderDocEditor(uniId, type, title, initialContent = '') {
+            // Find uni name for template
+            let uniName = 'University';
+            if (userUniversitiesMap[uniId]) {
+                uniName = userUniversitiesMap[uniId].universityId?.name || userUniversitiesMap[uniId].name;
+            }
+
             return `
         <div class="doc-type-group">
           <div class="doc-type-header">
             <span class="doc-type-title"><i class="fas fa-file-alt"></i> ${title}</span>
             <span class="status-badge" id="status-${uniId}-${type}">${initialContent ? 'Saved in Cloud' : 'Not Started'}</span>
           </div>
+          
+          <div style="margin-bottom: 10px; display:flex; gap: 10px;">
+             <button class="uni-tab-btn" style="padding: 6px 12px; font-size: 0.8rem;" onclick="getTemplate('${uniId}', '${type}', '${uniName.replace(/'/g, "\\'")}')"><i class="fas fa-magic"></i> AI Template</button>
+             <button class="uni-tab-btn" style="padding: 6px 12px; font-size: 0.8rem;" onclick="checkGrammar('${uniId}', '${type}')"><i class="fas fa-spell-check"></i> Fix Grammar</button>
+          </div>
+
           <textarea class="editor-area" id="editor-${uniId}-${type}" placeholder="Start drafting your ${type} here..." oninput="setStatus('${uniId}', '${type}', 'Unsaved changes...')">${initialContent}</textarea>
           <div style="text-align: right;">
             <button class="save-btn" onclick="saveDoc('${uniId}', '${type}')"><i class="fas fa-save"></i> Save to Cloud</button>
           </div>
         </div>
       `;
+        }
+
+        // New AI Functions
+        async function getTemplate(uniId, type, uniName) {
+            const editor = document.getElementById(`editor-${uniId}-${type}`);
+            if (editor.value.length > 50 && !confirm("This will append the template to your current text. Continue?")) return;
+
+            const btn = document.querySelector(`button[onclick="getTemplate('${uniId}', '${type}', '${uniName.replace(/'/g, "\\'")}')"]`);
+            if (btn) {
+                var originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+                btn.disabled = true;
+            }
+
+            try {
+                const res = await apiRequest('/counsellor/document-tools', {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'template', type, universityName: uniName })
+                });
+
+                if (editor.value) {
+                    editor.value += '\n\n' + res.result;
+                } else {
+                    editor.value = res.result;
+                }
+                setStatus(uniId, type, 'Unsaved changes...');
+            } catch (e) {
+                alert("Failed to get template: " + e.message);
+            } finally {
+                if (btn) {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            }
+        }
+
+        async function checkGrammar(uniId, type) {
+            const editor = document.getElementById(`editor-${uniId}-${type}`);
+            const content = editor.value;
+            if (!content || content.length < 10) {
+                alert("Please write more text before checking grammar.");
+                return;
+            }
+
+            const btn = document.querySelector(`button[onclick="checkGrammar('${uniId}', '${type}')"]`);
+            if (btn) {
+                var originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Fixing...';
+                btn.disabled = true;
+            }
+
+            try {
+                const res = await apiRequest('/counsellor/document-tools', {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'grammar-check', content })
+                });
+
+                editor.value = res.result;
+                setStatus(uniId, type, 'Grammar fixed (Unsaved)');
+                saveDoc(uniId, type); // auto-save corrected version
+            } catch (e) {
+                alert("Failed to check grammar: " + e.message);
+            } finally {
+                if (btn) {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            }
         }
 
         function switchTab(index) {

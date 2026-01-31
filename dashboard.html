@@ -219,10 +219,13 @@
               modal.style.cssText = 'position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(5px);';
               modal.innerHTML = `
                         <div style="background: var(--card-bg); padding: 30px; border-radius: 16px; border: 1px solid #f59e0b; max-width: 400px; text-align: center; box-shadow: 0 0 30px rgba(245, 158, 11, 0.3);">
-                            <i class="fas fa-pencil-alt" style="font-size: 3rem; color: #f59e0b; margin-bottom: 20px;"></i>
+                            <i class="fas fa-lock" style="font-size: 3rem; color: #f59e0b; margin-bottom: 20px;"></i>
                             <h3 style="margin: 0 0 10px; color: #fff;">Documents Locked</h3>
                             <p style="color: var(--text-light); margin-bottom: 24px;">This workspace unlocks when you reach the <strong>SOP & LOR Writing</strong> stage. Please complete your previous tasks first!</p>
-                            <button id="closeDocGate" style="padding: 10px 20px; border-radius: 8px; background: var(--secondary-color); color: white; border:none; cursor: pointer;">Got it</button>
+                            <div style="display: flex; gap: 10px; justify-content: center;">
+                                <button id="closeDocGate" style="padding: 10px 20px; border-radius: 8px; border: 1px solid var(--text-light); background: transparent; color: var(--text-light); cursor: pointer;">Close</button>
+                                <a href="counsellor.html" style="display:inline-block; padding: 10px 20px; border-radius: 8px; background: #f59e0b; color: white; text-decoration: none; font-weight: 600;">Go to AI Counsellor</a>
+                            </div>
                         </div>
                     `;
               document.body.appendChild(modal);

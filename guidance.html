@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,11 +40,76 @@
 
     .header-section h1 {
       color: var(--text-medium);
-      margin-bottom: 8px;
+      margin-bottom: 0px;
+      /* Reset margin */
       font-size: 1.3rem;
       display: flex;
       align-items: center;
       gap: 8px;
+    }
+
+    .header-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto;
+      /* Push to right */
+    }
+
+    .docs-btn {
+      padding: 16px 32px;
+      border-radius: 99px;
+      background: linear-gradient(135deg, #FF512F 0%, #F09819 100%);
+      color: white;
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 4px 15px rgba(240, 152, 25, 0.5);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      white-space: nowrap;
+      animation: pulse-attention 2s infinite;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .docs-btn:hover {
+      transform: scale(1.05) translateY(-3px);
+      box-shadow: 0 10px 30px rgba(240, 152, 25, 0.7);
+      background: linear-gradient(135deg, #ff6b4a 0%, #f0a030 100%);
+    }
+
+    @keyframes pulse-attention {
+      0% {
+        box-shadow: 0 0 0 0 rgba(240, 152, 25, 0.7);
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.02);
+      }
+
+      70% {
+        box-shadow: 0 0 0 15px rgba(240, 152, 25, 0);
+        transform: scale(1);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(240, 152, 25, 0);
+        transform: scale(1);
+      }
     }
 
     .header-section h1 i {
@@ -62,6 +128,7 @@
       gap: 18px;
       margin-bottom: 22px;
     }
+
     @media (max-width: 768px) {
       .grid-container {
         grid-template-columns: 1fr;
@@ -91,7 +158,8 @@
       color: var(--accent-cyan);
     }
 
-    .doc-list, .timeline-list {
+    .doc-list,
+    .timeline-list {
       list-style: none;
     }
 
@@ -214,11 +282,27 @@
       font-size: 0.7rem;
       font-weight: 600;
     }
-    .badge-sop { background: rgba(234, 179, 8, 0.18); color: #facc15; }
-    .badge-exams { background: rgba(56, 189, 248, 0.18); color: #38bdf8; }
-    .badge-forms { background: rgba(34, 197, 94, 0.18); color: var(--success-color); }
-    .badge-docs { background: rgba(129, 140, 248, 0.18); color: var(--accent-cyan); }
-    
+
+    .badge-sop {
+      background: rgba(234, 179, 8, 0.18);
+      color: #facc15;
+    }
+
+    .badge-exams {
+      background: rgba(56, 189, 248, 0.18);
+      color: #38bdf8;
+    }
+
+    .badge-forms {
+      background: rgba(34, 197, 94, 0.18);
+      color: var(--success-color);
+    }
+
+    .badge-docs {
+      background: rgba(129, 140, 248, 0.18);
+      color: var(--accent-cyan);
+    }
+
     .btn-complete {
       padding: 8px 14px;
       background: rgba(15, 23, 42, 0.9);
@@ -256,15 +340,19 @@
       body {
         padding: 12px;
       }
+
       .container {
         margin-top: 12px;
       }
-      .tasks-section, .card {
+
+      .tasks-section,
+      .card {
         padding: 18px 14px 14px 14px;
       }
     }
   </style>
 </head>
+
 <body>
   <nav class="navbar">
     <div class="logo">AI Counsellor</div>
@@ -280,7 +368,10 @@
 
   <div class="container">
     <div class="header-section">
-      <h1><i class="fas fa-compass"></i> Application Guidance</h1>
+      <div class="header-top-row">
+        <h1><i class="fas fa-compass"></i> Application Guidance</h1>
+        <a href="#" id="guidanceDocsBtn" class="docs-btn">Your SOPs, LORs and Resumes <i class="fas fa-lock"></i></a>
+      </div>
       <p>Follow this step-by-step guide to complete your applications for locked universities.</p>
     </div>
 
@@ -344,6 +435,50 @@
 
     async function loadTasks() {
       const list = document.getElementById('tasksList');
+
+      // -- Gating Logic for Button --
+      try {
+        const dashboardData = await apiRequest('/dashboard'); // Fetch journey status
+        const data = dashboardData;
+
+        const sopTask = (data.journeyStages || []).find(s => s.key === 'preparing_lors_sops');
+        const docsTask = (data.journeyStages || []).find(s => s.key === 'preparing_documents');
+        const canAccessDocs = (docsTask && docsTask.status === 'completed') || (sopTask && (sopTask.status === 'active' || sopTask.status === 'completed'));
+
+        const docsBtn = document.getElementById('guidanceDocsBtn');
+        if (docsBtn) {
+          if (canAccessDocs) {
+            docsBtn.innerHTML = 'Let\'s write your SOPs, LORs and Resumes! <i class="fas fa-arrow-right"></i>';
+            // Ensure pulsing stops if unlocked
+            docsBtn.style.animation = 'none';
+            docsBtn.onclick = () => { window.location.href = 'documents.html'; };
+          } else {
+            docsBtn.onclick = (e) => {
+              e.preventDefault();
+              // Show Modal
+              const modal = document.createElement('div');
+              modal.style.cssText = 'position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(5px);';
+              modal.innerHTML = `
+                            <div style="background: var(--card-bg); padding: 30px; border-radius: 16px; border: 1px solid #f59e0b; max-width: 400px; text-align: center; box-shadow: 0 0 30px rgba(245, 158, 11, 0.3);">
+                                <i class="fas fa-lock" style="font-size: 3rem; color: #f59e0b; margin-bottom: 20px;"></i>
+                                <h3 style="margin: 0 0 10px; color: #fff;">Documents Locked</h3>
+                                <p style="color: var(--text-light); margin-bottom: 24px;">This workspace unlocks when you reach the <strong>SOP & LOR Writing</strong> stage. Please complete your previous tasks first!</p>
+                                <div style="display: flex; gap: 10px; justify-content: center;">
+                                    <button id="closeDocGate" style="padding: 10px 20px; border-radius: 8px; border: 1px solid var(--text-light); background: transparent; color: var(--text-light); cursor: pointer;">Close</button>
+                                    <a href="counsellor.html" style="display:inline-block; padding: 10px 20px; border-radius: 8px; background: #f59e0b; color: white; text-decoration: none; font-weight: 600;">Go to AI Counsellor</a>
+                                </div>
+                            </div>
+                        `;
+              document.body.appendChild(modal);
+              document.getElementById('closeDocGate').onclick = () => modal.remove();
+              modal.onclick = (ev) => { if (ev.target === modal) modal.remove(); };
+            };
+          }
+        }
+
+      } catch (e) { console.error("Error fetching dashboard status for button", e); }
+
+
       try {
         const stats = await apiRequest('/counsellor/stats');
         if (stats.lockedCount === 0) {
@@ -429,4 +564,5 @@
     document.addEventListener('DOMContentLoaded', loadTasks);
   </script>
 </body>
+
 </html>

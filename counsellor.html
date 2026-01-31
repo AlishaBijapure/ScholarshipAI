@@ -735,6 +735,36 @@
         moveBtn.innerHTML = 'Move to Next Document <i class="fas fa-arrow-right"></i>';
         moveBtn.onclick = () => runProgressAction('move_to_next_doc');
         topContainer.appendChild(moveBtn);
+
+        // -- Added Button to open Documents Page --
+        const workspaceBtn = document.createElement('button');
+        workspaceBtn.className = 'ui-chip chip-action'; // Reusing action style for visibility
+        workspaceBtn.style.background = 'linear-gradient(135deg, #FF512F 0%, #F09819 100%)';
+        workspaceBtn.style.border = 'none';
+        workspaceBtn.style.color = 'white';
+        workspaceBtn.innerHTML = '<i class="fas fa-edit"></i> Open Document Workspace';
+
+        workspaceBtn.onclick = () => {
+          // Defaults
+          let link = 'documents.html';
+
+          if (progress && progress.task4 && progress.task4.byUniversity) {
+            const currentIdx = progress.task4.currentUniIndex || 0;
+            const currentDoc = progress.task4.currentDocType || 'sop';
+            const uniData = progress.task4.byUniversity[currentIdx];
+
+            if (uniData && uniData.universityId) {
+              // Map docType (sop/lors/resume) to URL param expected by documents.html (SOP/LOR/Resume)
+              let docParam = 'SOP';
+              if (currentDoc === 'lors') docParam = 'LOR';
+              else if (currentDoc === 'resume') docParam = 'Resume';
+
+              link = `documents.html?uniId=${uniData.universityId}&doc=${docParam}`;
+            }
+          }
+          window.location.href = link;
+        };
+        topContainer.appendChild(workspaceBtn);
       }
     }
 
