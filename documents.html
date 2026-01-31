@@ -10,6 +10,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* Page Specific Styles reusing counsellor variables */
+        body {
+            overflow: auto !important;
+            /* Override counsellor.css fixed body */
+            height: auto !important;
+            /* Allow body to grow */
+            display: block !important;
+            /* Remove flex layout from counsellor.css */
+        }
+
         .docs-container {
             max-width: 1000px;
             margin: 40px auto;
@@ -154,10 +163,12 @@
     <nav class="navbar">
         <div class="logo">ScholarshipAI</div>
         <ul class="nav-links">
-            <li><a href="dashboard.html">Dashboard</a></li>
-            <li><a href="counsellor.html">Counsellor</a></li>
-            <li><a href="universities.html">Universities</a></li>
-            <li><a href="#" onclick="logout(); return false;" style="color: var(--danger-color);">Logout</a></li>
+            <li>
+                <a href="counsellor.html"
+                    style="display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 50px; border: 1px solid var(--border-color);">
+                    <i class="fas fa-arrow-left"></i> Back to Counsellor
+                </a>
+            </li>
         </ul>
     </nav>
 
@@ -212,10 +223,50 @@
                 }
 
                 renderTabs();
+                handleDeepLink(); // Check URL params
 
             } catch (error) {
                 console.error(error);
                 document.getElementById('uniTabs').innerHTML = `<p style="color: var(--danger-color);">Error loading data: ${error.message}</p>`;
+            }
+        }
+
+        function handleDeepLink() {
+            const params = new URLSearchParams(window.location.search);
+            const targetUniId = params.get('uniId');
+            const targetDocType = params.get('doc');
+
+            // Find index of the university
+            // Note: lockedUnis contains UserUniversity objects. uni.universityId might be populated or ID string
+            // Let's check: lockedUnis comes from /my-universities, which populates 'universityId'
+
+            if (targetUniId) {
+                const index = lockedUnis.findIndex(u => {
+                    const uId = u.universityId._id || u.universityId; // Handle populated vs string
+                    return uId.toString() === targetUniId;
+                });
+
+                if (index !== -1) {
+                    switchTab(index);
+
+                    // If Doc Type is specified, scroll to it
+                    if (targetDocType) {
+                        // Wait a tick for tab switch rendering (though current impl is synchronous DOM update)
+                        const uId = lockedUnis[index].universityId._id || lockedUnis[index].universityId;
+                        const editorId = `editor-${uId}-${targetDocType}`;
+                        const editorEl = document.getElementById(editorId);
+
+                        if (editorEl) {
+                            setTimeout(() => {
+                                editorEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                editorEl.focus();
+                                // wrapper highlight
+                                editorEl.parentElement.style.border = '2px solid var(--primary-color)';
+                                setTimeout(() => editorEl.parentElement.style.border = '', 2000);
+                            }, 300);
+                        }
+                    }
+                }
             }
         }
 

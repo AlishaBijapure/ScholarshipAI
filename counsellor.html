@@ -317,13 +317,16 @@
               <div class="uni-name"><strong>${i + 1}. ${uni.universityName}</strong></div>
               <ul class="doc-status-list">
                 <li class="${uni.sop ? 'done' : (isCurrentUni && currentDoc === 'sop' ? 'working' : 'pending')}">
-                  <i class="fas ${uni.sop ? 'fa-check-circle' : 'fa-circle'}"></i> SOP
+                  <i class="fas ${uni.sop ? 'fa-check-circle' : 'fa-circle'}"></i> 
+                  ${isCurrentUni && currentDoc === 'sop' && !uni.sop ? `<a href="documents.html?uniId=${uni.universityId}&doc=SOP" style="color:var(--accent-cyan); text-decoration:underline;">SOP - Click to Open Editor</a>` : 'SOP'}
                 </li>
                 <li class="${uni.lors ? 'done' : (isCurrentUni && currentDoc === 'lors' ? 'working' : 'pending')}">
-                  <i class="fas ${uni.lors ? 'fa-check-circle' : 'fa-circle'}"></i> LORs
+                  <i class="fas ${uni.lors ? 'fa-check-circle' : 'fa-circle'}"></i> 
+                  ${isCurrentUni && currentDoc === 'lors' && !uni.lors ? `<a href="documents.html?uniId=${uni.universityId}&doc=LOR" style="color:var(--accent-cyan); text-decoration:underline;">LORs - Click to Open Editor</a>` : 'LORs'}
                 </li>
                 <li class="${uni.resume ? 'done' : (isCurrentUni && currentDoc === 'resume' ? 'working' : 'pending')}">
-                  <i class="fas ${uni.resume ? 'fa-check-circle' : 'fa-circle'}"></i> Resume
+                  <i class="fas ${uni.resume ? 'fa-check-circle' : 'fa-circle'}"></i> 
+                  ${isCurrentUni && currentDoc === 'resume' && !uni.resume ? `<a href="documents.html?uniId=${uni.universityId}&doc=Resume" style="color:var(--accent-cyan); text-decoration:underline;">Resume - Click to Open Editor</a>` : 'Resume'}
                 </li>
               </ul>
             </div>

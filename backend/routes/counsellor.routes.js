@@ -1351,4 +1351,49 @@ router.get('/profile-analysis', authMiddleware, async (req, res) => {
     }
 });
 
+// POST /api/counsellor/document-tools
+router.post('/document-tools', authMiddleware, async (req, res) => {
+    try {
+        const { action, type, universityName, content } = req.body;
+
+        let prompt = "";
+
+        if (action === 'template') {
+            prompt = `
+            You are an expert admissions consultant.
+            Provide a concise, bulleted structure (template) for a ${type} (SOP/LOR/Resume) specifically for ${universityName}.
+            
+            Format:
+            - **Section Name**: Brief instruction on what to write (1 sentence).
+            
+            Make it short and actionable. Return ONLY the template points.
+            `;
+        } else if (action === 'grammar-check') {
+            prompt = `
+            You are an expert editor. 
+            Review the following text for grammar, spelling, and clarity mistakes.
+            Return ONLY the corrected version of the text. Do not add any introductory or concluding remarks.
+            
+            TEXT TO CORRECT:
+            ${content}
+            `;
+        } else {
+            return res.status(400).json({ message: 'Invalid action' });
+        }
+
+        const result = await ai.models.generateContent({
+            model: 'gemini-2.0-flash',
+            contents: prompt,
+        });
+
+        const responseText = result.text ?? result.candidates?.[0]?.content?.parts?.[0]?.text ?? "I'm sorry, I couldn't process that.";
+
+        res.json({ result: responseText });
+
+    } catch (error) {
+        console.error('Error in document tools:', error);
+        res.status(500).json({ message: 'AI tool unavailable.' });
+    }
+});
+
 module.exports = router;
