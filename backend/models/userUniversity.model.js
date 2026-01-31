@@ -27,6 +27,10 @@ const userUniversitySchema = new Schema({
     notes: {
         type: String
     },
+    documents: {
+        type: Object, // Stores key-value pairs like { sop: "text", resume: "text" }
+        default: {}
+    },
     createdAt: {
         type: Date,
         default: Date.now

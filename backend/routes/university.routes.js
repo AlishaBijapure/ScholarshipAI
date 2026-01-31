@@ -454,6 +454,37 @@ router.post('/:id/chat', authMiddleware, async (req, res) => {
     }
 });
 
+// PATCH /api/universities/:id/documents - Update documents (SOP, Resume, LOR)
+router.patch('/:id/documents', authMiddleware, async (req, res) => {
+    try {
+        const userId = req.userId;
+        const universityId = req.params.id;
+        const { type, content } = req.body; // type: 'SOP', 'Resume', 'LOR'
+
+        const userUniversity = await UserUniversity.findOne({ userId, universityId });
+        if (!userUniversity) {
+            return res.status(404).json({ message: 'University not found in your list.' });
+        }
+
+        if (!userUniversity.documents) {
+            userUniversity.documents = {};
+        }
+
+        // We specifically allow any keys, but usually SOP/Resume/LOR
+        userUniversity.documents[type] = content;
+
+        // Mark as modified because it's a mixed type/object
+        userUniversity.markModified('documents');
+
+        await userUniversity.save();
+
+        res.json({ message: 'Document saved to database.', documents: userUniversity.documents });
+    } catch (error) {
+        console.error('Error saving document:', error);
+        res.status(500).json({ message: 'Error saving document.' });
+    }
+});
+
 // GET /api/universities/:id - Get a single university by ID
 // (Placed at the end to avoid conflict with specific routes like /recommended or /my-universities)
 router.get('/:id', async (req, res) => {

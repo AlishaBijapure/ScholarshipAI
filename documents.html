@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Documents - ScholarshipAI</title>
+    <link rel="stylesheet" href="css/counsellor.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Page Specific Styles reusing counsellor variables */
+        .docs-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .docs-header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .docs-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #fff, var(--text-medium));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .uni-tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            justify-content: center;
+        }
+
+        .uni-tab-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            padding: 12px 24px;
+            border-radius: 50px;
+            color: var(--text-light);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .uni-tab-btn.active,
+        .uni-tab-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 15px rgba(217, 70, 239, 0.3);
+        }
+
+        .doc-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            display: none;
+            /* Hidden by default */
+        }
+
+        .doc-section.active {
+            display: block;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .doc-type-group {
+            margin-bottom: 30px;
+        }
+
+        .doc-type-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+
+        .doc-type-title {
+            font-size: 1.2rem;
+            color: var(--accent-cyan);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .editor-area {
+            width: 100%;
+            height: 200px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-dark);
+            padding: 15px;
+            resize: vertical;
+            font-family: inherit;
+            margin-bottom: 10px;
+        }
+
+        .editor-area:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .save-btn {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+
+        .save-btn:hover {
+            background: var(--primary-color);
+        }
+
+        .status-badge {
+            font-size: 0.8rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="logo">ScholarshipAI</div>
+        <ul class="nav-links">
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="counsellor.html">Counsellor</a></li>
+            <li><a href="universities.html">Universities</a></li>
+            <li><a href="#" onclick="logout(); return false;" style="color: var(--danger-color);">Logout</a></li>
+        </ul>
+    </nav>
+
+    <div class="docs-container">
+        <div class="docs-header">
+            <h1>Document Workspace</h1>
+            <p>Draft your SOPs, LORs, and Resumes for each locked university below.<br>
+                <span style="font-size:0.9rem; color:var(--success-color);"><i class="fas fa-cloud"></i> Progress saves
+                    automatically to the cloud.</span>
+            </p>
+        </div>
+
+        <!-- University Tabs -->
+        <div class="uni-tabs" id="uniTabs">
+            <!-- Injected by JS -->
+            <div style="color: var(--text-light);">Loading universities...</div>
+        </div>
+
+        <!-- Document Editors -->
+        <div id="docSectionsContainer">
+            <!-- Injected by JS -->
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        if (!requireAuth()) {
+            // handled
+        }
+
+        let lockedUnis = [];
+        let userUniversitiesMap = {}; // To store the UserUniversity object (which has the docs)
+
+        async function initDocs() {
+            try {
+                // 1. Fetch User Universities (Locked) to get existing docs
+                // We use /my-universities?status=locked => This endpoint we need to check if it exists or we use dashboard
+                // Dashboard returns locked list but usually just University details?
+                // Let's check dashboard response structure in console or assume:
+                // Actually, let's filter the 'locked' ones from /my-universities to be safe and get the full DB object with 'documents'
+                const myUnis = await apiRequest('/universities/my-universities');
+                lockedUnis = myUnis.filter(u => u.status === 'locked');
+
+                // Map for easy access to documents
+                lockedUnis.forEach(u => {
+                    userUniversitiesMap[u.universityId._id] = u;
+                });
+
+                if (lockedUnis.length === 0) {
+                    document.getElementById('uniTabs').innerHTML = '<p style="color: var(--danger-color);">No universities locked yet. Go to <a href="universities.html" style="text-decoration: underline;">Universities</a> to shortlist and lock your choices.</p>';
+                    return;
+                }
+
+                renderTabs();
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById('uniTabs').innerHTML = `<p style="color: var(--danger-color);">Error loading data: ${error.message}</p>`;
+            }
+        }
+
+        function renderTabs() {
+            const tabsContainer = document.getElementById('uniTabs');
+            const docSectionsContainer = document.getElementById('docSectionsContainer');
+
+            tabsContainer.innerHTML = '';
+            docSectionsContainer.innerHTML = '';
+
+            lockedUnis.forEach((u, index) => {
+                const uni = u.universityId; // Because of populate()
+
+                // Create Tab
+                const btn = document.createElement('button');
+                btn.className = `uni-tab-btn ${index === 0 ? 'active' : ''}`;
+                btn.textContent = uni.name;
+                btn.onclick = () => switchTab(index);
+                tabsContainer.appendChild(btn);
+
+                // Create Section
+                const section = document.createElement('div');
+                section.className = `doc-section ${index === 0 ? 'active' : ''}`;
+                section.id = `section-${index}`;
+
+                // Pre-fill content from DB
+                const docs = u.documents || {};
+
+                // Render 3 sub-sections: SOP, Resume, LOR
+                section.innerHTML = `
+          <h2 style="margin-bottom: 20px; text-align:center;">${uni.name}</h2>
+          ${renderDocEditor(uni._id, 'SOP', 'Statement of Purpose', docs.SOP)}
+          ${renderDocEditor(uni._id, 'Resume', 'Resume / CV', docs.Resume)}
+          ${renderDocEditor(uni._id, 'LOR', 'Letters of Recommendation', docs.LOR)}
+        `;
+                docSectionsContainer.appendChild(section);
+            });
+        }
+
+        function renderDocEditor(uniId, type, title, initialContent = '') {
+            return `
+        <div class="doc-type-group">
+          <div class="doc-type-header">
+            <span class="doc-type-title"><i class="fas fa-file-alt"></i> ${title}</span>
+            <span class="status-badge" id="status-${uniId}-${type}">${initialContent ? 'Saved in Cloud' : 'Not Started'}</span>
+          </div>
+          <textarea class="editor-area" id="editor-${uniId}-${type}" placeholder="Start drafting your ${type} here..." oninput="setStatus('${uniId}', '${type}', 'Unsaved changes...')">${initialContent}</textarea>
+          <div style="text-align: right;">
+            <button class="save-btn" onclick="saveDoc('${uniId}', '${type}')"><i class="fas fa-save"></i> Save to Cloud</button>
+          </div>
+        </div>
+      `;
+        }
+
+        function switchTab(index) {
+            // Update Tab Buttons
+            document.querySelectorAll('.uni-tab-btn').forEach((btn, i) => {
+                if (i === index) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+
+            // Update Sections
+            document.querySelectorAll('.doc-section').forEach((sec, i) => {
+                if (i === index) sec.classList.add('active');
+                else sec.classList.remove('active');
+            });
+        }
+
+        function setStatus(uniId, type, msg) {
+            const badge = document.getElementById(`status-${uniId}-${type}`);
+            badge.textContent = msg;
+            badge.style.color = 'var(--text-light)';
+        }
+
+        window.saveDoc = async function (uniId, type) {
+            const content = document.getElementById(`editor-${uniId}-${type}`).value;
+            const btn = document.querySelector(`button[onclick="saveDoc('${uniId}', '${type}')"]`);
+            const originalText = btn.innerHTML;
+
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            btn.disabled = true;
+
+            try {
+                await apiRequest(`/universities/${uniId}/documents`, {
+                    method: 'PATCH',
+                    body: JSON.stringify({ type, content })
+                });
+
+                const badge = document.getElementById(`status-${uniId}-${type}`);
+                badge.textContent = 'Saved to Cloud';
+                badge.style.color = 'var(--success-color)';
+
+            } catch (error) {
+                console.error(error);
+                const badge = document.getElementById(`status-${uniId}-${type}`);
+                badge.textContent = 'Error Saving!';
+                badge.style.color = 'var(--danger-color)';
+                alert('Failed to save document: ' + error.message);
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // Initialize
+        initDocs();
+    </script>
+</body>
+
+</html>

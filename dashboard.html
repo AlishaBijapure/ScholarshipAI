@@ -100,7 +100,11 @@
         <div class="quick-actions">
           <a href="counsellor.html" class="action-btn">Talk to AI Counsellor</a>
           <a href="universities.html" class="action-btn">Discover Universities</a>
-          <a href="profile.html" class="action-btn">Profile</a>
+          <!-- Documents Tab (Gated) -->
+          <a href="#" id="docsBtn" class="action-btn"
+            style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+            Documents <i class="fas fa-lock text-xs opacity-50 ml-1"></i>
+          </a>
         </div>
       </div>
     </div>
@@ -190,6 +194,42 @@
             }
           };
           quickActions.appendChild(guidanceBtn);
+        }
+
+        // --- Logic for Documents Button (Frontend Gating) ---
+        const docsBtn = document.getElementById('docsBtn');
+        if (docsBtn) {
+          // Check if user is at the final stage (Task 4: SoPs/LoRs)
+          // We'll check if 'preparing_lors_sops' is active or completed
+          const sopTask = (data.journeyStages || []).find(s => s.key === 'preparing_lors_sops');
+
+          // Allow access if Task 3 (Documents) is completed, meaning they are now on SOPs
+          const docsTask = (data.journeyStages || []).find(s => s.key === 'preparing_documents');
+
+          const canAccessDocs = (docsTask && docsTask.status === 'completed') || (sopTask && (sopTask.status === 'active' || sopTask.status === 'completed'));
+
+          if (canAccessDocs) {
+            docsBtn.innerHTML = 'Documents Workspace'; // remove lock
+            docsBtn.onclick = () => { window.location.href = 'documents.html'; };
+          } else {
+            docsBtn.onclick = (e) => {
+              e.preventDefault();
+              // Show Modal explaining why it's locked
+              const modal = document.createElement('div');
+              modal.style.cssText = 'position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(5px);';
+              modal.innerHTML = `
+                        <div style="background: var(--card-bg); padding: 30px; border-radius: 16px; border: 1px solid #f59e0b; max-width: 400px; text-align: center; box-shadow: 0 0 30px rgba(245, 158, 11, 0.3);">
+                            <i class="fas fa-pencil-alt" style="font-size: 3rem; color: #f59e0b; margin-bottom: 20px;"></i>
+                            <h3 style="margin: 0 0 10px; color: #fff;">Documents Locked</h3>
+                            <p style="color: var(--text-light); margin-bottom: 24px;">This workspace unlocks when you reach the <strong>SOP & LOR Writing</strong> stage. Please complete your previous tasks first!</p>
+                            <button id="closeDocGate" style="padding: 10px 20px; border-radius: 8px; background: var(--secondary-color); color: white; border:none; cursor: pointer;">Got it</button>
+                        </div>
+                    `;
+              document.body.appendChild(modal);
+              document.getElementById('closeDocGate').onclick = () => modal.remove();
+              modal.onclick = (ev) => { if (ev.target === modal) modal.remove(); };
+            };
+          }
         }
 
         // Profile strength
