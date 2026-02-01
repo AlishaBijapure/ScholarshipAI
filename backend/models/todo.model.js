@@ -21,7 +21,7 @@ const todoSchema = new Schema({
     },
     category: {
         type: String,
-        enum: ['SOP', 'Exams', 'Forms', 'Documents', 'Other'],
+        enum: ['SOP', 'Exams', 'Forms', 'Documents', 'Other', 'DocumentChecklist'],
         default: 'Other'
     },
     status: {
