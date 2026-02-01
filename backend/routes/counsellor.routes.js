@@ -1132,8 +1132,7 @@ router.post('/progress/action', authMiddleware, async (req, res) => {
                 progress.task2.completed = true;
                 progress.currentTask = 3;
                 await progress.save();
-                const docList = "- Passport (valid)\n- Academic Transcripts & Certificates\n- English Test Score Report\n- CV / Resume\n- Statement of Purpose (SOP)\n- 2-3 Letters of Recommendation (LORs)\n- Financial Proof (Bank Statements)";
-                const msg = `Score recorded for ${examType}. All required exams are captured! Based on your university list, here are the essential documents you'll need to prepare:\n\n${docList}\n\nPlease start collecting these. Once you have everything ready, click **All Docs Ready** Below to move to the final step (SOP, LORs, and Resume guidance).`;
+                const msg = `Score recorded for ${examType}. All required exams are captured! I have created a To-Do List of documents that you can now access from the **To-Do List** button on your dashboard. Please check it to see what you need to prepare.`;
                 return res.json({ progress, message: msg });
             }
 
