@@ -553,7 +553,13 @@ async function getUserContext(userId) {
 async function createTaskBasedPrompt(userMessage, context) {
     const { user, profile, progress, proposedList, universities, focusedUniversity } = context;
     const task = progress?.currentTask ?? 0;
-    const countries = (profile?.preferredCountries?.length) ? profile.preferredCountries.join(', ') : 'Any';
+
+    // PRIORITY: Use the actually selected country from Task 0 if available.
+    // If not, fall back to preferred countries from profile.
+    const selectedCountry = progress?.task0?.selectedCountry;
+    const preferredCountries = (profile?.preferredCountries?.length) ? profile.preferredCountries.join(', ') : 'Any';
+    const targetDest = selectedCountry ? selectedCountry : preferredCountries;
+
     const major = profile?.fieldOfStudy || profile?.major || 'Undecided';
     const budget = profile?.budgetRange || 'Not specified';
     const exams = `IELTS: ${profile?.ieltsStatus || 'N/A'}${profile?.ieltsScore != null ? ' ' + profile.ieltsScore : ''} | TOEFL: ${profile?.toeflStatus || 'N/A'}${profile?.toeflScore != null ? ' ' + profile.toeflScore : ''} | GRE: ${profile?.greStatus || 'N/A'}${profile?.greScore != null ? ' ' + profile.greScore : ''} | GMAT: ${profile?.gmatStatus || 'N/A'}${profile?.gmatScore != null ? ' ' + profile.gmatScore : ''}`;
@@ -585,7 +591,8 @@ async function createTaskBasedPrompt(userMessage, context) {
     ${focusedUniStr}
 
 USER: ${user.fullName}
-PROFILE: Education ${profile?.currentEducationLevel || 'N/A'} | GPA ${profile?.gpa || 'N/A'} | Field ${major} | Budget ${budget} | Preferred Countries ${countries} | Intake ${profile?.targetIntakeYear || 'not set'} | ${exams}
+PROFILE: Education ${profile?.currentEducationLevel || 'N/A'} | GPA ${profile?.gpa || 'N/A'} | Field ${major} | Budget ${budget} | Target Country: ${targetDest} | Intake ${profile?.targetIntakeYear || 'not set'} | ${exams}
+IMPORTANT: Always answer visa/process questions for the **Target Country** (${targetDest}) specifically, unless the user asks about another one.
 
 FULL UNIVERSITY DATABASE (for checking user-suggested universities):
 ${uniDb}
