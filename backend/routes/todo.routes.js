@@ -26,7 +26,7 @@ router.get('/', authMiddleware, async (req, res) => {
 router.post('/', authMiddleware, async (req, res) => {
     try {
         const userId = req.userId;
-        const { title, description, category, dueDate, priority, universityId } = req.body;
+        const { title, description, category, dueDate, priority, universityId, status } = req.body;
 
         if (!title) {
             return res.status(400).json({ message: 'Title is required.' });
@@ -37,6 +37,7 @@ router.post('/', authMiddleware, async (req, res) => {
             title,
             description,
             category: category || 'Other',
+            status: status || 'pending',
             dueDate: dueDate ? new Date(dueDate) : null,
             priority: priority || 'medium',
             universityId: universityId || null,
