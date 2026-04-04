@@ -695,14 +695,10 @@
     const scrollHint = document.getElementById('scrollHint');
     
     function updateScrollHint() {
-        if (window.innerWidth <= 900) {
-            // Check if scrollable and not at bottom
-            if (inputPanel.scrollHeight > inputPanel.clientHeight + 10) {
-                if (inputPanel.scrollTop + inputPanel.clientHeight < inputPanel.scrollHeight - 20) {
-                    scrollHint.style.opacity = '1';
-                } else {
-                    scrollHint.style.opacity = '0';
-                }
+        // Check if scrollable and not at bottom
+        if (inputPanel.scrollHeight > inputPanel.clientHeight + 10) {
+            if (inputPanel.scrollTop + inputPanel.clientHeight < inputPanel.scrollHeight - 20) {
+                scrollHint.style.opacity = '1';
             } else {
                 scrollHint.style.opacity = '0';
             }

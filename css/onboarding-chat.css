@@ -507,6 +507,33 @@ select.custom-input {
 }
 
 /* =========================================
+   SCROLL INDICATOR (GLOBAL)
+   ========================================= */
+.scroll-hint {
+    position: fixed;
+    bottom: 30px;
+    right: 40px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(217, 70, 239, 0.4);
+    z-index: 1000;
+    animation: hintBounce 2s infinite;
+    transition: opacity 0.3s;
+    pointer-events: none;
+}
+
+@keyframes hintBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+/* =========================================
    RESPONSIVE DESIGN
    ========================================= */
 @media (max-width: 900px) {
@@ -534,32 +561,6 @@ select.custom-input {
         min-height: 0; /* Ensures mobile flex layouts do not grow aggressively out of bounds */
         padding: 20px 15px;
         overflow-y: auto; /* Allow strict internal scrolling */
-    }
-
-    /* Scroll Indicator for Small Screens */
-    .scroll-hint {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-        color: white;
-        padding: 10px 16px;
-        border-radius: 20px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        box-shadow: 0 4px 15px rgba(217, 70, 239, 0.4);
-        z-index: 1000;
-        animation: hintBounce 2s infinite;
-        transition: opacity 0.3s;
-        pointer-events: none;
-    }
-
-    @keyframes hintBounce {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-8px); }
     }
 
     .bot-avatar {
