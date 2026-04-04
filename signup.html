@@ -6,26 +6,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign Up - AI Counsellor</title>
   <link rel="stylesheet" href="styles.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     .auth-container {
       max-width: 450px;
       margin: 80px auto;
       padding: 40px;
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 15px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(40px);
+      -webkit-backdrop-filter: blur(40px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
     }
 
     .auth-container h1 {
       text-align: center;
       margin-bottom: 10px;
-      color: #2c3e50;
+      color: #fff;
     }
 
     .auth-container p {
       text-align: center;
-      color: #7f8c8d;
+      color: var(--text-light);
       margin-bottom: 30px;
     }
 
@@ -36,45 +41,54 @@
     .form-group label {
       display: block;
       margin-bottom: 8px;
-      color: #2c3e50;
+      color: var(--text-medium);
       font-weight: 500;
+      font-family: 'Outfit', sans-serif;
     }
 
     .form-group input {
       width: 100%;
       padding: 12px;
-      border: 2px solid #e0e0e0;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 8px;
       font-size: 16px;
-      transition: border-color 0.3s;
+      color: white;
+      transition: all 0.3s;
       box-sizing: border-box;
+      font-family: inherit;
     }
 
     .form-group input:focus {
       outline: none;
-      border-color: #3498db;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 15px rgba(123, 97, 255, 0.2);
     }
 
     .btn-submit {
       width: 100%;
       padding: 14px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
+      background: #fff;
+      color: #000;
       border: none;
       border-radius: 8px;
       font-size: 16px;
       font-weight: 600;
+      font-family: 'Outfit', sans-serif;
       cursor: pointer;
-      transition: transform 0.2s;
+      transition: all 0.3s;
     }
 
     .btn-submit:hover {
       transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(255, 255, 255, 0.15);
+      background: #f1f5f9;
     }
 
     .error-message {
-      background: #fee;
-      color: #c33;
+      background: rgba(244, 63, 94, 0.1);
+      color: var(--danger-color);
+      border: 1px solid rgba(244, 63, 94, 0.2);
       padding: 12px;
       border-radius: 8px;
       margin-bottom: 20px;
@@ -87,8 +101,11 @@
     }
 
     .auth-links a {
-      color: #3498db;
+      color: var(--primary-color);
       text-decoration: none;
+    }
+    .auth-links a:hover {
+      text-shadow: 0 0 10px rgba(123, 97, 255, 0.4);
     }
   </style>
 </head>
