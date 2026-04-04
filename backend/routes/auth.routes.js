@@ -41,11 +41,6 @@ const transporter = nodemailer.createTransport({
     greetingTimeout: 5000,
     socketTimeout: 5000
 });
-    // Strict constraints to prevent indefinite server hangs if Google Auth fails
-    connectionTimeout: 5000,
-    greetingTimeout: 5000,
-    socketTimeout: 5000
-});
 
 function validateEmailSecure(email) {
     if (!email) return { valid: false, message: 'Email is required.' };
