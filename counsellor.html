@@ -71,6 +71,63 @@
       position: relative;
       z-index: 50;
     }
+
+    /* Audio UI Styles */
+    .mic-input-btn {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      padding: 8px;
+      margin-right: 8px;
+      /* Space between mic and send */
+      transition: all 0.2s;
+      display: flex;
+      /* Ensure icon centers */
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mic-input-btn:hover {
+      color: var(--primary-color);
+    }
+
+    .mic-input-btn.listening {
+      color: #ef4444;
+      animation: pulse 1.5s infinite;
+    }
+
+    .header-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 5px;
+    }
+
+    .voice-toggle-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      flex-shrink: 0;
+    }
+
+    .voice-toggle-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .voice-toggle-btn.active {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+      box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+    }
   </style>
 </head>
 
@@ -93,9 +150,15 @@
   <div class="main-wrapper">
 
     <div class="counsellor-header">
-      <div class="header-content">
-        <h1><i class="fas fa-robot"></i> Study Abroad Assistant</h1>
-        <p>I will guide you step-by-step from country selection to your SOPs.</p>
+      <div class="header-top-row">
+        <div class="header-content">
+          <h1><i class="fas fa-robot"></i> Study Abroad Assistant</h1>
+          <p>I will guide you from country selection to your SOPs.</p>
+        </div>
+
+        <button id="globalVoiceToggle" class="voice-toggle-btn active" title="Bot Voice Output">
+          <i class="fas fa-volume-up"></i>
+        </button>
       </div>
 
       <div class="task-progress-container">
@@ -130,6 +193,7 @@
             <div class="input-wrapper">
               <input type="text" id="messageInput" placeholder="Type your message here..."
                 onkeypress="if(event.key==='Enter') sendMessage()">
+              <button class="mic-input-btn" onclick="startDictation()"><i class="fas fa-microphone"></i></button>
               <button id="sendButton" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
             </div>
           </div>
@@ -162,6 +226,87 @@
     let availableForDropdown = []; // Store dropdown items globally for Task 1
     let allCountriesCache = null; // Cache for Task 0
     let countryChoices = null;
+
+    // --- Audio Init ---
+    let voiceEnabled = true;
+    const synth = window.speechSynthesis;
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let recognition;
+
+    if (SpeechRecognition) {
+      recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+    }
+
+    function toggleVoice() {
+      voiceEnabled = !voiceEnabled;
+      const btn = document.getElementById('globalVoiceToggle');
+      if (voiceEnabled) {
+        btn.innerHTML = '<i class="fas fa-volume-up"></i>';
+        btn.classList.add('active');
+        addMessage("Voice output enabled.", 'system-msg');
+      } else {
+        btn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+        btn.classList.remove('active');
+        synth.cancel();
+      }
+    }
+
+    if (document.getElementById('globalVoiceToggle')) {
+      document.getElementById('globalVoiceToggle').addEventListener('click', toggleVoice);
+    }
+
+    function speak(text) {
+      if (!voiceEnabled) return;
+      if (synth.speaking) synth.cancel();
+
+      // Clean text of HTML tags and markdown roughly for speaking
+      const plainText = text.replace(/<[^>]*>/g, '').replace(/[*_#`]/g, '');
+
+      const utterance = new SpeechSynthesisUtterance(plainText);
+      const voices = synth.getVoices();
+      const preferred = voices.find(v => v.name.includes('Google US English') || v.name.includes('Samantha'));
+      if (preferred) utterance.voice = preferred;
+
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      synth.speak(utterance);
+    }
+
+    function startDictation() {
+      if (!recognition) {
+        alert("Speech Recognition is not supported in this browser. Try Chrome.");
+        return;
+      }
+
+      const btn = document.querySelector('.mic-input-btn');
+      btn.classList.add('listening');
+
+      recognition.start();
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        const input = document.getElementById('messageInput');
+        if (input) {
+          input.value = transcript;
+          input.focus();
+        }
+        btn.classList.remove('listening');
+      };
+
+      recognition.onerror = (event) => {
+        console.error("Speech error", event.error);
+        btn.classList.remove('listening');
+      };
+
+      recognition.onend = () => {
+        btn.classList.remove('listening');
+      };
+    }
+
 
     // Fetch countries ONCE and cache them
     async function loadAllCountries() {
@@ -708,9 +853,19 @@
         };
         topContainer.appendChild(backToExamsBtn);
 
+        const todoBtn = document.createElement('button');
+        todoBtn.className = 'ui-chip'; // Removed chip-secondary to avoid override
+        todoBtn.style.background = 'linear-gradient(135deg, #00b09b, #96c93d)';
+        todoBtn.style.color = '#fff';
+        todoBtn.style.border = 'none';
+        todoBtn.style.boxShadow = '0 4px 15px rgba(0, 176, 155, 0.3)';
+        todoBtn.innerHTML = 'Go to To-Do <i class="fas fa-list-check"></i>';
+        todoBtn.onclick = () => { window.location.href = 'guidance.html'; };
+        topContainer.appendChild(todoBtn);
+
         const docsBtn = document.createElement('button');
         docsBtn.className = 'ui-chip chip-action';
-        docsBtn.innerHTML = '<i class="fas fa-file-check"></i> All Docs Ready';
+        docsBtn.innerHTML = 'Next Step <i class="fas fa-arrow-right"></i>';
         docsBtn.onclick = () => runProgressAction('all_docs_available');
         topContainer.appendChild(docsBtn);
 
@@ -850,6 +1005,7 @@
         });
         removeLoadingMessage(loadingId);
         addMessage(response.message, 'ai');
+        if (voiceEnabled) speak(response.message); // Speak the AI response
         if (response.progress) {
           progress = response.progress;
           setTaskUI(progress);

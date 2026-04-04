@@ -349,21 +349,38 @@
       .card {
         padding: 18px 14px 14px 14px;
       }
+
+      /* Mobile Button Fixes */
+      .header-top-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+      }
+
+      .docs-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 12px 16px;
+        white-space: normal;
+        text-align: center;
+        font-size: 1rem;
+        line-height: 1.4;
+      }
+
+      .header-section h1 {
+        justify-content: center;
+        /* Optional: center title on mobile */
+      }
     }
   </style>
 </head>
 
 <body>
-  <nav class="navbar">
-    <div class="logo">AI Counsellor</div>
-    <ul class="nav-links">
-      <li><a href="dashboard.html">Dashboard</a></li>
-      <li><a href="guidance.html" class="active">Guidance</a></li>
-      <li><a href="counsellor.html">AI Counsellor</a></li>
-      <li><a href="universities.html">Universities</a></li>
-      <li><a href="profile.html">Profile</a></li>
-      <li><a href="#" onclick="logout(); return false;" class="btn-logout">Logout</a></li>
-    </ul>
+  <nav class="navbar" style="justify-content: flex-start; padding: 15px 30px;">
+    <a href="counsellor.html"
+      style="color: white; text-decoration: none; font-weight: 600; font-size: 1rem; display: flex; align-items: center; gap: 10px;">
+      <i class="fas fa-arrow-left"></i> Back to AI-Counsellor
+    </a>
   </nav>
 
   <div class="container">
@@ -379,14 +396,9 @@
       <!-- Required Documents -->
       <div class="card">
         <h3><i class="fas fa-file-alt"></i> Required Documents</h3>
-        <ul class="doc-list">
-          <li class="doc-item"><i class="fas fa-check-circle"></i> Valid Passport</li>
-          <li class="doc-item"><i class="fas fa-check-circle"></i> Academic Transcripts</li>
-          <li class="doc-item"><i class="fas fa-check-circle"></i> Standardized Test Scores (IELTS/TOEFL/GRE)</li>
-          <li class="doc-item"><i class="fas fa-check-circle"></i> Statement of Purpose (SOP)</li>
-          <li class="doc-item"><i class="fas fa-check-circle"></i> Letters of Recommendation (2-3)</li>
-          <li class="doc-item"><i class="fas fa-check-circle"></i> Resume / CV</li>
-          <li class="doc-item"><i class="fas fa-check-circle"></i> Financial Proof / Bank Statement</li>
+        <ul class="doc-list" id="docsList">
+          <!-- Dynamically populated via JS -->
+          <li class="doc-item"><i class="fas fa-spinner fa-spin"></i> Loading...</li>
         </ul>
       </div>
 
@@ -433,29 +445,153 @@
       // Redirect handled
     }
 
+    async function toggleDocItem(li, title, existingTodoId) {
+      const icon = li.querySelector('i');
+      const textSpan = li.querySelector('span');
+      const isCurrentlyChecked = icon.classList.contains('fa-check-square');
+      const newState = !isCurrentlyChecked; // Toggle
+
+      // Optimistic UI Update
+      if (newState) {
+        icon.classList.remove('fa-square');
+        icon.classList.add('fa-check-square');
+        icon.style.color = 'var(--success-color)';
+        textSpan.style.textDecoration = 'line-through';
+        textSpan.style.color = 'var(--text-light)';
+      } else {
+        icon.classList.remove('fa-check-square');
+        icon.classList.add('fa-square');
+        icon.style.color = 'var(--text-light)';
+        textSpan.style.textDecoration = 'none';
+        textSpan.style.color = 'var(--text-medium)';
+      }
+
+      try {
+        if (existingTodoId) {
+          // Update existing Todo
+          await apiRequest(`/todos/${existingTodoId}`, {
+            method: 'PATCH',
+            body: JSON.stringify({
+              status: newState ? 'completed' : 'pending'
+            })
+          });
+        } else {
+          // Create new Todo
+          const newTodo = await apiRequest('/todos', {
+            method: 'POST',
+            body: JSON.stringify({
+              title: title,
+              category: 'DocumentChecklist',
+              status: newState ? 'completed' : 'pending',
+              priority: 'high'
+            })
+          });
+          // Update onclick handler with new ID so subsequent clicks use PATCH
+          const escapedTitle = title.replace(/'/g, "\\'");
+          li.setAttribute('onclick', `toggleDocItem(this, '${escapedTitle}', '${newTodo._id}')`);
+        }
+      } catch (err) {
+        console.error('Failed to save document state', err);
+        // Revert UI on failure
+        if (newState) {
+          icon.classList.remove('fa-check-square');
+          icon.classList.add('fa-square');
+          icon.style.color = 'var(--text-light)';
+          textSpan.style.textDecoration = 'none';
+          textSpan.style.color = 'var(--text-medium)';
+        } else {
+          icon.classList.remove('fa-square');
+          icon.classList.add('fa-check-square');
+          icon.style.color = 'var(--success-color)';
+          textSpan.style.textDecoration = 'line-through';
+          textSpan.style.color = 'var(--text-light)';
+        }
+        alert('Failed to save progress. Please try again.');
+      }
+    }
+
     async function loadTasks() {
       const list = document.getElementById('tasksList');
+
+      let sopTask, docsTask, canAccessDocs = false;
 
       // -- Gating Logic for Button --
       try {
         const dashboardData = await apiRequest('/dashboard'); // Fetch journey status
         const data = dashboardData;
+        const profile = data.profile || {};
+        const intendedDegree = (profile.intendedDegree || '').toLowerCase();
 
-        const sopTask = (data.journeyStages || []).find(s => s.key === 'preparing_lors_sops');
-        const docsTask = (data.journeyStages || []).find(s => s.key === 'preparing_documents');
-        const canAccessDocs = (docsTask && docsTask.status === 'completed') || (sopTask && (sopTask.status === 'active' || sopTask.status === 'completed'));
+        sopTask = (data.journeyStages || []).find(s => s.key === 'preparing_lors_sops');
+        docsTask = (data.journeyStages || []).find(s => s.key === 'preparing_documents');
+        canAccessDocs = (docsTask && docsTask.status === 'completed') || (sopTask && (sopTask.status === 'active' || sopTask.status === 'completed'));
 
+        // --- Dynamic Document Checklist Render ---
+        const docsListContainer = document.getElementById('docsList');
+        if (docsListContainer) {
+          let docs = [
+            "Valid Passport",
+            "Aadhar Card (National ID)"
+          ];
+
+          // Degree-specific logic
+          if (intendedDegree.includes('bachelor') || intendedDegree.includes('undergrad')) {
+            docs.push("10th Grade Marksheet");
+            docs.push("12th Grade Marksheet / Diploma Transcripts");
+          } else if (intendedDegree.includes('master') || intendedDegree.includes('mba') || intendedDegree.includes('pg')) {
+            docs.push("10th & 12th Grade Marksheets");
+            docs.push("All Bachelor's Semester Transcripts");
+            docs.push("Degree Certificate / Provisional Certificate");
+          } else if (intendedDegree.includes('phd') || intendedDegree.includes('doctor')) {
+            docs.push("All Bachelor's Transcripts");
+            docs.push("All Master's Transcripts");
+            docs.push("Research Proposal");
+          } else {
+            // Default fallback
+            docs.push("All Academic Transcripts (10th, 12th, Degree)");
+          }
+
+          // Standard requirements
+          docs.push("Standardized Test Scores (IELTS/TOEFL/GRE/GMAT)");
+          docs.push("Statement of Purpose (SOP)");
+          docs.push("Letters of Recommendation (2-3)");
+          docs.push("Resume / CV");
+          docs.push("Financial Proof / Bank Statement");
+
+          // Fetch existing saved state
+          let existingTodos = [];
+          try {
+            const allTodos = await apiRequest('/todos');
+            existingTodos = allTodos.filter(t => t.category === 'DocumentChecklist');
+          } catch (err) {
+            console.warn('Could not fetch existing document todos', err);
+          }
+
+          // Render List
+          docsListContainer.innerHTML = docs.map(title => {
+            const todo = existingTodos.find(t => t.title === title);
+            const isChecked = todo && (todo.status === 'completed' || todo.status === 'done');
+            const todoId = todo ? todo._id : '';
+
+            const escapedTitle = title.replace(/'/g, "\\'");
+            return `
+            <li class="doc-item" style="cursor: pointer;" onclick="toggleDocItem(this, '${escapedTitle}', '${todoId}')">
+                <i class="far ${isChecked ? 'fa-check-square' : 'fa-square'}" style="color: ${isChecked ? 'var(--success-color)' : 'var(--text-light)'}; margin-right: 10px;"></i>
+                <span style="${isChecked ? 'text-decoration: line-through; color: var(--text-light);' : ''}">${title}</span>
+            </li>`;
+          }).join('');
+        }
+
+        // --- Button Gating UI ---
         const docsBtn = document.getElementById('guidanceDocsBtn');
         if (docsBtn) {
           if (canAccessDocs) {
             docsBtn.innerHTML = 'Let\'s write your SOPs, LORs and Resumes! <i class="fas fa-arrow-right"></i>';
-            // Ensure pulsing stops if unlocked
             docsBtn.style.animation = 'none';
             docsBtn.onclick = () => { window.location.href = 'documents.html'; };
           } else {
             docsBtn.onclick = (e) => {
               e.preventDefault();
-              // Show Modal
               const modal = document.createElement('div');
               modal.style.cssText = 'position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(5px);';
               modal.innerHTML = `
@@ -476,10 +612,12 @@
           }
         }
 
-      } catch (e) { console.error("Error fetching dashboard status for button", e); }
+      } catch (e) { console.error("Error fetching dashboard data", e); }
 
 
+      // --- Load Task List for bottom section ---
       try {
+
         const stats = await apiRequest('/counsellor/stats');
         if (stats.lockedCount === 0) {
           list.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 20px;">Application guidance unlocks after you lock at least one university. <a href="universities.html">Discover & lock universities</a>.</p>';
