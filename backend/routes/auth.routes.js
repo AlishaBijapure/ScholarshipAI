@@ -13,6 +13,23 @@ const authMiddleware = require('../middleware/auth.middleware');
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
+// Strict Email Validation Helper
+const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+const disposableDomains = [
+    'mailinator.com', '10minutemail.com', 'tempmail.com', 'guerrillamail.com', 
+    'yopmail.com', 'throwawaymail.com', 'sharklasers.com', 'trashmail.com'
+];
+
+function validateEmailSecure(email) {
+    if (!email) return { valid: false, message: 'Email is required.' };
+    if (!emailRegex.test(email)) return { valid: false, message: 'Invalid email format. Please specify a structurally accurate email address.' };
+    
+    const domain = email.split('@')[1].toLowerCase();
+    if (disposableDomains.includes(domain)) return { valid: false, message: 'Disposable or temporary email providers are strictly prohibited.' };
+    
+    return { valid: true };
+}
+
 // POST /api/auth/signup
 router.post('/signup', async (req, res) => {
     try {
@@ -21,6 +38,11 @@ router.post('/signup', async (req, res) => {
         // Validation
         if (!fullName || !email || !password) {
             return res.status(400).json({ message: 'All fields are required.' });
+        }
+
+        const emailCheck = validateEmailSecure(email);
+        if (!emailCheck.valid) {
+            return res.status(400).json({ message: emailCheck.message });
         }
 
         if (password.length < 6) {
@@ -156,7 +178,11 @@ const otpStore = new Map();
 router.post('/otp/send', async (req, res) => {
     try {
         const { email } = req.body;
-        if (!email) return res.status(400).json({ message: 'Email is required' });
+        
+        const emailCheck = validateEmailSecure(email);
+        if (!emailCheck.valid) {
+            return res.status(400).json({ message: emailCheck.message });
+        }
 
         const formattedEmail = email.toLowerCase();
         let user = await User.findOne({ email: formattedEmail });
