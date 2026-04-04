@@ -94,6 +94,49 @@
     .auth-links a:hover {
       text-shadow: 0 0 10px rgba(123, 97, 255, 0.4);
     }
+    .btn-google {
+      width: 100%;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      font-family: 'Outfit', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 15px;
+    }
+    .btn-google:hover {
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 5px 20px rgba(255, 255, 255, 0.05);
+    }
+    .btn-google svg {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+    }
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 25px 0 10px 0;
+      color: var(--text-light);
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+    }
+    .divider span {
+      margin: 0 15px;
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
@@ -104,51 +147,128 @@
     <div id="errorMessage" class="error-message"></div>
     
     <form id="loginForm">
-      <div class="form-group">
+      <div class="form-group" id="emailGroup">
         <label for="email">Email</label>
         <input type="email" id="email" name="email" required>
       </div>
       
-      <div class="form-group">
+      <div class="form-group" id="passwordGroup">
         <label for="password">Password</label>
         <input type="password" id="password" name="password" required>
       </div>
+
+      <div class="form-group" id="otpGroup" style="display: none;">
+        <label for="otpCode">6-Digit Security Code</label>
+        <input type="text" id="otpCode" name="otpCode" maxlength="6" pattern="\d{6}">
+      </div>
       
-      <button type="submit" class="btn-submit">Login</button>
+      <button type="submit" id="mainSubmitBtn" class="btn-submit">Login Secured</button>
     </form>
+
+    <div style="text-align: center; margin: 15px 0;">
+      <button id="toggleOtpBtn" type="button" style="background: none; border: none; color: var(--primary-color); cursor: pointer; font-family: 'Inter', sans-serif; font-size: 0.9rem;">Sign in with OTP Instead</button>
+    </div>
+
+    <div class="divider"><span>OR</span></div>
+
+    <button type="button" id="googleBtn" class="btn-google">
+      <svg viewBox="0 0 24 24">
+        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+      </svg>
+      Continue with Google
+    </button>
     
     <div class="auth-links">
-      <p>Don't have an account? <a href="signup.html">Sign up</a></p>
+      <p>Need access? <a href="signup.html">Initialize Profile</a></p>
       <p><a href="index.html">Back to Home</a></p>
     </div>
   </div>
 
   <script src="js/auth.js"></script>
   <script>
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    let loginMode = 'password'; // 'password', 'otp-request', 'otp-verify'
+    
+    const loginForm = document.getElementById('loginForm');
+    const toggleOtpBtn = document.getElementById('toggleOtpBtn');
+    const passwordGroup = document.getElementById('passwordGroup');
+    const otpGroup = document.getElementById('otpGroup');
+    const mainSubmitBtn = document.getElementById('mainSubmitBtn');
+    const passwordInput = document.getElementById('password');
+    const otpInput = document.getElementById('otpCode');
+    const emailInput = document.getElementById('email');
+    const errorDiv = document.getElementById('errorMessage');
+
+    toggleOtpBtn.addEventListener('click', () => {
+      errorDiv.style.display = 'none';
+      if (loginMode === 'password') {
+        loginMode = 'otp-request';
+        passwordGroup.style.display = 'none';
+        passwordInput.required = false;
+        mainSubmitBtn.textContent = 'Request Authenticator Code';
+        toggleOtpBtn.textContent = 'Sign in with Password Instead';
+      } else {
+        loginMode = 'password';
+        passwordGroup.style.display = 'block';
+        otpGroup.style.display = 'none';
+        passwordInput.required = true;
+        otpInput.required = false;
+        mainSubmitBtn.textContent = 'Login Secured';
+        toggleOtpBtn.textContent = 'Sign in with OTP Instead';
+        emailInput.disabled = false;
+      }
+    });
+
+    document.getElementById('googleBtn').addEventListener('click', async () => {
+      errorDiv.style.display = 'none';
+      try {
+        await apiRequest('/auth/google', { method: 'POST' });
+      } catch (err) {
+        errorDiv.textContent = err.message || "Google Auth Configuration required.";
+        errorDiv.style.display = 'block';
+      }
+    });
+
+    loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const errorDiv = document.getElementById('errorMessage');
       errorDiv.style.display = 'none';
       
-      const submitBtn = e.target.querySelector('button[type="submit"]');
-      const originalBtnText = submitBtn.textContent;
+      const email = emailInput.value;
+      const originalBtnText = mainSubmitBtn.textContent;
       
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Logging in... Please wait';
-      submitBtn.style.opacity = '0.7';
-      submitBtn.style.cursor = 'not-allowed';
-
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+      mainSubmitBtn.disabled = true;
+      mainSubmitBtn.textContent = 'Authenticating...';
+      mainSubmitBtn.style.opacity = '0.7';
+      mainSubmitBtn.style.cursor = 'not-allowed';
 
       try {
-        await login(email, password);
-        window.location.href = 'dashboard.html';
+        if (loginMode === 'password') {
+          const password = passwordInput.value;
+          await login(email, password);
+          window.location.href = 'dashboard.html';
+        } else if (loginMode === 'otp-request') {
+          await apiRequest('/auth/otp/send', { method: 'POST', body: JSON.stringify({ email }) });
+          loginMode = 'otp-verify';
+          otpGroup.style.display = 'block';
+          otpInput.required = true;
+          emailInput.disabled = true;
+          mainSubmitBtn.textContent = 'Verify Security Code';
+          mainSubmitBtn.disabled = false;
+          mainSubmitBtn.style.opacity = '1';
+          mainSubmitBtn.style.cursor = 'pointer';
+        } else if (loginMode === 'otp-verify') {
+          const response = await apiRequest('/auth/otp/verify', { method: 'POST', body: JSON.stringify({ email, code: otpInput.value }) });
+          setToken(response.token);
+          setCurrentUser(response.user);
+          window.location.href = 'dashboard.html';
+        }
       } catch (error) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = originalBtnText;
-        submitBtn.style.opacity = '1';
-        submitBtn.style.cursor = 'pointer';
+        mainSubmitBtn.disabled = false;
+        mainSubmitBtn.textContent = originalBtnText;
+        mainSubmitBtn.style.opacity = '1';
+        mainSubmitBtn.style.cursor = 'pointer';
         
         errorDiv.textContent = error.message;
         errorDiv.style.display = 'block';
