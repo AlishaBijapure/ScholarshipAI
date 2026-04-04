@@ -151,6 +151,20 @@
       margin: 0 15px;
       font-size: 14px;
     }
+    @media (max-width: 480px) {
+      .auth-container {
+        padding: 24px;
+        margin: 40px 15px; /* Give the container breathing room from screen edges */
+        border-radius: 12px;
+      }
+      .auth-container h1 {
+        font-size: 1.8rem;
+      }
+      .g_id_signin {
+        transform: scale(0.9); /* Prevent Google Button from overflowing on tiny screens */
+        transform-origin: center;
+      }
+    }
   </style>
 </head>
 

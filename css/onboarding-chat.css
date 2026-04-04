@@ -507,23 +507,27 @@ select.custom-input {
    ========================================= */
 @media (max-width: 900px) {
     .split-container {
-        grid-template-columns: 1fr;
-        grid-template-rows: 280px 1fr;
+        display: flex;
+        flex-direction: column;
         width: 100%;
         height: 100vh;
+        height: 100dvh; /* Critical for mobile URL bars & Keyboards */
         border-radius: 0;
         border: none;
         margin: 0;
     }
 
     .chat-panel {
+        flex: 1 1 40%;
+        min-height: 200px;
         border-right: none;
         border-bottom: 1px solid var(--border-color);
-        padding: 20px;
+        padding: 15px 20px;
     }
 
     .input-panel {
-        padding: 30px 20px;
+        flex: 0 0 auto; /* Allow the input to size dynamically and take remaining space */
+        padding: 20px 15px;
     }
 
     .bot-avatar {

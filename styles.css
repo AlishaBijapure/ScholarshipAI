@@ -212,7 +212,7 @@ a {
 }
 
 .hero h1 {
-  font-size: 4rem;
+  font-size: clamp(2.5rem, 7vw, 4.5rem);
   line-height: 1.15;
   font-weight: 700;
   margin-bottom: 25px;
@@ -356,7 +356,7 @@ section {
 }
 
 .why h2 {
-  font-size: 2.8rem;
+  font-size: clamp(2rem, 5vw, 3rem);
   margin-bottom: 60px;
   color: var(--text-dark);
   letter-spacing: -1px;
@@ -461,13 +461,7 @@ footer a:hover {
     transform: translateY(-8px) rotate(-45deg);
   }
 
-  /* Hero */
-  .hero h1 {
-    font-size: 2.2rem;
-  }
-
   .hero p {
-    font-size: 1rem;
     padding: 0 15px;
   }
 
