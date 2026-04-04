@@ -304,7 +304,7 @@
       try {
         if (signupMode === 'password') {
           // Intercept password signup to force email verification
-          await apiRequest('/auth/otp/send', { method: 'POST', body: JSON.stringify({ email }) });
+          await apiRequest('/auth/otp/send', { method: 'POST', body: JSON.stringify({ email, action: 'signup' }) });
           signupMode = 'password-verify';
           otpGroup.style.display = 'block';
           otpInput.required = true;
@@ -329,7 +329,7 @@
           setCurrentUser(response.user);
           window.location.href = 'onboarding.html';
         } else if (signupMode === 'otp-request') {
-          await apiRequest('/auth/otp/send', { method: 'POST', body: JSON.stringify({ email }) });
+          await apiRequest('/auth/otp/send', { method: 'POST', body: JSON.stringify({ email, action: 'signup' }) });
           signupMode = 'otp-verify';
           otpGroup.style.display = 'block';
           otpInput.required = true;
@@ -352,6 +352,11 @@
         
         errorDiv.textContent = error.message;
         errorDiv.style.display = 'block';
+        
+        // Intercept Duplicate Registration explicitly here
+        if (error.message && error.message.includes('Redirecting')) {
+            setTimeout(() => { window.location.href = 'login.html'; }, 1800);
+        }
       }
     });
 

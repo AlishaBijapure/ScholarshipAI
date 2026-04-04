@@ -187,7 +187,7 @@ router.get('/me', async (req, res) => {
 // POST /api/auth/otp/send
 router.post('/otp/send', async (req, res) => {
     try {
-        const { email } = req.body;
+        const { email, action } = req.body;
         
         const emailCheck = validateEmailSecure(email);
         if (!emailCheck.valid) {
@@ -197,11 +197,9 @@ router.post('/otp/send', async (req, res) => {
         const formattedEmail = email.toLowerCase();
         let user = await User.findOne({ email: formattedEmail });
         
-        // If it's a login request, they should exist. If signup, they might not. We allow OTP for all to streamline the flow!
-        if (!user) {
-            // For a premium seamless signup, we can automatically stage a user, but let's stick to standard behavior
-            // We tell them to sign up password-based first, or create the account manually.
-            // But we can let them receive the OTP anyway for security parity!
+        // Guard against duplicate accounts triggering signup OTP texts!
+        if (user && action === 'signup') {
+            return res.status(409).json({ message: 'Account already exists. Redirecting to login...' });
         }
 
         const code = Math.floor(100000 + Math.random() * 900000).toString();

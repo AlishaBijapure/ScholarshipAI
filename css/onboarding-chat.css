@@ -305,9 +305,10 @@ body {
     padding: 40px 60px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start; /* Shifted from center so tall layouts dont cut off the top */
     background: var(--input-panel-bg);
     position: relative;
+    overflow-y: auto; /* Enable dynamic scrolling on tiny/compact devices */
 }
 
 .input-stage-container {
@@ -316,6 +317,8 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 .form-step {
