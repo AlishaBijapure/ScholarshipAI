@@ -24,13 +24,15 @@ const disposableDomains = [
     'yopmail.com', 'throwawaymail.com', 'sharklasers.com', 'trashmail.com'
 ];
 
-// SMTP Email Transporter
+// SMTP Email Transporter (Custom Built strictly for 587 bypass)
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
     host: 'smtp.gmail.com',
     port: 587,
-    secure: false, // upgrade later with STARTTLS
+    secure: false, 
     requireTLS: true,
+    tls: {
+        rejectUnauthorized: false // Bypass strict SSL certificates locally
+    },
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_APP_PASSWORD
