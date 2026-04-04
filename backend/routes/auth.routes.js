@@ -13,6 +13,9 @@ const authMiddleware = require('../middleware/auth.middleware');
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
+// Add In-Memory OTP Store for global validation
+const otpStore = new Map();
+
 // Strict Email Validation Helper
 const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
 const disposableDomains = [
@@ -33,11 +36,11 @@ function validateEmailSecure(email) {
 // POST /api/auth/signup
 router.post('/signup', async (req, res) => {
     try {
-        const { fullName, email, password } = req.body;
+        const { fullName, email, password, otpCode } = req.body;
 
         // Validation
-        if (!fullName || !email || !password) {
-            return res.status(400).json({ message: 'All fields are required.' });
+        if (!fullName || !email || !password || !otpCode) {
+            return res.status(400).json({ message: 'All fields, including verification code, are required.' });
         }
 
         const emailCheck = validateEmailSecure(email);
@@ -45,14 +48,21 @@ router.post('/signup', async (req, res) => {
             return res.status(400).json({ message: emailCheck.message });
         }
 
+        const formattedEmail = email.toLowerCase();
+        const entry = otpStore.get(formattedEmail);
+
+        if (!entry || entry.code !== otpCode || Date.now() > entry.expiresAt) {
+            return res.status(401).json({ message: 'Your email verification code is invalid or has expired.' });
+        }
+
         if (password.length < 6) {
             return res.status(400).json({ message: 'Password must be at least 6 characters.' });
         }
 
         // Check if user already exists
-        const existingUser = await User.findOne({ email: email.toLowerCase() });
+        const existingUser = await User.findOne({ email: formattedEmail });
         if (existingUser) {
-            return res.status(400).json({ message: 'User with this email already exists.' });
+            return res.status(400).json({ message: 'A verified account with this email already exists.' });
         }
 
         // Hash password
@@ -61,13 +71,16 @@ router.post('/signup', async (req, res) => {
         // Create user
         const newUser = new User({
             fullName,
-            email: email.toLowerCase(),
+            email: formattedEmail,
             password: hashedPassword,
             onboardingCompleted: false,
             currentStage: 'profile_building'
         });
 
         await newUser.save();
+        
+        // Wipe OTP entry securely post-verification
+        otpStore.delete(formattedEmail);
 
         // Create token
         const token = jwt.sign(
@@ -170,9 +183,6 @@ router.get('/me', async (req, res) => {
         res.status(401).json({ message: 'Invalid or expired token.' });
     }
 });
-
-// Add In-Memory OTP Store
-const otpStore = new Map();
 
 // POST /api/auth/otp/send
 router.post('/otp/send', async (req, res) => {

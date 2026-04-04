@@ -237,6 +237,8 @@
         signupMode = 'otp-request';
         passwordGroup.style.display = 'none';
         fullNameGroup.style.display = 'none';
+        passwordInput.disabled = false;
+        fullNameInput.disabled = false;
         passwordInput.required = false;
         fullNameInput.required = false;
         mainSubmitBtn.textContent = 'Request Authenticator Code';
@@ -246,12 +248,14 @@
         passwordGroup.style.display = 'block';
         fullNameGroup.style.display = 'block';
         otpGroup.style.display = 'none';
+        passwordInput.disabled = false;
+        fullNameInput.disabled = false;
+        emailInput.disabled = false;
         passwordInput.required = true;
         fullNameInput.required = true;
         otpInput.required = false;
         mainSubmitBtn.textContent = 'Sign Up';
         toggleOtpBtn.textContent = 'Sign up without Password (OTP)';
-        emailInput.disabled = false;
       }
     });
 
@@ -285,9 +289,30 @@
 
       try {
         if (signupMode === 'password') {
-          const fullName = fullNameInput.value;
-          const password = passwordInput.value;
-          await signup(fullName, email, password);
+          // Intercept password signup to force email verification
+          await apiRequest('/auth/otp/send', { method: 'POST', body: JSON.stringify({ email }) });
+          signupMode = 'password-verify';
+          otpGroup.style.display = 'block';
+          otpInput.required = true;
+          // Disable prior fields to lock the state
+          fullNameInput.disabled = true;
+          emailInput.disabled = true;
+          passwordInput.disabled = true;
+          
+          mainSubmitBtn.textContent = 'Verify Email & Create Account';
+          mainSubmitBtn.disabled = false;
+          mainSubmitBtn.style.opacity = '1';
+          mainSubmitBtn.style.cursor = 'pointer';
+        } else if (signupMode === 'password-verify') {
+          const payload = {
+              fullName: fullNameInput.value,
+              email: emailInput.value,
+              password: passwordInput.value,
+              otpCode: otpInput.value
+          };
+          const response = await apiRequest('/auth/signup', { method: 'POST', body: JSON.stringify(payload) });
+          setToken(response.token);
+          setCurrentUser(response.user);
           window.location.href = 'onboarding.html';
         } else if (signupMode === 'otp-request') {
           await apiRequest('/auth/otp/send', { method: 'POST', body: JSON.stringify({ email }) });
