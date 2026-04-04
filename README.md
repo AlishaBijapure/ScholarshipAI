@@ -1,9 +1,7 @@
 <div align="center">
-  <!-- User: Replace with your actual logo image -->
   <img src="vistonaut.png" alt="Vistonaut Logo" width="200" />
+  <h1>V i s t o n a u t</h1>
 </div>
-
-<h1 align="center">V i s t o n a u t</h1>
 
 <p align="center">
   <b>A next-generation, deeply immersive AI-powered application guidance platform for international university admissions.</b>
