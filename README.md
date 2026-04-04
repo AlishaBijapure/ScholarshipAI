@@ -1,6 +1,6 @@
 <div align="center">
   <!-- User: Replace with your actual logo image -->
-  <img src="vistonaut.png" alt="Vistonaut Logo" width="200" />
+  <img src="vistonaut.png" alt="Vistonaut Logo" width="170" />
 </div>
 
 <h1 align="center">Vistonaut</h1>
