@@ -131,6 +131,14 @@
       e.preventDefault();
       const errorDiv = document.getElementById('errorMessage');
       errorDiv.style.display = 'none';
+      
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const originalBtnText = submitBtn.textContent;
+      
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Creating Account... Please wait';
+      submitBtn.style.opacity = '0.7';
+      submitBtn.style.cursor = 'not-allowed';
 
       const fullName = document.getElementById('fullName').value;
       const email = document.getElementById('email').value;
@@ -140,6 +148,11 @@
         await signup(fullName, email, password);
         window.location.href = 'onboarding.html';
       } catch (error) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
+        submitBtn.style.opacity = '1';
+        submitBtn.style.cursor = 'pointer';
+        
         errorDiv.textContent = error.message;
         errorDiv.style.display = 'block';
       }
