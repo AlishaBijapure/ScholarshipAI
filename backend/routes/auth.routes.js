@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
 const { OAuth2Client } = require('google-auth-library');
 const User = require('../models/user.model');
 const StudentProfile = require('../models/studentProfile.model');
@@ -22,6 +23,15 @@ const disposableDomains = [
     'mailinator.com', '10minutemail.com', 'tempmail.com', 'guerrillamail.com', 
     'yopmail.com', 'throwawaymail.com', 'sharklasers.com', 'trashmail.com'
 ];
+
+// SMTP Email Transporter
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_APP_PASSWORD
+    }
+});
 
 function validateEmailSecure(email) {
     if (!email) return { valid: false, message: 'Email is required.' };
@@ -207,10 +217,37 @@ router.post('/otp/send', async (req, res) => {
         const code = Math.floor(100000 + Math.random() * 900000).toString();
         otpStore.set(formattedEmail, { code, expiresAt: Date.now() + 10 * 60 * 1000 }); // 10 minutes
 
-        console.log(`\n\n🚀 === VISTONAUT OTP SECURE DELIVERY === 🚀`);
-        console.log(`📧 To: ${formattedEmail}`);
-        console.log(`🔑 CODE: [ ${code} ]`);
-        console.log(`=========================================\n\n`);
+        // Dispatch Email via Live SMTP OR fallback to logs
+        if (process.env.EMAIL_USER && process.env.EMAIL_APP_PASSWORD && !process.env.EMAIL_USER.includes('INSERT')) {
+            const mailOptions = {
+                from: `"Vistonaut Security" <${process.env.EMAIL_USER}>`,
+                to: formattedEmail,
+                subject: 'Your Vistonaut Security Code',
+                html: `
+                    <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 500px; margin: auto; padding: 40px; background-color: #09090b; color: #e4e4e7; border-radius: 16px; border: 1px solid #27272a;">
+                        <h2 style="color: #6366f1; text-align: center; font-size: 26px; margin-bottom: 20px; font-weight: 600;">Vistonaut Security</h2>
+                        <p style="font-size: 16px; color: #a1a1aa; text-align: center; line-height: 1.5;">Your secure verification code is below. Enter this code into the Vistonaut interface to proceed.</p>
+                        <div style="background: linear-gradient(145deg, #18181b, #0f0f14); padding: 30px; text-align: center; border-radius: 12px; margin: 40px 0; border: 1px solid #3f3f46; box-shadow: 0 4px 20px rgba(99, 102, 241, 0.1);">
+                            <h1 style="letter-spacing: 12px; font-size: 46px; color: #ffffff; margin: 0; font-weight: 700;">${code}</h1>
+                        </div>
+                        <p style="font-size: 13px; color: #71717a; text-align: center; margin-top: 30px;">This code securely expires in 10 minutes. If you did not initialize this login loop, please immediately disregard this email.</p>
+                    </div>
+                `
+            };
+            
+            try {
+                await transporter.sendMail(mailOptions);
+                console.log(`[SMTP] Live OTP logically dispatched to ${formattedEmail}`);
+            } catch (mailError) {
+                console.error("[SMTP ERROR] Could not dispatch OTP physically. Double check Gmail App Passwords.", mailError);
+                console.log(`[SIMULATED FALLBACK] OTP for ${formattedEmail} is: ${code}`);
+            }
+        } else {
+            console.log(`\n\n🚀 === VISTONAUT OTP SECURE DELIVERY === 🚀`);
+            console.log(`📧 To: ${formattedEmail}`);
+            console.log(`🔑 CODE: [ ${code} ]`);
+            console.log(`=========================================\n\n`);
+        }
 
         res.json({ message: 'Security code dispatched via email framework.' });
     } catch (error) {
