@@ -522,7 +522,7 @@ select.custom-input {
     }
 
     .chat-panel {
-        flex: 1 1 40%;
+        flex: 1 1 50%;
         min-height: 200px;
         border-right: none;
         border-bottom: 1px solid var(--border-color);
@@ -530,10 +530,36 @@ select.custom-input {
     }
 
     .input-panel {
-        flex: 1; /* CRITICAL: Force it to shrink-fit the remaining vertical height! */
+        flex: 1 1 50%; /* CRITICAL: Force exactly a 50/50 split with the chat panel on mobile */
         min-height: 0; /* Ensures mobile flex layouts do not grow aggressively out of bounds */
         padding: 20px 15px;
         overflow-y: auto; /* Allow strict internal scrolling */
+    }
+
+    /* Scroll Indicator for Small Screens */
+    .scroll-hint {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 10px 16px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 15px rgba(217, 70, 239, 0.4);
+        z-index: 1000;
+        animation: hintBounce 2s infinite;
+        transition: opacity 0.3s;
+        pointer-events: none;
+    }
+
+    @keyframes hintBounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
     }
 
     .bot-avatar {

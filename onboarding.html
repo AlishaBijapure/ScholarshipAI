@@ -43,7 +43,10 @@
     </div>
 
     <!-- RIGHT: INPUT PANEL -->
-    <div class="input-panel">
+    <div class="input-panel" id="inputPanel">
+      <div class="scroll-hint" id="scrollHint" style="opacity: 0;">
+        <i class="fas fa-chevron-down"></i> Scroll down
+      </div>
       <form id="onboardingForm">
         <div class="input-stage-container" id="formContainer">
           <!-- Dynamically Injected Fields -->
@@ -625,6 +628,8 @@
           'Finish Profile <i class="fas fa-check"></i>' :
           'Continue <i class="fas fa-arrow-right"></i>';
 
+        // Refresh dynamic scroll hints
+        setTimeout(() => updateScrollHint(), 100);
       }, 300);
     }
 
@@ -684,6 +689,30 @@
         chatArea.scrollTop = chatArea.scrollHeight;
       });
     }
+
+    // Scroll Hint Logic
+    const inputPanel = document.getElementById('inputPanel');
+    const scrollHint = document.getElementById('scrollHint');
+    
+    function updateScrollHint() {
+        if (window.innerWidth <= 900) {
+            // Check if scrollable and not at bottom
+            if (inputPanel.scrollHeight > inputPanel.clientHeight + 10) {
+                if (inputPanel.scrollTop + inputPanel.clientHeight < inputPanel.scrollHeight - 20) {
+                    scrollHint.style.opacity = '1';
+                } else {
+                    scrollHint.style.opacity = '0';
+                }
+            } else {
+                scrollHint.style.opacity = '0';
+            }
+        } else {
+            scrollHint.style.opacity = '0';
+        }
+    }
+
+    inputPanel.addEventListener('scroll', updateScrollHint);
+    window.addEventListener('resize', updateScrollHint);
 
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
