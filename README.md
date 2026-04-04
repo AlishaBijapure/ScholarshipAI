@@ -11,8 +11,7 @@
 
 <div align="center">
 
-  [![Live Demo](https://img.shields.io/badge/Live-Vistonaut--Production-success?style=for-the-badge)](https://scholarshipai.onrender.com/)
-  [![Tech Stack](https://img.shields.io/badge/Stack-Node.js%20|%20Express%20|%20MongoDB-purple?style=for-the-badge)]()
+  [![Live Demo](https://img.shields.io/badge/Live-Vistonaut--Production-success?style=for-the-badge)](https://www.vistonaut.com/)
 
 </div>
 
