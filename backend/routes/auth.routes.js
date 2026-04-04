@@ -30,7 +30,11 @@ const transporter = nodemailer.createTransport({
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_APP_PASSWORD
-    }
+    },
+    // Strict constraints to prevent indefinite server hangs if Google Auth fails
+    connectionTimeout: 5000,
+    greetingTimeout: 5000,
+    socketTimeout: 5000
 });
 
 function validateEmailSecure(email) {
