@@ -1,38 +1,38 @@
 /* =========================================
-   1. VARIABLES & RESET (DARK PUNK THEME)
+   1. VARIABLES & RESET (VISTONAUT PREMIUM THEME)
    ========================================= */
 :root {
-  /* Neon Punk Palette */
-  --primary-color: #d946ef;
-  /* Neon Fuchsia */
-  --primary-dark: #a21caf;
-  /* Deep Magenta */
-  --secondary-color: #8b5cf6;
-  /* Electric Violet */
-  --accent-cyan: #06b6d4;
-  /* Neon Cyan */
-  --success-color: #00ff9d;
-  /* Cyber Green */
-  --danger-color: #ff0055;
-  /* Cyber Red */
+  /* Vistonaut Premium Palette */
+  --primary-color: #7b61ff;
+  /* Deep Tech Violet */
+  --primary-dark: #5a3ce1;
+  /* Darker Violet */
+  --secondary-color: #3b82f6;
+  /* Tech Blue */
+  --accent-cyan: #00f0ff;
+  /* Neon Blue-Cyan */
+  --success-color: #10b981;
+  /* Emerald */
+  --danger-color: #f43f5e;
+  /* Rose */
 
-  /* Deep Dark Backgrounds */
-  --bg-gradient: linear-gradient(135deg, #05010a 0%, #1a0b2e 50%, #0f0518 100%);
-  --card-bg: rgba(20, 10, 35, 0.65);
-  /* Glassy Deep Purple */
+  /* Deep Dark Space Backgrounds */
+  --bg-gradient: linear-gradient(145deg, #090514 0%, #110820 40%, #05020a 100%);
+  --card-bg: rgba(255, 255, 255, 0.03);
+  /* Glassy Frost */
   --chat-bg: transparent;
 
   /* Text Colors (High Contrast) */
-  --text-dark: #f8fafc;
-  /* Almost White */
+  --text-dark: #ffffff;
+  /* Pure White */
   --text-medium: #e2e8f0;
   /* Light Grey */
   --text-light: #94a3b8;
   /* Muted Blue-Grey */
 
   /* Borders & Glows */
-  --border-color: rgba(139, 92, 246, 0.3);
-  --neon-shadow: 0 0 10px rgba(217, 70, 239, 0.4);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --neon-shadow: 0 0 20px rgba(123, 97, 255, 0.3);
 }
 
 * {
@@ -42,7 +42,7 @@
 }
 
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Inter', sans-serif;
   background: var(--bg-gradient);
   background-attachment: fixed;
   color: var(--text-dark);
@@ -50,10 +50,20 @@ body {
   min-height: 100vh;
 }
 
+h1, h2, h3, h4, h5, h6, .logo, .badge {
+  font-family: 'Outfit', sans-serif;
+}
+
 a {
   text-decoration: none;
   color: inherit;
   transition: 0.3s;
+}
+
+/* Helper Class for Abstract BGs */
+.relative-z {
+  position: relative;
+  z-index: 10;
 }
 
 /* =========================================
@@ -75,11 +85,11 @@ a {
 
 /* Logo */
 .logo {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 700;
-  font-size: 1.5rem;
-  color: var(--primary-color);
-  text-shadow: 0 0 10px rgba(217, 70, 239, 0.5);
+  font-weight: 800;
+  font-size: 1.6rem;
+  letter-spacing: 2px;
+  color: #fff;
+  text-transform: uppercase;
   background: none;
   -webkit-text-fill-color: initial;
 }
@@ -138,14 +148,35 @@ a {
   position: relative;
   overflow: hidden;
   padding: 0 20px;
+}
 
-  /* Dark Overlay + Values Image */
-  background:
-    linear-gradient(rgba(5, 1, 10, 0.487), rgba(26, 11, 46, 0.85)),
-    url('vecteezy_graduates-silhouetted-against-a-setting-sun-generated_60008322.jpg');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
+/* Glowing Orbs */
+.glow-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  z-index: 0;
+  animation: float 10s ease-in-out infinite alternate;
+}
+.glow-orb-1 {
+  width: 60vw;
+  height: 60vw;
+  background: rgba(123, 97, 255, 0.15);
+  top: -20vh;
+  left: -20vw;
+}
+.glow-orb-2 {
+  width: 50vw;
+  height: 50vw;
+  background: rgba(59, 130, 246, 0.12);
+  bottom: -20vh;
+  right: -10vw;
+  animation-delay: -5s;
+}
+
+@keyframes float {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(30px, 50px); }
 }
 
 .hero-content {
@@ -166,18 +197,35 @@ a {
   }
 }
 
+.badge {
+  display: inline-block;
+  padding: 6px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  border-radius: 30px;
+  font-size: 0.85rem;
+  color: var(--accent-cyan);
+  margin-bottom: 24px;
+  opacity: 0;
+  backdrop-filter: blur(10px);
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
 .hero h1 {
-  font-family: 'Poppins', sans-serif;
-  font-size: 3.5rem;
-  line-height: 1.2;
+  font-size: 4rem;
+  line-height: 1.15;
   font-weight: 700;
   margin-bottom: 25px;
-  background: linear-gradient(to right, #fff, var(--text-medium));
+  letter-spacing: -1px;
+  animation: fadeInUp 0.8s ease-out 0.1s forwards;
+  opacity: 0;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #fff 0%, #a2b0d3 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
-  animation: fadeInUp 0.8s ease-out forwards;
 }
 
 .hero p {
@@ -199,37 +247,39 @@ a {
 
 /* BUTTONS */
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-  color: white;
-  padding: 14px 32px;
-  border-radius: 50px;
+  background: var(--text-dark);
+  color: #05020a;
+  padding: 14px 34px;
+  border-radius: 8px;
   font-weight: 600;
-  box-shadow: 0 0 15px rgba(217, 70, 239, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: 'Outfit', sans-serif;
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+  border: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-primary:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 0 25px rgba(217, 70, 239, 0.6);
-  background: linear-gradient(135deg, #e879f9, #c026d3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+  background: #f1f5f9;
 }
 
 .btn-secondary {
   background: rgba(255, 255, 255, 0.05);
-  padding: 14px 32px;
-  border-radius: 50px;
-  font-weight: 600;
+  padding: 14px 34px;
+  border-radius: 8px;
+  font-weight: 500;
   border: 1px solid var(--border-color);
-  color: var(--text-medium);
+  color: var(--text-dark);
+  font-family: 'Outfit', sans-serif;
   backdrop-filter: blur(12px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-secondary:hover {
-  background: rgba(139, 92, 246, 0.15);
-  border-color: var(--primary-color);
-  color: white;
-  transform: translateY(-3px);
-  box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
 }
 
 /* =========================================
@@ -244,41 +294,43 @@ section {
 /* Highlights and Why Section with Shared Background */
 .highlights,
 .why {
-  background:
-    linear-gradient(rgba(5, 1, 10, 0.632), rgba(26, 11, 46, 0.644)),
-    url('vecteezy_ai-generated-young-female-student-wearing-black-cap-and-gown_37040129.jpeg');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
+  background: transparent; /* Relying on body gradient */
 }
 
 /* Cards Shared Styles */
 .highlight-card,
 .why-card {
   background: var(--card-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
   border: 1px solid var(--border-color);
   padding: 40px;
-  border-radius: 24px;
-  text-align: center;
-  transition: 0.4s;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  border-radius: 16px;
+  text-align: left; /* Shift from center to left for premium neatness */
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.card-icon {
+  font-size: 2rem;
+  margin-bottom: 20px;
 }
 
 .highlight-card:hover,
 .why-card:hover {
   transform: translateY(-10px);
-  box-shadow: 0 20px 50px rgba(139, 92, 246, 0.15);
-  border-color: var(--primary-color);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .highlight-card h3,
 .why-card h3 {
   color: var(--text-dark);
   margin-bottom: 15px;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   font-weight: 600;
+  letter-spacing: -0.5px;
 }
 
 .highlight-card p,
@@ -304,10 +356,10 @@ section {
 }
 
 .why h2 {
-  font-size: 2.5rem;
-  margin-bottom: 50px;
+  font-size: 2.8rem;
+  margin-bottom: 60px;
   color: var(--text-dark);
-  text-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+  letter-spacing: -1px;
 }
 
 .why-cards {
@@ -424,8 +476,6 @@ footer a:hover {
   .highlights,
   .why {
     background-attachment: scroll;
-    background-position: center;
-    background-size: cover;
   }
 
   .hero-buttons {
