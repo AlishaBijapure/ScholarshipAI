@@ -19,16 +19,16 @@
 
 <div align="center">
   <!-- User: Upload ss1.png through ss7.png to your images folder to populate this grid! -->
-  <img src="images/ss1.png" alt="Main Showcase" width="98%" style="border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);" />
+  <img src="./s1.png" alt="Main Showcase" width="98%" style="border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);" />
 </div>
 
 <div align="center">
-  <img src="images/ss2.png" alt="Screenshot 2" width="48%" style="border-radius: 12px; margin: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
-  <img src="images/ss3.png" alt="Screenshot 3" width="48%" style="border-radius: 12px; margin: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
-  <img src="images/ss4.png" alt="Screenshot 4" width="48%" style="border-radius: 12px; margin: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
-  <img src="images/ss5.png" alt="Screenshot 5" width="48%" style="border-radius: 12px; margin: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
-  <img src="images/ss6.png" alt="Screenshot 6" width="48%" style="border-radius: 12px; margin: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
-  <img src="images/ss7.png" alt="Screenshot 7" width="48%" style="border-radius: 12px; margin: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
+  <img src="./s2.png" alt="Screenshot 2" width="48%" style="border-radius: 12px; margin: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
+  <img src="./s3.png" alt="Screenshot 3" width="48%" style="border-radius: 12px; margin: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
+  <img src="./s4.png" alt="Screenshot 4" width="48%" style="border-radius: 12px; margin: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
+  <img src="./s5.png" alt="Screenshot 5" width="48%" style="border-radius: 12px; margin: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
+  <img src="./s6.png" alt="Screenshot 6" width="48%" style="border-radius: 12px; margin: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
+  <img src="./s7.png" alt="Screenshot 7" width="48%" style="border-radius: 12px; margin: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
 </div>
 
 <br>
