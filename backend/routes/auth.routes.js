@@ -27,10 +27,20 @@ const disposableDomains = [
 // SMTP Email Transporter
 const transporter = nodemailer.createTransport({
     service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_APP_PASSWORD
     },
+    // Force IPv4 to prevent Render.com ENETUNREACH IPv6 routing failures
+    family: 4,
+    // Strict constraints to prevent indefinite server hangs if Google Auth fails
+    connectionTimeout: 5000,
+    greetingTimeout: 5000,
+    socketTimeout: 5000
+});
     // Strict constraints to prevent indefinite server hangs if Google Auth fails
     connectionTimeout: 5000,
     greetingTimeout: 5000,
