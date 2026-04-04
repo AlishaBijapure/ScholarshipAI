@@ -309,6 +309,7 @@ body {
     background: var(--input-panel-bg);
     position: relative;
     overflow-y: auto; /* Enable dynamic scrolling on tiny/compact devices */
+    min-height: 0; /* CRITICAL: Breaks implicit Grid/Flex minimum size limitations so scrollbar triggers properly */
 }
 
 .input-stage-container {
@@ -529,8 +530,10 @@ select.custom-input {
     }
 
     .input-panel {
-        flex: 0 0 auto; /* Allow the input to size dynamically and take remaining space */
+        flex: 1; /* CRITICAL: Force it to shrink-fit the remaining vertical height! */
+        min-height: 0; /* Ensures mobile flex layouts do not grow aggressively out of bounds */
         padding: 20px 15px;
+        overflow-y: auto; /* Allow strict internal scrolling */
     }
 
     .bot-avatar {
