@@ -3,7 +3,7 @@
   <img src="vistonaut.png" alt="Vistonaut Logo" width="200" />
 </div>
 
-<h1 align="center">Vistonaut</h1>
+<h1 align="center">V i s t o n a u t</h1>
 
 <p align="center">
   <b>A next-generation, deeply immersive AI-powered application guidance platform for international university admissions.</b>
