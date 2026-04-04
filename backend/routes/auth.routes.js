@@ -228,7 +228,7 @@ router.post('/otp/send', async (req, res) => {
                         'Authorization': `Bearer ${process.env.RESEND_API_KEY}`
                     },
                     body: JSON.stringify({
-                        from: 'Vistonaut Security <onboarding@resend.dev>', // Update domains when vistonaut.com goes live on Resend!
+                        from: 'Vistonaut Security <onboarding@vistonaut.com>', // Verified Domain
                         to: [formattedEmail],
                         subject: 'Your Vistonaut Security Code',
                         html: htmlPayload
