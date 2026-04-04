@@ -5,6 +5,10 @@ const jwt = require('jsonwebtoken');
 const { OAuth2Client } = require('google-auth-library');
 const User = require('../models/user.model');
 const StudentProfile = require('../models/studentProfile.model');
+const CounsellorProgress = require('../models/counsellorProgress.model');
+const Todo = require('../models/todo.model');
+const UserUniversity = require('../models/userUniversity.model');
+const authMiddleware = require('../middleware/auth.middleware');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -254,6 +258,59 @@ router.post('/google', async (req, res) => {
     } catch (error) {
         console.error('Google Auth Verify error:', error);
         res.status(401).json({ message: 'Invalid or expired Google Authentication token.' });
+    }
+});
+
+// PUT /api/auth/update - Update Account Details
+router.put('/update', authMiddleware, async (req, res) => {
+    try {
+        const userId = req.userId;
+        const { fullName, password } = req.body;
+        
+        const updateData = {};
+        if (fullName) updateData.fullName = fullName;
+        if (password) updateData.password = await bcrypt.hash(password, 10);
+        
+        if (Object.keys(updateData).length === 0) {
+            return res.status(400).json({ message: 'No valid fields provided for update.' });
+        }
+        
+        const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true }).select('-password');
+        
+        res.json({
+            message: 'Account updated successfully.',
+            user: {
+                id: updatedUser._id,
+                fullName: updatedUser.fullName,
+                email: updatedUser.email,
+                onboardingCompleted: updatedUser.onboardingCompleted,
+                currentStage: updatedUser.currentStage
+            }
+        });
+    } catch (error) {
+        console.error('Account Update error:', error);
+        res.status(500).json({ message: 'Internal server error while updating account.' });
+    }
+});
+
+// DELETE /api/auth/delete - Cascading Account Purge
+router.delete('/delete', authMiddleware, async (req, res) => {
+    try {
+        const userId = req.userId;
+        
+        // Execute Cascading Database Deletion
+        await Promise.all([
+            User.findByIdAndDelete(userId),
+            StudentProfile.deleteMany({ userId }),
+            CounsellorProgress.deleteMany({ userId }),
+            Todo.deleteMany({ userId }),
+            UserUniversity.deleteMany({ userId })
+        ]);
+        
+        res.json({ message: 'Account and all associated records permanently purged.' });
+    } catch (error) {
+        console.error('Data Deletion cascade error:', error);
+        res.status(500).json({ message: 'Internal server error during deletion cascade.' });
     }
 });
 
