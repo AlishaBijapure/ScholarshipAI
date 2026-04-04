@@ -2,10 +2,12 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { OAuth2Client } = require('google-auth-library');
 const User = require('../models/user.model');
 const StudentProfile = require('../models/studentProfile.model');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // POST /api/auth/signup
 router.post('/signup', async (req, res) => {
@@ -218,8 +220,41 @@ router.post('/otp/verify', async (req, res) => {
 
 // POST /api/auth/google
 router.post('/google', async (req, res) => {
-    // This is the stub ready for a Google Cloud Client ID payload verification
-    res.status(401).json({ message: 'Google OAuth Client ID must be configured in Production environment.' });
+    try {
+        const { credential } = req.body;
+        if (!credential) return res.status(400).json({ message: 'Missing Google credential payloads.' });
+
+        const ticket = await googleClient.verifyIdToken({
+            idToken: credential,
+            audience: process.env.GOOGLE_CLIENT_ID
+        });
+        
+        const payload = ticket.getPayload();
+        const formattedEmail = payload.email.toLowerCase();
+
+        let user = await User.findOne({ email: formattedEmail });
+        if (!user) {
+            user = new User({
+                fullName: payload.name || formattedEmail.split('@')[0],
+                email: formattedEmail,
+                password: await bcrypt.hash(Math.random().toString(36), 10),
+                onboardingCompleted: false,
+                currentStage: 'profile_building'
+            });
+            await user.save();
+        }
+
+        const token = jwt.sign({ userId: user._id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
+
+        res.json({
+            message: 'Google Authentication successful',
+            token,
+            user: { id: user._id, fullName: user.fullName, email: user.email, onboardingCompleted: user.onboardingCompleted, currentStage: user.currentStage }
+        });
+    } catch (error) {
+        console.error('Google Auth Verify error:', error);
+        res.status(401).json({ message: 'Invalid or expired Google Authentication token.' });
+    }
 });
 
 module.exports = router;
