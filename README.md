@@ -1,16 +1,18 @@
 <div align="center">
-  <img src="images/LOGO.webp" alt="Books and Bricks Logo" width="200" />
+  <!-- User: Replace with your actual logo image -->
+  <img src="images/logo.png" alt="Vistonaut Logo" width="200" />
 </div>
 
-<h1 align="center">Books & Bricks Café</h1>
+<h1 align="center">Vistonaut</h1>
 
 <p align="center">
-  <b>A highly immersive, performance-optimized static cafe website powered by Three.js WebGL rendering.</b>
+  <b>A next-generation, deeply immersive AI-powered application guidance platform for international university admissions.</b>
 </p>
 
 <div align="center">
 
-  [![Live Demo](https://img.shields.io/badge/Live-booksandbricks.in-success?style=for-the-badge)](https://booksandbricks.in/)
+  [![Live Demo](https://img.shields.io/badge/Live-Vistonaut--Production-success?style=for-the-badge)](https://scholarshipai.onrender.com/)
+  [![Tech Stack](https://img.shields.io/badge/Stack-Node.js%20|%20Express%20|%20MongoDB-purple?style=for-the-badge)]()
 
 </div>
 
@@ -19,6 +21,7 @@
 ## 📸 The Experience
 
 <div align="center">
+  <!-- User: Upload ss1.png through ss7.png to your images folder to populate this grid! -->
   <img src="images/ss1.png" alt="Main Showcase" width="98%" style="border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);" />
 </div>
 
@@ -33,45 +36,53 @@
 
 <br>
 
-Nestled in the heart of Srinagar, **Books & Bricks Café** required a landing page that properly communicated its warm, rustic, and authentic aesthetic. This repository contains the custom-built frontend application showcasing the cafe. 
+Navigating international university admissions is arguably one of the most intimidating challenges for a student. **Vistonaut** is engineered from the ground up to completely automate, streamline, and personalize this journey. 
 
-Highlighting the experience is a **fully interactive, 3D rotating coffee cup** deployed via a Three.js canvas layer, offering users a deeply immersive initial impression before smoothly transitioning into elegant storytelling and interactive menus.
+Highlighting the experience is a **fully interactive, voice-responsive AI Counsellor**, backed by an elegantly responsive dashboard that orchestrates dynamic checklists, custom document builders (SOPs/LORs), and personalized university discovery engines inside a beautiful, space-themed glassmorphic UI.
 
 ## Technical Highlights
 
-- **3D WebGL Rendering:** Features a custom `.glb` 3D model managed by `Three.js` and `OrbitControls`, responding dynamically to screen size and user scrolling.
-- **Micro-Optimized Performance:** Uses **Google DRACO** mesh compression, native Intersection Observers to pause GPU calculations off-screen, and strict PixelRatio capping to deliver seamless frames on modern mobile devices.
-- **Glassmorphism UI:** Complete responsive design featuring modern CSS frosted-glass aesthetics built entirely without bloated CSS frameworks—pure vanilla precision.
-- **Technical SEO:** Fully structured metadata, `robots.txt`, and automated `schema.org/CafeOrCoffeeShop` JSON-LD injections ensuring the cafe explicitly dominates the local Google Search ecosystem.
+- **Bypass-Resilient Authentication:** Fully ditches legacy SMTP servers that fall victim to free-tier cloud firewalls. Vistonaut utilizes a high-speed, native `HTTPS / fetch()` pipeline routing 6-Digit OTP security codes through Resend API, backed concurrently by automated Google OAuth identity verification.
+- **Cascading Nuclear Deletion:** A deeply secure MongoDB schema automatically executes Promise.all cascading deletions, ensuring absolute user privacy by sanitizing all orphaned Profile, Admissions, and Todo data instances if a user deletes their account.
+- **Glassmorphism UI Patterns:** Features mathematically clamped, fully fluid typography and hyper-responsive `100dvh` flex grids that adapt layout geometry flawlessly to anything from a 4k desktop monitor to a virtual mobile keyboard.
+- **Intelligent Registration Interceptors:** Dynamically restricts duplicate registrations mid-flight, safely redirecting users into seamless login flows and drastically reducing wasted API execution costs.
 
 ## Tech Stack
 
-- **HTML5** & **Vanilla CSS3**
-- **JavaScript (ES Modules)**
-- **Three.js** (WebGL 3D Engine)
-- **Intersection Observer API**
+- **Frontend:** HTML5, Vanilla CSS3, Javascript (ES Modules)
+- **Backend Architecture:** Node.js, Express.js
+- **Database:** MongoDB (Mongoose ORM)
+- **Integration APIs:** Google Identity Services (GSI), Resend.com Email HTTP API
 
 ## Local Setup
 
-Since this is a deeply optimized static application, no complex build dependencies are required!
+To run Vistonaut's full stack locally, simply follow these steps:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/AlishaBijapure/BooksAndBricks.git
+   git clone https://github.com/AlishaBijapure/ScholarshipAI.git
    ```
-2. Navigate into the directory:
+2. Navigate into the backend directory and install dependencies:
    ```bash
-   cd BooksAndBricks
+   cd frontend
+   cd backend
+   npm install
    ```
-3. Run a local development server (necessary to bypass browser CORS policies for rendering the 3D `.glb` module):
+3. Set up the environment variables:
+   Create a `.env` file in the `backend` directory containing:
+   ```
+   PORT=3000
+   MONGO_URI=your_mongodb_cluster_url
+   JWT_SECRET=your_secure_hash
+   RESEND_API_KEY=re_your_api_key_here
+   GOOGLE_CLIENT_ID=your_google_cloud_id.apps.googleusercontent.com
+   GOOGLE_CLIENT_SECRET=your_google_secret
+   ```
+4. Boot up the backend node server:
    ```bash
-   # If you use python:
-   python3 -m http.server 8000
-   
-   # Or using Node.js:
-   npx serve .
+   npm start
    ```
-4. Open the browser to `http://localhost:8000`
+5. Open your preferred Live Server on the frontend directory (e.g. `index.html`) using port 5500.
 
 ---
-*Built with 🤎 for the Books & Bricks community.*
+*Developed to engineer seamless journeys for future global scholars.*
