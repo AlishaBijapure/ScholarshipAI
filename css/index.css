@@ -109,6 +109,413 @@
   opacity: 0;
   animation: fadeInUp 0.8s ease-out 0.6s forwards;
 }
+
+/* —— Laptop / dashboard mockup (high contrast + branding) —— */
+.dashboard-mockup-wrapper {
+  margin-top: 80px;
+  transform: perspective(1100px) rotateX(4deg);
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.dashboard-mockup-wrapper.hero-fade-in {
+  opacity: 0;
+  animation: fadeInUp 1s ease-out 1.2s forwards;
+}
+
+.dashboard-mockup {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border-radius: 14px 14px 0 0;
+  border: 1px solid rgba(167, 139, 250, 0.45);
+  border-bottom: none;
+  background: linear-gradient(165deg, #1a1228 0%, #0d0814 50%, #120a1c 100%);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+    0 32px 64px rgba(0, 0, 0, 0.75),
+    0 0 80px rgba(123, 97, 255, 0.12);
+  font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+  text-align: left;
+  color: #e2e8f0;
+}
+
+.mockup-chrome {
+  flex-shrink: 0;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  padding: 0 14px 0 16px;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.mockup-traffic {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+}
+
+.mockup-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+
+.mockup-dot-close {
+  background: #ff5f57;
+}
+
+.mockup-dot-min {
+  background: #febc2e;
+}
+
+.mockup-dot-max {
+  background: #28c840;
+}
+
+.mockup-window-title {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  min-width: 0;
+}
+
+.mockup-window-brand {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #fff 0%, #c4b5fd 55%, #7dd3fc 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.mockup-window-sub {
+  font-size: 0.58rem;
+  font-weight: 600;
+  color: rgba(196, 181, 253, 0.85);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.mockup-chrome-spacer {
+  width: 52px;
+  flex-shrink: 0;
+}
+
+.mockup-body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  padding: 14px 16px 20px;
+  gap: 14px;
+}
+
+.mockup-sidebar {
+  width: 26%;
+  min-width: 118px;
+  max-width: 200px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(25, 22, 40, 0.92);
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mockup-sidebar-brand {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: #fff;
+  padding: 6px 8px 8px;
+  border-bottom: 1px solid rgba(167, 139, 250, 0.25);
+  margin-bottom: 4px;
+}
+
+.mockup-sidebar-brand span {
+  color: #a78bfa;
+}
+
+.mockup-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mockup-nav-item {
+  font-size: 0.62rem;
+  font-weight: 600;
+  padding: 7px 9px;
+  border-radius: 7px;
+  color: rgba(226, 232, 240, 0.65);
+  border: 1px solid transparent;
+  transition: background 0.15s, color 0.15s;
+}
+
+.mockup-nav-item.is-active {
+  color: #fff;
+  background: linear-gradient(135deg, rgba(123, 97, 255, 0.45), rgba(59, 130, 246, 0.25));
+  border-color: rgba(167, 139, 250, 0.5);
+  box-shadow: 0 0 20px rgba(123, 97, 255, 0.2);
+}
+
+.mockup-sidebar-foot {
+  margin-top: auto;
+  font-size: 0.55rem;
+  line-height: 1.35;
+  color: rgba(148, 163, 184, 0.9);
+  padding: 8px;
+  border-radius: 8px;
+  background: rgba(123, 97, 255, 0.12);
+  border: 1px solid rgba(123, 97, 255, 0.28);
+}
+
+.mockup-sidebar-foot strong {
+  display: block;
+  color: #e9d5ff;
+  font-size: 0.58rem;
+  margin-bottom: 2px;
+}
+
+.mockup-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mockup-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(30, 27, 48, 0.9);
+}
+
+.mockup-search {
+  flex: 1;
+  font-size: 0.62rem;
+  color: rgba(148, 163, 184, 0.95);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mockup-toolbar-badge {
+  font-size: 0.52rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: rgba(34, 211, 238, 0.15);
+  color: #67e8f9;
+  border: 1px solid rgba(34, 211, 238, 0.35);
+  flex-shrink: 0;
+}
+
+.mockup-kpi-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mockup-kpi {
+  flex: 1;
+  min-width: 72px;
+  padding: 10px 11px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(22, 18, 36, 0.95);
+}
+
+.mockup-kpi-label {
+  font-size: 0.52rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(148, 163, 184, 0.95);
+  margin-bottom: 4px;
+}
+
+.mockup-kpi-value {
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.mockup-kpi-sub {
+  font-size: 0.55rem;
+  color: rgba(167, 181, 198, 0.9);
+  margin-top: 3px;
+}
+
+.mockup-kpi.violet .mockup-kpi-value {
+  color: #c4b5fd;
+}
+
+.mockup-kpi.cyan .mockup-kpi-value {
+  color: #67e8f9;
+}
+
+.mockup-kpi.emerald .mockup-kpi-value {
+  color: #6ee7b7;
+}
+
+.mockup-panel {
+  flex: 1;
+  min-height: 0;
+  border-radius: 10px;
+  border: 1px solid rgba(123, 97, 255, 0.28);
+  background: linear-gradient(180deg, rgba(123, 97, 255, 0.14) 0%, rgba(15, 12, 24, 0.92) 42%);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mockup-panel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mockup-panel-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.mockup-panel-tag {
+  font-size: 0.52rem;
+  font-weight: 700;
+  color: #fda4af;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.mockup-tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mockup-task {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.62rem;
+  color: rgba(226, 232, 240, 0.88);
+  padding: 6px 8px;
+  border-radius: 7px;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mockup-task-icon {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #34d399;
+  flex-shrink: 0;
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.6);
+}
+
+.mockup-task-icon.warn {
+  background: #fbbf24;
+  box-shadow: 0 0 8px rgba(251, 191, 36, 0.5);
+}
+
+.mockup-progress-block {
+  margin-top: auto;
+}
+
+.mockup-progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.55rem;
+  font-weight: 600;
+  color: rgba(203, 213, 225, 0.95);
+  margin-bottom: 5px;
+}
+
+.mockup-progress-label span:last-child {
+  color: #6ee7b7;
+  font-weight: 800;
+}
+
+.mockup-progress-track {
+  height: 8px;
+  border-radius: 99px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.mockup-progress-fill {
+  height: 100%;
+  width: 78%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #10b981, #34d399, #6ee7b7);
+  box-shadow: 0 0 16px rgba(52, 211, 153, 0.45);
+}
+
+.mockup-fade {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 42%;
+  pointer-events: none;
+  background: linear-gradient(to top, #07030d 0%, rgba(7, 3, 13, 0.5) 45%, transparent 100%);
+}
+
+@media (max-width: 640px) {
+  .dashboard-mockup-wrapper {
+    transform: none;
+    margin-top: 48px;
+  }
+
+  .mockup-sidebar {
+    display: none;
+  }
+
+  .mockup-body {
+    padding: 12px;
+  }
+
+  .mockup-kpi-row {
+    flex-direction: column;
+  }
+
+  .mockup-kpi {
+    min-width: 100%;
+  }
+}
+
 section {
   padding: 80px 20px;
   position: relative;
