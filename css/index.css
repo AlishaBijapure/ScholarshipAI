@@ -40,8 +40,13 @@
 }
 
 @keyframes float {
-  0% { transform: translate(0, 0); }
-  100% { transform: translate(30px, 50px); }
+  0% {
+    transform: translate(0, 0);
+  }
+
+  100% {
+    transform: translate(30px, 50px);
+  }
 }
 
 .hero-content {
@@ -56,6 +61,7 @@
     opacity: 0;
     transform: translateY(30px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0);
@@ -600,6 +606,7 @@ section {
 .why-card {
   width: 300px;
 }
+
 @media (max-width: 768px) {
   .hero p {
     padding: 0 15px;
@@ -692,6 +699,7 @@ section {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .badge,
   .hero h1,
   .hero p,
@@ -700,5 +708,87 @@ section {
     opacity: 1 !important;
     animation: none !important;
     transform: none !important;
+  }
+}
+
+
+/* --- Interactive Dashboard Styles --- */
+
+/* Hover effect on the mockup itself */
+.dashboard-mockup:hover {
+  border-color: rgba(167, 139, 250, 0.8);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+    0 32px 64px rgba(0, 0, 0, 0.8),
+    0 0 100px rgba(123, 97, 255, 0.25);
+  transform: scale(1.01);
+  transition: all 0.4s ease;
+}
+
+/* Tooltip container logic */
+.tooltip-trigger {
+  position: relative;
+  cursor: help;
+}
+
+/* Tooltip bubble */
+.tooltip-trigger::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: rgba(20, 15, 35, 0.95);
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.65rem;
+  width: 180px;
+  text-align: center;
+  border: 1px solid var(--accent-violet);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+}
+
+.tooltip-trigger:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Highlight items on hover to show they are interactive */
+.mockup-nav-item:hover,
+.mockup-panel:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(123, 97, 255, 0.5);
+}
+
+/* Progress bar pulse animation to look "alive" */
+.mockup-progress-fill {
+  position: relative;
+  overflow: hidden;
+}
+
+.mockup-progress-fill::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  0% {
+    left: -100%;
+  }
+
+  100% {
+    left: 100%;
   }
 }
