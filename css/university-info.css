@@ -1,0 +1,132 @@
+@import url('landing-shell.css');
+
+/* university-info.html */
+.uni-hero {
+  position: relative;
+  padding: 100px 20px 60px;
+  text-align: center;
+  background: linear-gradient(rgba(5, 1, 10, 0.85), rgba(26, 11, 46, 0.9)), url('../vecteezy_graduates-silhouetted-against-a-setting-sun-generated_60008322.jpg');
+  background-size: cover;
+  background-position: center;
+  color: var(--text-dark);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.uni-title {
+  font-size: 3rem;
+  font-family: 'Playfair Display', serif;
+  margin-bottom: 15px;
+  background: linear-gradient(90deg, #fff, #e2e8f0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.uni-meta {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  font-size: 1.1rem;
+  color: var(--text-light);
+  flex-wrap: wrap;
+}
+
+.uni-meta span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.uni-meta i {
+  color: var(--primary-color);
+}
+
+.container {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.detail-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 25px;
+  transition: 0.3s;
+}
+
+.detail-card:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.detail-card h3 {
+  font-size: 1.2rem;
+  color: var(--accent-cyan);
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.detail-list {
+  list-style: none;
+}
+
+.detail-list li {
+  margin-bottom: 10px;
+  color: var(--text-medium);
+  display: flex;
+  gap: 10px;
+}
+
+.detail-list li i {
+  color: var(--secondary-color);
+  margin-top: 4px;
+}
+
+.description-section {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 30px;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 40px;
+  line-height: 1.8;
+  color: var(--text-medium);
+}
+
+.description-section h2 {
+  color: var(--text-dark);
+  margin-bottom: 20px;
+  font-family: 'Playfair Display', serif;
+}
+
+.counsellor-cta {
+  text-align: center;
+  margin-top: 60px;
+  padding: 40px;
+  background: linear-gradient(135deg, rgba(217, 70, 239, 0.1), rgba(139, 92, 246, 0.1));
+  border-radius: 24px;
+  border: 1px solid var(--primary-color);
+}
+
+.counsellor-cta h2 {
+  margin-bottom: 15px;
+  color: var(--text-dark);
+}
+
+.counsellor-cta p {
+  color: var(--text-light);
+  margin-bottom: 25px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}

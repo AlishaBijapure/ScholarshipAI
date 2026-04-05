@@ -1,0 +1,49 @@
+/* Shared variables, reset, typography (Vistonaut landing + auth pages) */
+:root {
+  --primary-color: #7b61ff;
+  --primary-dark: #5a3ce1;
+  --secondary-color: #3b82f6;
+  --accent-cyan: #00f0ff;
+  --success-color: #10b981;
+  --danger-color: #f43f5e;
+  --bg-gradient: linear-gradient(145deg, #090514 0%, #110820 40%, #05020a 100%);
+  --card-bg: rgba(255, 255, 255, 0.03);
+  --chat-bg: transparent;
+  --text-dark: #ffffff;
+  --text-medium: #e2e8f0;
+  --text-light: #a1a1aa;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --neon-shadow: 0 0 20px rgba(123, 97, 255, 0.3);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text-dark);
+  line-height: 1.7;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6, .logo, .badge {
+  font-family: 'Outfit', sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: 0.3s;
+}
+
+.relative-z {
+  position: relative;
+  z-index: 10;
+}
