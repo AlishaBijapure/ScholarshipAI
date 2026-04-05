@@ -9,237 +9,377 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Outfit:wght@500;600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Outfit:wght@500;600;700;800&amp;display=swap"
     rel="stylesheet">
 </head>
 
-<body>
-
-  <!-- Navigation -->
+<body class="landing-page">
   <nav class="navbar">
-    <a href="index.html" class="logo" style="display: flex; align-items: center; gap: 12px;">
-      <img src="vistonaut.png" alt="Vistonaut Logo"
-        style="height: 35px; width: auto; filter: drop-shadow(0 0 5px rgba(217, 70, 239, 0.5));">
+    <a href="index.html" class="logo">
+      <img src="vistonaut.png" alt="Vistonaut logo">
       <span>VISTONAUT</span>
     </a>
-    <div class="menu-toggle" id="mobile-menu">
+
+    <button class="menu-toggle" id="mobile-menu" type="button" aria-label="Toggle navigation" aria-expanded="false">
       <span class="bar"></span>
       <span class="bar"></span>
       <span class="bar"></span>
-    </div>
+    </button>
+
     <ul class="nav-links">
-      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="#platform">Platform</a></li>
+      <li><a href="#journey">Journey</a></li>
+      <li><a href="#faq">FAQs</a></li>
       <li><a href="login.html">Login</a></li>
-      <li><a href="signup.html" class="btn-primary" style="padding: 10px 24px; border-radius: 8px;">Access Portal</a>
-      </li>
+      <li><a href="signup.html" class="btn-primary nav-cta">Access Portal</a></li>
     </ul>
   </nav>
+
+  <main>
+    <section class="hero section-shell">
+      <div class="hero-copy">
+        <div class="eyebrow">Built for ambitious students, parents and counsellors</div>
+        <h1>
+          <span>Global Education.</span>
+          <span>One Intelligent</span>
+          <span class="gradient-text">Command Center.</span>
+        </h1>
+        <p>
+          Global education at your fingertips. Vistonaut gives you a guided study abroad journey with AI support,
+          university discovery, document planning, and one premium workflow from first shortlist to final submission.
+        </p>
+
+        <div class="hero-actions">
+          <a href="signup.html" class="btn-primary">Initialize Journey</a>
+          <a href="login.html" class="btn-secondary">Client Login</a>
+        </div>
+
+        <div class="hero-metrics">
+          <div class="metric-card">
+            <strong>5,000+</strong>
+            <span>universities ready to explore</span>
+          </div>
+          <div class="metric-card">
+            <strong>24/7</strong>
+            <span>AI-guided support across every stage</span>
+          </div>
+          <div class="metric-card">
+            <strong>One Flow</strong>
+            <span>documents, deadlines and decisions synced</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="hero-note note-top">
+          <strong>AI Counsellor Active</strong>
+          <span>Move from country fit to university decisions inside one guided conversation.</span>
+        </div>
+
+        <div class="hero-panel">
+          <div class="panel-topbar">
+            <div class="panel-dots" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="panel-pills">
+              <span>Dashboard</span>
+              <span>AI Counsellor</span>
+              <span>Documents</span>
+            </div>
+          </div>
+          <img src="s2.png" alt="Vistonaut dashboard preview">
+        </div>
+
+        <div class="hero-note note-bottom">
+          <strong>Everything stays visible</strong>
+          <span>Track your shortlist, progress, SOPs, LORs and next actions from one dashboard.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="trust-strip section-shell">
+      <p>
+        Designed to replace scattered spreadsheets, disconnected consultant calls, and buried document folders with a
+        single, guided study abroad system.
+      </p>
+      <div class="trust-tags">
+        <span>Country selection</span>
+        <span>University shortlisting</span>
+        <span>Scholarship planning</span>
+        <span>SOP and LOR workflows</span>
+        <span>Deadline tracking</span>
+      </div>
+    </section>
+
+    <section class="section-shell platform-section" id="platform">
+      <div class="section-intro">
+        <span class="section-kicker">One platform. Every admissions move.</span>
+        <h2>Everything you need to shortlist, plan, write and submit.</h2>
+        <p>
+          Vistonaut keeps the full study abroad journey in one premium pipeline so students can move faster with more
+          clarity, less confusion, and better guidance at every step.
+        </p>
+      </div>
+
+      <div class="feature-grid">
+        <article class="feature-card feature-card-wide">
+          <div class="feature-copy">
+            <span class="feature-label">AI Counsellor</span>
+            <h3>Ask once. Move forward with guided country and university decisions.</h3>
+            <p>
+              Chat through destination choices, compare universities, and keep the conversation tied to a structured
+              admissions workflow instead of jumping between tabs and notes.
+            </p>
+            <ul class="feature-list">
+              <li>Step-by-step progression across each admissions stage</li>
+              <li>Clear next actions based on your profile and chosen path</li>
+              <li>Guidance that stays connected to the rest of your application flow</li>
+            </ul>
+          </div>
+
+          <div class="feature-media">
+            <img src="s3.png" alt="Vistonaut AI counsellor interface">
+          </div>
+        </article>
+
+        <article class="feature-card">
+          <span class="feature-label">Document Workspace</span>
+          <h3>Generate SOPs, resumes and LOR workflows without breaking context.</h3>
+          <p>
+            Draft university-specific documents, keep AI templates nearby, and work from one place instead of managing
+            disconnected files.
+          </p>
+          <div class="mini-stat-grid">
+            <div class="mini-stat">
+              <strong>AI</strong>
+              <span>draft support for SOPs, resumes and more</span>
+            </div>
+            <div class="mini-stat">
+              <strong>Cloud</strong>
+              <span>progress saved automatically as you work</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="feature-card feature-card-media-only">
+          <div class="feature-media">
+            <img src="s5.png" alt="Vistonaut document workspace">
+          </div>
+        </article>
+
+        <article class="feature-card accent-card">
+          <span class="feature-label">University Discovery</span>
+          <h3>Save dream, target and safe options inside a single dashboard.</h3>
+          <p>
+            Browse universities, compare fit, and keep your shortlist connected to your documents and next-step
+            planning.
+          </p>
+          <a href="signup.html" class="text-link">Start building your shortlist</a>
+        </article>
+
+        <article class="feature-card feature-card-wide secondary">
+          <div class="feature-copy">
+            <span class="feature-label">Smart Match Flow</span>
+            <h3>Track your pipeline from profile strength to applications and scholarships.</h3>
+            <p>
+              Vistonaut turns the study abroad process into a visible system, with university discovery, application
+              readiness, quick actions and structured momentum in one place.
+            </p>
+            <ul class="feature-list">
+              <li>Review profile strength before taking the next step</li>
+              <li>Organize universities across dream, target and safe buckets</li>
+              <li>Keep decisions, documents and deadlines aligned</li>
+            </ul>
+          </div>
+
+          <div class="feature-media">
+            <img src="s6.png" alt="Vistonaut university discovery dashboard">
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section-shell comparison-section">
+      <div class="section-intro centered">
+        <span class="section-kicker">Why Vistonaut</span>
+        <h2>Stop managing study abroad through scattered tools and fragmented advice.</h2>
+        <p>
+          The usual process is spread across calls, spreadsheets, chats, folders and deadlines. Vistonaut brings all
+          of it into a single command center.
+        </p>
+      </div>
+
+      <div class="comparison-grid">
+        <article class="comparison-card comparison-card-muted">
+          <h3>The old way</h3>
+          <div class="comparison-value">Too many tabs</div>
+          <ul class="comparison-list">
+            <li>Separate consultants, browser tabs, notes and folders</li>
+            <li>Manual follow-ups for SOPs, LORs and pending tasks</li>
+            <li>University research disconnected from profile readiness</li>
+            <li>Important deadlines easy to miss when everything lives elsewhere</li>
+          </ul>
+        </article>
+
+        <article class="comparison-card comparison-card-accent">
+          <div class="comparison-badge">Vistonaut</div>
+          <h3>One guided system</h3>
+          <div class="comparison-value">One premium pipeline</div>
+          <ul class="comparison-list">
+            <li>AI counsellor, discovery tools and documents in one place</li>
+            <li>Progress stays visible from first shortlist to final submission</li>
+            <li>Students always know the next move to make</li>
+            <li>Premium, high-clarity workflow built around global education</li>
+          </ul>
+          <a href="signup.html" class="btn-primary">Initialize Journey</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="section-shell journey-section" id="journey">
+      <div class="section-intro">
+        <span class="section-kicker">Every stage. One flow.</span>
+        <h2>Move from profile building to final documents without losing momentum.</h2>
+        <p>
+          Vistonaut combines AI guidance with structured execution so students can move forward with confidence, not
+          confusion.
+        </p>
+      </div>
+
+      <div class="journey-grid">
+        <article class="journey-card">
+          <span class="journey-step">01</span>
+          <h3>Build your profile</h3>
+          <p>Assess academics, exams and readiness before committing to a path.</p>
+        </article>
+
+        <article class="journey-card">
+          <span class="journey-step">02</span>
+          <h3>Discover universities</h3>
+          <p>Shortlist dream, target and safe universities with your profile in context.</p>
+        </article>
+
+        <article class="journey-card">
+          <span class="journey-step">03</span>
+          <h3>Prepare documents</h3>
+          <p>Draft SOPs, resumes and supporting material inside a focused workspace.</p>
+        </article>
+
+        <article class="journey-card journey-card-highlight">
+          <span class="journey-step">04</span>
+          <h3>Submit with clarity</h3>
+          <p>Track tasks, deadlines and next actions from one dashboard until applications are done.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section-shell results-section">
+      <div class="results-panel">
+        <div class="results-copy">
+          <span class="section-kicker">Built for confidence</span>
+          <h2>From shortlist to SOP, the whole process stays visible.</h2>
+          <p>
+            Vistonaut gives students a clearer next step every day, with AI counsellor support, structured timelines
+            and one place for documents, universities and progress.
+          </p>
+          <div class="results-actions">
+            <a href="signup.html" class="btn-primary">Access Portal</a>
+            <a href="login.html" class="btn-secondary">Log in</a>
+          </div>
+        </div>
+
+        <div class="results-stats">
+          <div class="results-stat">
+            <strong>5,000+</strong>
+            <span>universities available to explore</span>
+          </div>
+          <div class="results-stat">
+            <strong>24/7</strong>
+            <span>AI-guided support for each admission milestone</span>
+          </div>
+          <div class="results-stat">
+            <strong>One</strong>
+            <span>dashboard for tasks, docs, decisions and momentum</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-shell faq-section" id="faq">
+      <div class="section-intro centered">
+        <span class="section-kicker">Frequently Asked Questions</span>
+        <h2>Questions students ask before they begin.</h2>
+      </div>
+
+      <div class="faq-list">
+        <details class="faq-item" open>
+          <summary>How is Vistonaut different from a typical counselling workflow?</summary>
+          <p>
+            Vistonaut combines AI guidance, university discovery, document drafting and progress tracking inside one
+            system instead of spreading the journey across calls, spreadsheets and disconnected folders.
+          </p>
+        </details>
+
+        <details class="faq-item">
+          <summary>Can I manage my shortlist and documents in one place?</summary>
+          <p>
+            Yes. You can discover universities, save your preferred options, prepare SOPs and resumes, and keep
+            application tasks connected to the same journey.
+          </p>
+        </details>
+
+        <details class="faq-item">
+          <summary>Does Vistonaut support students through every stage of the process?</summary>
+          <p>
+            That is the goal of the platform. The experience is structured to support profile building, university
+            discovery, application guidance, documents and ongoing progress tracking from start to finish.
+          </p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-cta section-shell">
+      <div class="footer-card">
+        <div>
+          <span class="section-kicker">Ready to begin?</span>
+          <h2>Keep your study abroad journey sharp, visible and guided.</h2>
+          <p>
+            Start with one intelligent workflow for universities, documents, scholarships and next steps.
+          </p>
+        </div>
+        <a href="signup.html" class="btn-primary">Initialize Journey</a>
+      </div>
+    </div>
+
+    <div class="footer-links section-shell">
+      <p>(c) 2026 Vistonaut Technologies. Engineering the future of global education.</p>
+    </div>
+  </footer>
 
   <script>
     const menuToggle = document.getElementById('mobile-menu');
     const navLinks = document.querySelector('.nav-links');
+    const navAnchors = document.querySelectorAll('.nav-links a');
 
     menuToggle.addEventListener('click', () => {
+      const expanded = menuToggle.getAttribute('aria-expanded') === 'true';
       menuToggle.classList.toggle('is-active');
       navLinks.classList.toggle('active');
+      menuToggle.setAttribute('aria-expanded', String(!expanded));
+    });
+
+    navAnchors.forEach((link) => {
+      link.addEventListener('click', () => {
+        menuToggle.classList.remove('is-active');
+        navLinks.classList.remove('active');
+        menuToggle.setAttribute('aria-expanded', 'false');
+      });
     });
   </script>
-
-
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="glow-orb glow-orb-1"></div>
-    <div class="glow-orb glow-orb-2"></div>
-    <div class="hero-content">
-      <div class="badge">Next-Gen Study Abroad</div>
-      <h1>Master Your <br><span class="gradient-text">Study Abroad Journey</span></h1>
-
-      <p>Global education at your fingertips. Get hassle-free counselling step by step. Experience an AI-guided journey
-        with every step, orchestrating complex admissions into one premium pipeline.</p>
-      <div class="hero-buttons">
-        <a href="signup.html" class="btn-primary">Initialize Journey</a>
-        <a href="login.html" class="btn-secondary">Client Login</a>
-      </div>
-
-      <!-- Social Proof / SaaS Trust Bar -->
-      <div class="trust-bar hero-fade-in"
-        style="margin-top: 60px; opacity: 0; animation: fadeInUp 0.8s ease-out 0.9s forwards;">
-        <p
-          style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-light); margin-bottom: 20px;">
-          Orchestrating admits to top-tier institutions</p>
-        <div class="trust-logos"
-          style="display: flex; justify-content: center; gap: 40px; align-items: center; flex-wrap: wrap; color: rgba(226, 232, 240, 0.75);">
-          <!-- SVG placeholders simulating university wordmarks -->
-          <svg height="24" viewBox="0 0 100 30" fill="none" xmlns="http://www.w3.org/2000/svg"
-            style="opacity: 0.6; filter: grayscale(1); transition: 0.3s;">
-            <path d="M10 20L20 5H30L20 25H10V20Z" fill="currentColor" />
-            <path d="M40 25V5H50V10H60V5H70V25H60V15H50V25H40Z" fill="currentColor" />
-            <path d="M80 5H100V10H90V25H80V5Z" fill="currentColor" />
-          </svg>
-          <svg height="24" viewBox="0 0 100 30" fill="none" xmlns="http://www.w3.org/2000/svg"
-            style="opacity: 0.6; filter: grayscale(1); transition: 0.3s;">
-            <circle cx="15" cy="15" r="10" stroke="currentColor" stroke-width="4" />
-            <path d="M40 5L50 25L60 5H70L55 30H45L30 5H40Z" fill="currentColor" />
-            <path d="M80 5H100V10H85V15H95V20H85V25H100V30H80V5Z" fill="currentColor" />
-          </svg>
-          <svg height="20" viewBox="0 0 100 30" fill="none" xmlns="http://www.w3.org/2000/svg"
-            style="opacity: 0.6; filter: grayscale(1); transition: 0.3s;">
-            <path d="M5 25V5H25V10H15V15H25V20H15V25H5Z" fill="currentColor" />
-            <path d="M35 5H45L55 15L65 5H75V25H65V15L55 25L45 15V25H35V5Z" fill="currentColor" />
-            <path d="M85 5H105V10H95V25H85V5Z" fill="currentColor" />
-          </svg>
-        </div>
-      </div>
-
-      <!-- Dashboard mockup (branded, high-contrast) -->
-      <div class="dashboard-mockup-wrapper hero-fade-in">
-        <div class="dashboard-mockup">
-          <div class="mockup-chrome">
-            <div class="mockup-traffic" aria-hidden="true">
-              <span class="mockup-dot mockup-dot-close"></span>
-              <span class="mockup-dot mockup-dot-min"></span>
-              <span class="mockup-dot mockup-dot-max"></span>
-            </div>
-            <div class="mockup-window-title">
-              <span class="mockup-window-brand">Vistonaut</span>
-              <span class="mockup-window-sub">Command Center · Study abroad</span>
-            </div>
-            <div class="mockup-chrome-spacer" aria-hidden="true"></div>
-          </div>
-
-          <div class="mockup-body">
-            <aside class="mockup-sidebar">
-              <div class="mockup-sidebar-brand">VISTO<span>NAUT</span></div>
-              <nav class="mockup-nav">
-                <div class="mockup-nav-item is-active">Dashboard</div>
-                <div class="mockup-nav-item tooltip-trigger"
-                  data-tooltip="Explore 2,000+ top-tier global universities with AI matching.">Universities</div>
-                <div class="mockup-nav-item">Scholarships</div>
-                <div class="mockup-nav-item tooltip-trigger"
-                  data-tooltip="Your 24/7 AI Counselor: Guiding you from GRE prep to Visa interviews.">AI Guidance</div>
-                <div class="mockup-nav-item">Documents</div>
-              </nav>
-              <div class="mockup-sidebar-foot">
-                <strong>AI Study Abroad Counsellor</strong>
-                Personalized guidance through every admission step.
-              </div>
-            </aside>
-
-            <main class="mockup-main">
-              <div class="mockup-toolbar">
-                <span class="mockup-search">Search Harvard, Oxford, Trinity College...</span>
-                <span class="mockup-toolbar-badge">Smart Sync</span>
-              </div>
-
-              <div class="mockup-kpi-row">
-                <div class="mockup-kpi violet">
-                  <div class="mockup-kpi-label">Universities</div>
-                  <div class="mockup-kpi-value">5,000+</div>
-                  <div class="mockup-kpi-sub">Curated for you</div>
-                </div>
-                <div class="mockup-kpi cyan">
-                  <div class="mockup-kpi-label">Deadlines</div>
-                  <div class="mockup-kpi-value">Smart</div>
-                  <div class="mockup-kpi-sub">Auto-tracking</div>
-                </div>
-                <div class="mockup-kpi emerald">
-                  <div class="mockup-kpi-label">Documents</div>
-                  <div class="mockup-kpi-value">Vault</div>
-                  <div class="mockup-kpi-sub">Encrypted Storage</div>
-                </div>
-              </div>
-
-              <div class="mockup-panel tooltip-trigger"
-                data-tooltip="Smart To-Do List: Generate SOPs, LORs, and Resumes in minutes with AI.">
-                <div class="mockup-panel-head">
-                  <span class="mockup-panel-title">Smart Documentation Management</span>
-                  <span class="mockup-panel-tag">AI GENERATOR</span>
-                </div>
-                <div class="mockup-tasks">
-                  <div class="mockup-task">
-                    <span class="mockup-task-icon"></span>
-                    Drafting SOP for NCI Dublin... <em style="color:var(--accent-cyan)">(AI Draft Ready)</em>
-                  </div>
-                  <div class="mockup-task">
-                    <span class="mockup-task-icon"></span>
-                    Resume optimized for UK/Ireland standards
-                  </div>
-                  <div class="mockup-task">
-                    <span class="mockup-task-icon warn"></span>
-                    Missing: LOR from Professor
-                  </div>
-                </div>
-                <div class="mockup-progress-block">
-                  <div class="mockup-progress-label">
-                    <span>Application Readiness</span>
-                    <span>85%</span>
-                  </div>
-                  <div class="mockup-progress-track">
-                    <div class="mockup-progress-fill"></div>
-                  </div>
-                </div>
-              </div>
-            </main>
-          </div>
-
-          <div class="mockup-fade" aria-hidden="true"></div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- Bento Highlights Section -->
-  <section class="highlights bento-grid relative-z">
-    <div class="highlight-card bento-large">
-      <div class="card-icon" style="font-size: 2.5rem; margin-bottom: 20px;">🤖</div>
-      <h3 style="font-size: 1.8rem; margin-bottom: 12px; color: #fff;">AI-Guided System</h3>
-      <p style="font-size: 1.1rem; color: var(--text-light); max-width: 80%;">Experience a fully automated,
-        voice-responsive AI journey computing every variable of your global education trajectory securely.</p>
-    </div>
-    <div class="highlight-card bento-square">
-      <div class="card-icon" style="font-size: 2rem;">⚡</div>
-      <div>
-        <h3 style="font-size: 1.4rem; margin-bottom: 8px; color: #fff;">Zero Friction</h3>
-        <p style="color: var(--text-light); font-size: 1rem;">Automate complex documentation requirements effortlessly.
-        </p>
-      </div>
-    </div>
-    <div class="highlight-card bento-square">
-      <div class="card-icon" style="font-size: 2rem;">🌍</div>
-      <div>
-        <h3 style="font-size: 1.4rem; margin-bottom: 8px; color: #fff;">Global Reach</h3>
-        <p style="color: var(--text-light); font-size: 1rem;">Unlock high-yield scholarships on an enterprise scale.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Why We're Different -->
-  <section class="why relative-z">
-    <h2>The Vistonaut Advantage</h2>
-    <div class="why-cards">
-      <div class="why-card">
-        <h3>Precision Curation</h3>
-        <p>Every university and scholarship opportunity is rigorously vetted to match your exact academic cadence.</p>
-      </div>
-      <div class="why-card">
-        <h3>Smart Infrastructure</h3>
-        <p>A unified dashboard that meticulously tracks deadlines and deliverables, ensuring zero margin for error.</p>
-      </div>
-      <div class="why-card">
-        <h3>AI Concierge</h3>
-        <p>Engage with an intelligent agent trained globally to orchestrate the most complex admission variables.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="relative-z">
-    <div class="footer-links">
-      <p>© 2026 Vistonaut Technologies. Engineering the future of global education.</p>
-    </div>
-  </footer>
-
 </body>
 
 </html>
