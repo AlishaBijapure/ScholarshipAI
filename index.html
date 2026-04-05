@@ -55,25 +55,67 @@
         <a href="signup.html" class="btn-primary">Initialize Journey</a>
         <a href="login.html" class="btn-secondary">Client Login</a>
       </div>
+      
+      <!-- Social Proof / SaaS Trust Bar -->
+      <div class="trust-bar" style="margin-top: 60px; opacity: 0; animation: fadeInUp 0.8s ease-out 0.9s forwards;">
+        <p style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-light); margin-bottom: 20px;">Orchestrating admits to top-tier institutions</p>
+        <div class="trust-logos" style="display: flex; justify-content: center; gap: 40px; align-items: center; flex-wrap: wrap;">
+          <!-- SVG placeholders simulating university wordmarks -->
+          <svg height="24" viewBox="0 0 100 30" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity: 0.6; filter: grayscale(1); transition: 0.3s;"><path d="M10 20L20 5H30L20 25H10V20Z" fill="currentColor"/><path d="M40 25V5H50V10H60V5H70V25H60V15H50V25H40Z" fill="currentColor"/><path d="M80 5H100V10H90V25H80V5Z" fill="currentColor"/></svg>
+          <svg height="24" viewBox="0 0 100 30" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity: 0.6; filter: grayscale(1); transition: 0.3s;"><circle cx="15" cy="15" r="10" stroke="currentColor" stroke-width="4"/><path d="M40 5L50 25L60 5H70L55 30H45L30 5H40Z" fill="currentColor"/><path d="M80 5H100V10H85V15H95V20H85V25H100V30H80V5Z" fill="currentColor"/></svg>
+          <svg height="20" viewBox="0 0 100 30" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity: 0.6; filter: grayscale(1); transition: 0.3s;"><path d="M5 25V5H25V10H15V15H25V20H15V25H5Z" fill="currentColor"/><path d="M35 5H45L55 15L65 5H75V25H65V15L55 25L45 15V25H35V5Z" fill="currentColor"/><path d="M85 5H105V10H95V25H85V5Z" fill="currentColor"/></svg>
+        </div>
+      </div>
+
+      <!-- Abstract Dashboard Graphic -->
+      <div class="dashboard-mockup-wrapper" style="margin-top: 80px; transform: perspective(1000px) rotateX(1deg); opacity: 0; animation: fadeInUp 1s ease-out 1.2s forwards; display: flex; justify-content: center; width: 100%; max-width: 1100px; margin-left: auto; margin-right: auto;">
+        <div class="dashboard-mockup" style="background: rgba(10, 5, 20, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px 16px 0 0; box-shadow: 0 40px 80px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.1); width: 100%; aspect-ratio: 16/9; position: relative; overflow: hidden; display: flex; flex-direction: column; border-bottom: none;">
+          <!-- Mac Window Controls -->
+          <div style="height: 48px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; padding: 0 20px; gap: 8px;">
+            <div style="width: 12px; height: 12px; border-radius: 50%; background: #262626; border: 1px solid #333;"></div>
+            <div style="width: 12px; height: 12px; border-radius: 50%; background: #262626; border: 1px solid #333;"></div>
+            <div style="width: 12px; height: 12px; border-radius: 50%; background: #262626; border: 1px solid #333;"></div>
+          </div>
+          <!-- Abstract UI Elements -->
+          <div style="flex: 1; display: flex; padding: 20px; gap: 20px;">
+            <!-- Sidebar -->
+            <div style="width: 25%; background: rgba(255,255,255,0.015); border-radius: 8px; border: 1px solid rgba(255,255,255,0.02);"></div>
+            <!-- Main View -->
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 20px;">
+               <!-- Header strip -->
+               <div style="height: 60px; background: rgba(255,255,255,0.015); border-radius: 8px; border: 1px solid rgba(255,255,255,0.02);"></div>
+               <!-- Content Area -->
+               <div style="flex: 1; background: linear-gradient(180deg, rgba(123, 97, 255, 0.03) 0%, transparent 100%); border-radius: 8px; border: 1px solid rgba(123, 97, 255, 0.08);"></div>
+            </div>
+          </div>
+          <!-- Fade Out Gradient at bottom -->
+          <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 180px; background: linear-gradient(to top, #06020c 0%, transparent 100%); pointer-events: none;"></div>
+        </div>
+      </div>
+
     </div>
   </section>
 
-  <!-- Highlights Section -->
-  <section class="highlights relative-z">
-    <div class="highlight-card">
-      <div class="card-icon">🤖</div>
-      <h3>AI-Guided Journey</h3>
-      <p>Experience an AI-guided journey with every step, predicting your exact path forward.</p>
+  <!-- Bento Highlights Section -->
+  <section class="highlights bento-grid relative-z">
+    <div class="highlight-card bento-large">
+      <div class="card-icon" style="font-size: 2.5rem; margin-bottom: 20px;">🤖</div>
+      <h3 style="font-size: 1.8rem; margin-bottom: 12px; color: #fff;">AI-Guided System</h3>
+      <p style="font-size: 1.1rem; color: var(--text-light); max-width: 80%;">Experience a fully automated, voice-responsive AI journey computing every variable of your global education trajectory securely.</p>
     </div>
-    <div class="highlight-card">
-      <div class="card-icon">⚡</div>
-      <h3>Hassle-Free Steps</h3>
-      <p>Hassle-free counselling step by step. We automate your documents, applications, and strict deadlines.</p>
+    <div class="highlight-card bento-square">
+      <div class="card-icon" style="font-size: 2rem;">⚡</div>
+      <div>
+        <h3 style="font-size: 1.4rem; margin-bottom: 8px; color: #fff;">Zero Friction</h3>
+        <p style="color: var(--text-light); font-size: 1rem;">Automate complex documentation requirements effortlessly.</p>
+      </div>
     </div>
-    <div class="highlight-card">
-      <div class="card-icon">🌍</div>
-      <h3>Global Education</h3>
-      <p>Global education at your fingertips with exclusive insights into high-yield scholarships and top-tier universities.</p>
+    <div class="highlight-card bento-square">
+      <div class="card-icon" style="font-size: 2rem;">🌍</div>
+      <div>
+        <h3 style="font-size: 1.4rem; margin-bottom: 8px; color: #fff;">Global Reach</h3>
+        <p style="color: var(--text-light); font-size: 1rem;">Unlock high-yield scholarships on an enterprise scale.</p>
+      </div>
     </div>
   </section>
 
