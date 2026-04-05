@@ -67,15 +67,9 @@
         </div>
       </div>
 
-      <!-- Interactive Mockup Toggles -->
-      <div class="mockup-toggles">
-        <button class="mockup-tab is-active" id="tabDashboard" onclick="switchMockup('dashboard')">See your Dashboard</button>
-        <button class="mockup-tab" id="tabCounsellor" onclick="switchMockup('counsellor')">Meet your AI Assistant</button>
-      </div>
-
-      <!-- Live Experience Mockup (branded, high-contrast) -->
+      <!-- Dashboard mockup (branded, high-contrast) -->
       <div class="dashboard-mockup-wrapper hero-fade-in">
-        <div class="dashboard-mockup" id="mockupContainer">
+        <div class="dashboard-mockup">
           <div class="mockup-chrome">
             <div class="mockup-traffic" aria-hidden="true">
               <span class="mockup-dot mockup-dot-close"></span>
@@ -84,13 +78,12 @@
             </div>
             <div class="mockup-window-title">
               <span class="mockup-window-brand">Vistonaut</span>
-              <span class="mockup-window-sub" id="mockupWindowTitle">Command Center · Dashboard</span>
+              <span class="mockup-window-sub">Command Center · Study abroad</span>
             </div>
             <div class="mockup-chrome-spacer" aria-hidden="true"></div>
           </div>
 
-          <div class="mockup-body" id="mockupBody">
-            <!-- Default Dashboard View -->
+          <div class="mockup-body">
             <aside class="mockup-sidebar">
               <div class="mockup-sidebar-brand">VISTO<span>NAUT</span></div>
               <nav class="mockup-nav">
@@ -98,6 +91,7 @@
                 <div class="mockup-nav-item">Universities</div>
                 <div class="mockup-nav-item">Scholarships</div>
                 <div class="mockup-nav-item">Guidance</div>
+                <div class="mockup-nav-item">Documents</div>
               </nav>
               <div class="mockup-sidebar-foot">
                 <strong>AI Copilot</strong>
@@ -123,29 +117,38 @@
                   <div class="mockup-kpi-sub">Next 90 days</div>
                 </div>
                 <div class="mockup-kpi emerald">
-                  <div class="mockup-kpi-label">Profile Match</div>
+                  <div class="mockup-kpi-label">Profile</div>
                   <div class="mockup-kpi-value">98%</div>
-                  <div class="mockup-kpi-sub">Excellent Fit</div>
+                  <div class="mockup-kpi-sub">Match strength</div>
                 </div>
               </div>
 
               <div class="mockup-panel">
                 <div class="mockup-panel-head">
-                  <span class="mockup-panel-title">Your Milestone Roadmap</span>
-                  <span class="mockup-panel-tag">Tasks</span>
+                  <span class="mockup-panel-title">Today for you</span>
+                  <span class="mockup-panel-tag">Vistonaut picks</span>
                 </div>
                 <div class="mockup-tasks">
                   <div class="mockup-task">
                     <span class="mockup-task-icon"></span>
-                    Verified: IELTS 7.5 Score Report
-                  </div>
-                  <div class="mockup-task">
-                    <span class="mockup-task-icon"></span>
-                    Shortlist Finalized: 2 Dream, 2 Target, 1 Safe
+                    Draft SOP for Imperial — saved 2m ago
                   </div>
                   <div class="mockup-task">
                     <span class="mockup-task-icon warn"></span>
-                    In-Progress: Draft SOP for Imperial College
+                    LOR reminder: Prof. Chen · due in 5 days
+                  </div>
+                  <div class="mockup-task">
+                    <span class="mockup-task-icon"></span>
+                    New scholarship: STEM Global Award · UK
+                  </div>
+                </div>
+                <div class="mockup-progress-block">
+                  <div class="mockup-progress-label">
+                    <span>Application readiness</span>
+                    <span>78%</span>
+                  </div>
+                  <div class="mockup-progress-track">
+                    <div class="mockup-progress-fill"></div>
                   </div>
                 </div>
               </div>
@@ -158,96 +161,6 @@
 
     </div>
   </section>
-
-  <script>
-    // State-based Interactive Mockup Logic
-    const mockupContainer = document.getElementById('mockupContainer');
-    const mockupBody = document.getElementById('mockupBody');
-    const mockupWindowTitle = document.getElementById('mockupWindowTitle');
-    const tabDashboard = document.getElementById('tabDashboard');
-    const tabCounsellor = document.getElementById('tabCounsellor');
-
-    const dashboardContent = mockupBody.innerHTML;
-    let chatInterval;
-
-    function switchMockup(mode) {
-      synth.cancel(); // Stop any speech if user switches
-      clearInterval(chatInterval);
-      
-      if (mode === 'dashboard') {
-        tabDashboard.classList.add('is-active');
-        tabCounsellor.classList.remove('is-active');
-        mockupWindowTitle.innerText = 'Command Center · Dashboard';
-        mockupBody.innerHTML = dashboardContent;
-      } else if (mode === 'counsellor') {
-        tabCounsellor.classList.add('is-active');
-        tabDashboard.classList.remove('is-active');
-        mockupWindowTitle.innerText = 'AI Assistant · Live Guidance';
-        renderCounsellorView();
-      }
-    }
-
-    function renderCounsellorView() {
-      mockupBody.innerHTML = `
-        <div class="mockup-counsellor-view">
-          <div class="mockup-steps">
-            <div class="mockup-step is-active"><div class="mockup-step-circle">1</div><div class="mockup-step-label">Country</div></div>
-            <div class="mockup-step"><div class="mockup-step-circle">2</div><div class="mockup-step-label">Unis</div></div>
-            <div class="mockup-step"><div class="mockup-step-circle">3</div><div class="mockup-step-label">Exams</div></div>
-            <div class="mockup-step"><div class="mockup-step-circle">4</div><div class="mockup-step-label">Docs</div></div>
-            <div class="mockup-step"><div class="mockup-step-circle">5</div><div class="mockup-step-label">Final</div></div>
-          </div>
-          <div class="mockup-chat-container" id="mockupChat">
-            <div class="mockup-msg bot">Hi! I'm your Vistonaut Assistant. Let's start by picking your ideal study destination.</div>
-          </div>
-          <div class="mockup-input-bar">
-            <span class="mockup-input-placeholder">Type or ask about countries...</span>
-            <div class="mockup-input-btn"><i class="fas fa-paper-plane"></i></div>
-          </div>
-        </div>
-      `;
-
-      const chat = document.getElementById('mockupChat');
-      const messages = [
-        { type: 'user', text: 'What is the best country for Robotics with a $30k budget?' },
-        { type: 'bot', text: 'Based on your budget, I recommend the USA (State Universities) or Germany. Germany offers high-tech excellence with low tuition.' },
-        { type: 'user', text: 'Show me German universities.' },
-        { type: 'bot', text: 'Great! I am now unlocking the University Curation step for you...' }
-      ];
-
-      let msgIndex = 0;
-      chatInterval = setInterval(() => {
-        if (msgIndex < messages.length) {
-          const msg = messages[msgIndex];
-          const div = document.createElement('div');
-          div.className = `mockup-msg ${msg.type}`;
-          div.style.opacity = '0';
-          div.style.transform = 'translateY(10px)';
-          div.style.transition = 'all 0.4s';
-          div.innerText = msg.text;
-          chat.appendChild(div);
-          
-          setTimeout(() => {
-            div.style.opacity = '1';
-            div.style.transform = 'translateY(0)';
-            chat.scrollTop = chat.scrollHeight;
-          }, 50);
-
-          msgIndex++;
-          
-          // If we reach the end of this demo sequence, wait and switch steps visually
-          if (msgIndex === messages.length) {
-             setTimeout(() => {
-               document.querySelectorAll('.mockup-step')[0].classList.remove('is-active');
-               document.querySelectorAll('.mockup-step')[1].classList.add('is-active');
-             }, 1500);
-          }
-        } else {
-          clearInterval(chatInterval);
-        }
-      }, 2500);
-    }
-  </script>
 
   <!-- Bento Highlights Section -->
   <section class="highlights bento-grid relative-z">
