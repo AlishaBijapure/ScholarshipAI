@@ -57,9 +57,9 @@
       </div>
       
       <!-- Social Proof / SaaS Trust Bar -->
-      <div class="trust-bar" style="margin-top: 60px; opacity: 0; animation: fadeInUp 0.8s ease-out 0.9s forwards;">
+      <div class="trust-bar hero-fade-in" style="margin-top: 60px; opacity: 0; animation: fadeInUp 0.8s ease-out 0.9s forwards;">
         <p style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-light); margin-bottom: 20px;">Orchestrating admits to top-tier institutions</p>
-        <div class="trust-logos" style="display: flex; justify-content: center; gap: 40px; align-items: center; flex-wrap: wrap;">
+        <div class="trust-logos" style="display: flex; justify-content: center; gap: 40px; align-items: center; flex-wrap: wrap; color: rgba(226, 232, 240, 0.75);">
           <!-- SVG placeholders simulating university wordmarks -->
           <svg height="24" viewBox="0 0 100 30" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity: 0.6; filter: grayscale(1); transition: 0.3s;"><path d="M10 20L20 5H30L20 25H10V20Z" fill="currentColor"/><path d="M40 25V5H50V10H60V5H70V25H60V15H50V25H40Z" fill="currentColor"/><path d="M80 5H100V10H90V25H80V5Z" fill="currentColor"/></svg>
           <svg height="24" viewBox="0 0 100 30" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity: 0.6; filter: grayscale(1); transition: 0.3s;"><circle cx="15" cy="15" r="10" stroke="currentColor" stroke-width="4"/><path d="M40 5L50 25L60 5H70L55 30H45L30 5H40Z" fill="currentColor"/><path d="M80 5H100V10H85V15H95V20H85V25H100V30H80V5Z" fill="currentColor"/></svg>
@@ -68,7 +68,7 @@
       </div>
 
       <!-- Abstract Dashboard Graphic -->
-      <div class="dashboard-mockup-wrapper" style="margin-top: 80px; transform: perspective(1000px) rotateX(1deg); opacity: 0; animation: fadeInUp 1s ease-out 1.2s forwards; display: flex; justify-content: center; width: 100%; max-width: 1100px; margin-left: auto; margin-right: auto;">
+      <div class="dashboard-mockup-wrapper hero-fade-in" style="margin-top: 80px; transform: perspective(1000px) rotateX(1deg); opacity: 0; animation: fadeInUp 1s ease-out 1.2s forwards; display: flex; justify-content: center; width: 100%; max-width: 1100px; margin-left: auto; margin-right: auto;">
         <div class="dashboard-mockup" style="background: rgba(10, 5, 20, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px 16px 0 0; box-shadow: 0 40px 80px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.1); width: 100%; aspect-ratio: 16/9; position: relative; overflow: hidden; display: flex; flex-direction: column; border-bottom: none;">
           <!-- Mac Window Controls -->
           <div style="height: 48px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; padding: 0 20px; gap: 8px;">
@@ -76,16 +76,38 @@
             <div style="width: 12px; height: 12px; border-radius: 50%; background: #262626; border: 1px solid #333;"></div>
             <div style="width: 12px; height: 12px; border-radius: 50%; background: #262626; border: 1px solid #333;"></div>
           </div>
-          <!-- Abstract UI Elements -->
+          <!-- Abstract UI Elements (visible on desktop — subtle glass panels) -->
           <div style="flex: 1; display: flex; padding: 20px; gap: 20px;">
             <!-- Sidebar -->
-            <div style="width: 25%; background: rgba(255,255,255,0.015); border-radius: 8px; border: 1px solid rgba(255,255,255,0.02);"></div>
+            <div style="width: 25%; min-width: 120px; background: rgba(255,255,255,0.06); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); padding: 14px; display: flex; flex-direction: column; gap: 10px;">
+              <div style="height: 8px; width: 70%; border-radius: 4px; background: rgba(123, 97, 255, 0.35);"></div>
+              <div style="height: 6px; width: 90%; border-radius: 3px; background: rgba(255,255,255,0.12);"></div>
+              <div style="height: 6px; width: 75%; border-radius: 3px; background: rgba(255,255,255,0.08);"></div>
+              <div style="height: 6px; width: 85%; border-radius: 3px; background: rgba(255,255,255,0.08);"></div>
+              <div style="margin-top: auto; height: 36px; border-radius: 8px; background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.35);"></div>
+            </div>
             <!-- Main View -->
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 20px;">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 16px; min-width: 0;">
                <!-- Header strip -->
-               <div style="height: 60px; background: rgba(255,255,255,0.015); border-radius: 8px; border: 1px solid rgba(255,255,255,0.02);"></div>
+               <div style="height: 56px; background: rgba(255,255,255,0.06); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; padding: 0 16px; gap: 12px;">
+                 <div style="height: 10px; width: 140px; border-radius: 5px; background: rgba(255,255,255,0.2);"></div>
+                 <div style="margin-left: auto; height: 32px; width: 32px; border-radius: 8px; background: rgba(123, 97, 255, 0.25); border: 1px solid rgba(123, 97, 255, 0.4);"></div>
+               </div>
                <!-- Content Area -->
-               <div style="flex: 1; background: linear-gradient(180deg, rgba(123, 97, 255, 0.03) 0%, transparent 100%); border-radius: 8px; border: 1px solid rgba(123, 97, 255, 0.08);"></div>
+               <div style="flex: 1; background: linear-gradient(180deg, rgba(123, 97, 255, 0.08) 0%, rgba(255,255,255,0.03) 100%); border-radius: 10px; border: 1px solid rgba(123, 97, 255, 0.15); padding: 18px; display: flex; flex-direction: column; gap: 14px;">
+                 <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                   <div style="flex: 1; min-width: 80px; height: 64px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);"></div>
+                   <div style="flex: 1; min-width: 80px; height: 64px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);"></div>
+                   <div style="flex: 1; min-width: 80px; height: 64px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);"></div>
+                 </div>
+                 <div style="height: 10px; width: 45%; border-radius: 4px; background: rgba(255,255,255,0.15);"></div>
+                 <div style="display: flex; flex-direction: column; gap: 8px;">
+                   <div style="height: 6px; width: 100%; border-radius: 3px; background: rgba(255,255,255,0.1);"></div>
+                   <div style="height: 6px; width: 92%; border-radius: 3px; background: rgba(255,255,255,0.08);"></div>
+                   <div style="height: 6px; width: 78%; border-radius: 3px; background: rgba(255,255,255,0.08);"></div>
+                 </div>
+                 <div style="margin-top: auto; height: 8px; width: 100%; border-radius: 4px; background: rgba(16, 185, 129, 0.35); box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);"></div>
+               </div>
             </div>
           </div>
           <!-- Fade Out Gradient at bottom -->
