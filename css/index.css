@@ -172,7 +172,7 @@ footer {
 
 .hero h1 {
   margin-top: 18px;
-  font-size: clamp(3.2rem, 8vw, 6.1rem);
+  font-size: clamp(3.2rem, 5vw, 6.1rem);
   line-height: 0.92;
   letter-spacing: -0.06em;
 }
