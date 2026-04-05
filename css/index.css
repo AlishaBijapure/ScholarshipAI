@@ -467,6 +467,10 @@ footer {
   top: calc(108px + (var(--stack-index) * 34px));
   min-height: min(82vh, 760px);
   z-index: calc(12 + var(--stack-index));
+  transform: scale(var(--stack-scale, 1));
+  transform-origin: center top;
+  transition: transform 0.18s linear;
+  will-change: transform;
 }
 
 .feature-card::before,
@@ -637,8 +641,9 @@ footer {
 
 .comparison-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
   gap: 24px;
+  align-items: stretch;
 }
 
 .comparison-card {
@@ -652,7 +657,14 @@ footer {
 
 .comparison-card-muted {
   background:
-    linear-gradient(180deg, rgba(17, 11, 28, 0.92) 0%, rgba(10, 6, 18, 0.96) 100%);
+    radial-gradient(circle at top left, rgba(127, 29, 29, 0.16), transparent 38%),
+    linear-gradient(180deg, rgba(20, 12, 20, 0.92) 0%, rgba(12, 9, 16, 0.97) 100%);
+  border-color: rgba(248, 113, 113, 0.16);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  justify-self: end;
+  width: 100%;
+  max-width: 520px;
+  opacity: 0.88;
 }
 
 .comparison-card-accent {
@@ -660,6 +672,7 @@ footer {
     radial-gradient(circle at top right, rgba(103, 232, 249, 0.15), transparent 38%),
     linear-gradient(160deg, rgba(23, 14, 38, 0.98) 0%, rgba(10, 15, 28, 0.98) 100%);
   box-shadow: 0 28px 60px rgba(0, 0, 0, 0.28);
+  padding: 38px 40px;
 }
 
 .comparison-badge {
@@ -673,6 +686,36 @@ footer {
   letter-spacing: -0.06em;
   font-family: 'Outfit', sans-serif;
   color: #ffffff;
+}
+
+.comparison-card-muted h3 {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.comparison-card-muted .comparison-value {
+  color: rgba(252, 165, 165, 0.82);
+}
+
+.comparison-card-muted .comparison-list li {
+  color: rgba(226, 232, 240, 0.56);
+  padding-left: 30px;
+}
+
+.comparison-card-muted .comparison-list li::before {
+  content: 'x';
+  top: 4px;
+  left: 0;
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(127, 29, 29, 0.42);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  color: #fca5a5;
+  font-size: 0.75rem;
+  font-weight: 700;
+  box-shadow: none;
 }
 
 .comparison-card .btn-primary {
@@ -895,7 +938,10 @@ footer {
     grid-template-columns: 1fr;
   }
 
-  .comparison-grid,
+  .comparison-grid {
+    grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+  }
+
   .journey-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -955,6 +1001,12 @@ footer {
     grid-template-columns: 1fr;
   }
 
+  .comparison-card-muted {
+    max-width: none;
+    justify-self: stretch;
+    opacity: 1;
+  }
+
   .feature-stack {
     gap: 18px;
     padding-bottom: 0;
@@ -964,6 +1016,7 @@ footer {
     position: relative;
     top: auto;
     min-height: 0;
+    transform: none;
   }
 
   .feature-stack-layout {

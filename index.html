@@ -361,6 +361,12 @@
     const menuToggle = document.getElementById('mobile-menu');
     const navLinks = document.querySelector('.nav-links');
     const navAnchors = document.querySelectorAll('.nav-links a');
+    const featureStackCards = Array.from(document.querySelectorAll('.feature-stack-card'));
+    const stackBaseTop = 108;
+    const stackOffsetStep = 34;
+    const stackShrinkStep = 0.025;
+    const stackTriggerRange = 180;
+    let stackTicking = false;
 
     menuToggle.addEventListener('click', () => {
       const expanded = menuToggle.getAttribute('aria-expanded') === 'true';
@@ -376,6 +382,54 @@
         menuToggle.setAttribute('aria-expanded', 'false');
       });
     });
+
+    const updateFeatureStackCards = () => {
+      if (!featureStackCards.length) {
+        return;
+      }
+
+      if (window.innerWidth <= 768) {
+        featureStackCards.forEach((card) => {
+          card.style.setProperty('--stack-scale', '1');
+        });
+        return;
+      }
+
+      featureStackCards.forEach((card, index) => {
+        const stickyTop = stackBaseTop + (index * stackOffsetStep);
+        const cardTop = card.getBoundingClientRect().top;
+        let scale = 1;
+
+        if (cardTop <= stickyTop) {
+          const nextCard = featureStackCards[index + 1];
+
+          if (nextCard) {
+            const nextStickyTop = stackBaseTop + ((index + 1) * stackOffsetStep);
+            const distanceToStick = nextCard.getBoundingClientRect().top - nextStickyTop;
+            const progress = Math.max(0, Math.min(1, (stackTriggerRange - distanceToStick) / stackTriggerRange));
+            scale = 1 - ((index + 1) * stackShrinkStep * progress);
+          }
+        }
+
+        card.style.setProperty('--stack-scale', scale.toFixed(3));
+      });
+    };
+
+    const requestFeatureStackUpdate = () => {
+      if (stackTicking) {
+        return;
+      }
+
+      stackTicking = true;
+      window.requestAnimationFrame(() => {
+        updateFeatureStackCards();
+        stackTicking = false;
+      });
+    };
+
+    updateFeatureStackCards();
+    window.addEventListener('scroll', requestFeatureStackUpdate, { passive: true });
+    window.addEventListener('resize', requestFeatureStackUpdate);
   </script>
 </body>
 
