@@ -1,68 +1,88 @@
 @import url('counsellor.css');
 
-/* documents.html — overrides counsellor shell + document workspace */
+/* documents.html — clean light theme document workspace */
+html {
+  background: #faf9f6;
+  background-attachment: fixed;
+}
+
 body {
   overflow: auto !important;
   height: auto !important;
   display: block !important;
+  background-color: #faf9f6 !important;
+  background-image: 
+    radial-gradient(ellipse at 50% 0%, rgba(79, 70, 229, 0.06), transparent 60%),
+    radial-gradient(ellipse at 85% 30%, rgba(224, 231, 255, 0.4), transparent 50%) !important;
+  color: #0f172a !important;
+  padding: 0 0 40px 0;
 }
 
 .docs-container {
-  max-width: 1000px;
-  margin: 40px auto;
-  padding: 0 20px;
+  max-width: 1050px;
+  width: calc(100% - 40px);
+  margin: 30px auto 40px auto;
 }
 
 .docs-header {
-  margin-bottom: 30px;
+  margin-bottom: 28px;
   text-align: center;
 }
 
 .docs-header h1 {
-  font-size: 2.5rem;
+  font-size: 2.2rem;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
   margin-bottom: 10px;
-  background: linear-gradient(to right, #fff, var(--text-medium));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+
+.docs-header p {
+  color: #64748b;
+  font-size: 1rem;
+  line-height: 1.6;
 }
 
 .uni-tabs {
   display: flex;
-  gap: 15px;
+  gap: 10px;
   margin-bottom: 30px;
   overflow-x: auto;
-  padding-bottom: 10px;
+  padding-bottom: 8px;
   justify-content: center;
 }
 
 .uni-tab-btn {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border-color);
-  padding: 12px 24px;
-  border-radius: 50px;
-  color: var(--text-light);
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  padding: 10px 22px;
+  border-radius: 999px;
+  color: #475569;
   cursor: pointer;
-  font-weight: 500;
-  transition: all 0.3s;
+  font-weight: 600;
+  font-size: 0.9rem;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s ease;
   white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
 }
 
 .uni-tab-btn.active,
 .uni-tab-btn:hover {
-  background: var(--primary-color);
-  color: white;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 15px rgba(217, 70, 239, 0.3);
+  background: #4f46e5;
+  color: #ffffff;
+  border-color: #4338ca;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
 }
 
 .doc-section {
-  background: var(--card-bg);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--border-color);
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
   border-radius: 20px;
-  padding: 30px;
+  padding: 32px;
   margin-bottom: 30px;
+  box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.05);
   display: none;
 }
 
@@ -83,63 +103,89 @@ body {
 }
 
 .doc-type-group {
-  margin-bottom: 30px;
+  margin-bottom: 28px;
 }
 
 .doc-type-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 14px;
+  border-bottom: 1px solid #e2e8f0;
   padding-bottom: 10px;
 }
 
 .doc-type-title {
-  font-size: 1.2rem;
-  color: var(--accent-cyan);
+  font-size: 1.15rem;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  color: #0f172a;
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
+.doc-type-title i {
+  color: #4f46e5;
+}
+
 .editor-area {
   width: 100%;
   height: 200px;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid var(--border-color);
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
   border-radius: 12px;
-  color: var(--text-dark);
-  padding: 15px;
+  color: #0f172a;
+  padding: 16px;
   resize: vertical;
   font-family: inherit;
-  margin-bottom: 10px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
 }
 
 .editor-area:focus {
   outline: none;
-  border-color: var(--primary-color);
+  background: #ffffff;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
 }
 
 .save-btn {
-  background: var(--secondary-color);
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 8px;
+  background: #4f46e5;
+  color: #ffffff;
+  border: 1px solid #4338ca;
+  padding: 9px 20px;
+  border-radius: 10px;
   cursor: pointer;
   font-size: 0.9rem;
-  transition: 0.3s;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.2);
 }
 
 .save-btn:hover {
-  background: var(--primary-color);
+  background: #4338ca;
 }
 
 .status-badge {
   font-size: 0.8rem;
-  padding: 4px 8px;
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--text-light);
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+@media (max-width: 768px) {
+  .docs-container {
+    width: calc(100% - 32px);
+    margin-top: 16px;
+  }
+  .doc-section {
+    padding: 20px;
+  }
 }
