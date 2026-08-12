@@ -48,9 +48,6 @@
       <button type="submit" id="mainSubmitBtn" class="btn-submit">Sign Up</button>
     </form>
 
-    <div style="text-align: center; margin: 15px 0;">
-      <button id="toggleOtpBtn" type="button" style="background: none; border: none; color: var(--primary-color); cursor: pointer; font-family: 'Inter', sans-serif; font-size: 0.9rem;">Sign up without Password (OTP)</button>
-    </div>
 
     <div class="divider"><span>OR</span></div>
 
@@ -80,10 +77,9 @@
 
   <script src="js/auth.js"></script>
   <script>
-    let signupMode = 'password-step1'; // 'password-step1', 'password-step2', 'otp-request', 'otp-verify'
+    let signupMode = 'password-step1'; // 'password-step1', 'password-step2'
     
     const signupForm = document.getElementById('signupForm');
-    const toggleOtpBtn = document.getElementById('toggleOtpBtn');
     const fullNameGroup = document.getElementById('fullNameGroup');
     const passwordGroup = document.getElementById('passwordGroup');
     const otpGroup = document.getElementById('otpGroup');
@@ -93,37 +89,6 @@
     const otpInput = document.getElementById('otpCode');
     const emailInput = document.getElementById('email');
     const errorDiv = document.getElementById('errorMessage');
-
-    toggleOtpBtn.addEventListener('click', () => {
-      errorDiv.style.display = 'none';
-      if (signupMode.startsWith('password')) {
-        signupMode = 'otp-request';
-        passwordGroup.style.display = 'none';
-        fullNameGroup.style.display = 'none';
-        passwordInput.disabled = false;
-        fullNameInput.disabled = false;
-        emailInput.disabled = false;
-        passwordInput.required = false;
-        fullNameInput.required = false;
-        otpGroup.style.display = 'none';
-        otpInput.required = false;
-        mainSubmitBtn.textContent = 'Request Authenticator Code';
-        toggleOtpBtn.textContent = 'Sign up with Password & OTP Instead';
-      } else {
-        signupMode = 'password-step1';
-        passwordGroup.style.display = 'block';
-        fullNameGroup.style.display = 'block';
-        otpGroup.style.display = 'none';
-        passwordInput.disabled = false;
-        fullNameInput.disabled = false;
-        emailInput.disabled = false;
-        passwordInput.required = true;
-        fullNameInput.required = true;
-        otpInput.required = false;
-        mainSubmitBtn.textContent = 'Sign Up & Get Code';
-        toggleOtpBtn.textContent = 'Sign up without Password (OTP)';
-      }
-    });
 
     async function handleGoogleLogin(response) {
       errorDiv.style.display = 'none';
@@ -200,31 +165,6 @@
             otpCode: otpInput.value.trim()
           };
           const response = await apiRequest('/auth/signup', { method: 'POST', body: JSON.stringify(payload) });
-          setToken(response.token);
-          setCurrentUser(response.user);
-          window.location.href = 'onboarding.html';
-        } else if (signupMode === 'otp-request') {
-          cachedSignupData.email = email;
-          const res = await apiRequest('/auth/otp/send', { method: 'POST', body: JSON.stringify({ email, action: 'signup' }) });
-          signupMode = 'otp-verify';
-          otpGroup.style.display = 'block';
-          otpInput.required = true;
-          emailInput.disabled = true;
-          mainSubmitBtn.textContent = 'Verify Security Code';
-          mainSubmitBtn.disabled = false;
-          mainSubmitBtn.style.opacity = '1';
-          mainSubmitBtn.style.cursor = 'pointer';
-
-          if (res.devCode) {
-            errorDiv.style.background = 'rgba(99, 102, 241, 0.15)';
-            errorDiv.style.borderColor = 'rgba(99, 102, 241, 0.4)';
-            errorDiv.style.color = '#818cf8';
-            errorDiv.textContent = `[Dev Mode] Verification Code: ${res.devCode}`;
-            errorDiv.style.display = 'block';
-          }
-        } else if (signupMode === 'otp-verify') {
-          const verifyEmail = cachedSignupData.email || emailInput.value.trim();
-          const response = await apiRequest('/auth/otp/verify', { method: 'POST', body: JSON.stringify({ email: verifyEmail, code: otpInput.value.trim() }) });
           setToken(response.token);
           setCurrentUser(response.user);
           window.location.href = 'onboarding.html';
