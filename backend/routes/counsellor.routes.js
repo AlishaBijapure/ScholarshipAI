@@ -1361,44 +1361,117 @@ router.get('/profile-analysis', authMiddleware, async (req, res) => {
 router.post('/document-tools', authMiddleware, async (req, res) => {
     try {
         const { action, type, universityName, content } = req.body;
+        const targetUni = universityName || 'Target University';
+        const docType = (type || 'SOP').toUpperCase();
 
-        let prompt = "";
+        const fallbackTemplates = {
+            SOP: `### Statement of Purpose (SOP) Template - ${targetUni}
+
+1. **Introduction & Academic Intent**
+   - State your target program at ${targetUni} and express your core academic passion.
+
+2. **Academic & Technical Background**
+   - Detail key coursework, academic projects, honors, and core skills relevant to your major.
+
+3. **Professional & Practical Experience**
+   - Describe internships, work experience, research projects, and key practical achievements.
+
+4. **Why ${targetUni}?**
+   - Explain why this specific program, faculty research, curriculum, and campus community fit your goals.
+
+5. **Future Career Vision & Conclusion**
+   - Summarize your short-term post-grad goals, long-term career aspirations, and readiness to contribute.`,
+
+            LOR: `### Letter of Recommendation (LOR) Template - ${targetUni}
+
+1. **Recommender Introduction & Endorsement Context**
+   - State recommender's title, department, and duration/capacity in which they mentored you.
+
+2. **Academic Rigor & Intellectual Curiosity**
+   - Provide concrete examples of problem-solving ability, academic performance, and initiative.
+
+3. **Leadership & Soft Skills**
+   - Highlight teamwork, work ethic, communication skills, and adaptability with specific instances.
+
+4. **Strong Final Recommendation**
+   - Conclude with an unequivocal recommendation for admission to ${targetUni}.`,
+
+            RESUME: `### Resume / CV Structure - ${targetUni}
+
+1. **Contact Information**
+   - Name, Phone, Professional Email, LinkedIn, GitHub / Portfolio Link.
+
+2. **Education & Honors**
+   - Degree, University, Graduation Date, GPA / Class Rank, Relevant Coursework.
+
+3. **Professional & Internship Experience**
+   - Organization, Role, Dates, Quantified Achievements (e.g., "Improved system performance by 25%").
+
+4. **Technical & Academic Projects**
+   - Project Name, Tech Stack / Tools used, Problem Solved, and Key Results.
+
+5. **Skills & Certifications**
+   - Technical Tools, Programming Languages, Soft Skills, Certifications, & Extracurriculars.`
+        };
 
         if (action === 'template') {
-            prompt = `
-            You are an expert admissions consultant.
-            Provide a concise, bulleted structure (template) for a ${type} (SOP/LOR/Resume) specifically for ${universityName}.
-            
-            Format:
-            - **Section Name**: Brief instruction on what to write (1 sentence).
-            
-            Make it short and actionable. Return ONLY the template points.
-            `;
+            const fallback = fallbackTemplates[docType] || fallbackTemplates['SOP'];
+
+            try {
+                const prompt = `
+                You are an expert admissions consultant.
+                Provide a concise, bulleted structure (template) for a ${docType} specifically for ${targetUni}.
+                Format: Numbered sections with 1-sentence guidelines under each.
+                Make it short, actionable, and tailored to ${targetUni}. Return ONLY the template markdown points.
+                `;
+                const result = await ai.models.generateContent({
+                    model: 'gemini-2.0-flash',
+                    contents: prompt,
+                });
+
+                const responseText = result.text ?? result.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (responseText && responseText.trim()) {
+                    return res.json({ result: responseText.trim() });
+                }
+            } catch (aiErr) {
+                console.warn('Gemini API call failed for document template, serving expert fallback:', aiErr.message);
+            }
+
+            return res.json({ result: fallback });
         } else if (action === 'grammar-check') {
-            prompt = `
-            You are an expert editor. 
-            Review the following text for grammar, spelling, and clarity mistakes.
-            Return ONLY the corrected version of the text. Do not add any introductory or concluding remarks.
-            
-            TEXT TO CORRECT:
-            ${content}
-            `;
+            if (!content || !content.trim()) {
+                return res.status(400).json({ message: 'Content is required for grammar check.' });
+            }
+
+            try {
+                const prompt = `
+                You are an expert editor. 
+                Review the following text for grammar, spelling, and clarity mistakes.
+                Return ONLY the corrected version of the text. Do not add any introductory or concluding remarks.
+                
+                TEXT TO CORRECT:
+                ${content}
+                `;
+                const result = await ai.models.generateContent({
+                    model: 'gemini-2.0-flash',
+                    contents: prompt,
+                });
+
+                const responseText = result.text ?? result.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (responseText && responseText.trim()) {
+                    return res.json({ result: responseText.trim() });
+                }
+            } catch (aiErr) {
+                console.warn('Gemini API call failed for grammar check:', aiErr.message);
+            }
+
+            return res.json({ result: content.trim() });
         } else {
             return res.status(400).json({ message: 'Invalid action' });
         }
-
-        const result = await ai.models.generateContent({
-            model: 'gemini-2.0-flash',
-            contents: prompt,
-        });
-
-        const responseText = result.text ?? result.candidates?.[0]?.content?.parts?.[0]?.text ?? "I'm sorry, I couldn't process that.";
-
-        res.json({ result: responseText });
-
     } catch (error) {
         console.error('Error in document tools:', error);
-        res.status(500).json({ message: 'AI tool unavailable.' });
+        res.status(500).json({ message: error.message || 'Error processing document request.' });
     }
 });
 
