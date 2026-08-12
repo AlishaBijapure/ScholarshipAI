@@ -1,5 +1,11 @@
-// Use localhost if running locally, otherwise use production URL
-const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+// Use localhost if running locally (including file:// protocol), otherwise use production URL
+const isLocal = window.location.protocol === 'file:' || 
+                window.location.hostname === '' || 
+                window.location.hostname === 'localhost' || 
+                window.location.hostname === '127.0.0.1' || 
+                window.location.hostname === '0.0.0.0';
+
+const API_BASE_URL = isLocal
     ? 'http://localhost:3000/api'
     : 'https://scholarshipai.onrender.com/api';
 
@@ -40,7 +46,13 @@ function clearAuth() {
 // Get current user
 function getCurrentUser() {
     const userStr = localStorage.getItem('user');
-    return userStr ? JSON.parse(userStr) : null;
+    if (!userStr) return null;
+    try {
+        return JSON.parse(userStr);
+    } catch (e) {
+        console.error("Failed to parse stored user data:", e);
+        return null;
+    }
 }
 
 // Set current user

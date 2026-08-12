@@ -138,11 +138,15 @@
       }
     }
 
+    let cachedSignupData = { fullName: '', email: '', password: '' };
+
     document.getElementById('signupForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       errorDiv.style.display = 'none';
       
-      const email = emailInput.value;
+      const email = emailInput.value.trim();
+      const fullName = fullNameInput.value.trim();
+      const password = passwordInput.value;
       const originalBtnText = mainSubmitBtn.textContent;
       
       mainSubmitBtn.disabled = true;
@@ -152,8 +156,9 @@
 
       try {
         if (signupMode === 'password') {
+          cachedSignupData = { fullName, email, password };
           // Intercept password signup to force email verification
-          await apiRequest('/auth/otp/send', { method: 'POST', body: JSON.stringify({ email, action: 'signup' }) });
+          const res = await apiRequest('/auth/otp/send', { method: 'POST', body: JSON.stringify({ email, action: 'signup' }) });
           signupMode = 'password-verify';
           otpGroup.style.display = 'block';
           otpInput.required = true;
@@ -166,19 +171,28 @@
           mainSubmitBtn.disabled = false;
           mainSubmitBtn.style.opacity = '1';
           mainSubmitBtn.style.cursor = 'pointer';
+
+          if (res.devCode) {
+            errorDiv.style.background = 'rgba(99, 102, 241, 0.15)';
+            errorDiv.style.borderColor = 'rgba(99, 102, 241, 0.4)';
+            errorDiv.style.color = '#818cf8';
+            errorDiv.textContent = `[Dev Mode] Verification Code: ${res.devCode}`;
+            errorDiv.style.display = 'block';
+          }
         } else if (signupMode === 'password-verify') {
           const payload = {
-              fullName: fullNameInput.value,
-              email: emailInput.value,
-              password: passwordInput.value,
-              otpCode: otpInput.value
+              fullName: cachedSignupData.fullName || fullNameInput.value.trim(),
+              email: cachedSignupData.email || emailInput.value.trim(),
+              password: cachedSignupData.password || passwordInput.value,
+              otpCode: otpInput.value.trim()
           };
           const response = await apiRequest('/auth/signup', { method: 'POST', body: JSON.stringify(payload) });
           setToken(response.token);
           setCurrentUser(response.user);
           window.location.href = 'onboarding.html';
         } else if (signupMode === 'otp-request') {
-          await apiRequest('/auth/otp/send', { method: 'POST', body: JSON.stringify({ email, action: 'signup' }) });
+          cachedSignupData.email = email;
+          const res = await apiRequest('/auth/otp/send', { method: 'POST', body: JSON.stringify({ email, action: 'signup' }) });
           signupMode = 'otp-verify';
           otpGroup.style.display = 'block';
           otpInput.required = true;
@@ -187,8 +201,17 @@
           mainSubmitBtn.disabled = false;
           mainSubmitBtn.style.opacity = '1';
           mainSubmitBtn.style.cursor = 'pointer';
+
+          if (res.devCode) {
+            errorDiv.style.background = 'rgba(99, 102, 241, 0.15)';
+            errorDiv.style.borderColor = 'rgba(99, 102, 241, 0.4)';
+            errorDiv.style.color = '#818cf8';
+            errorDiv.textContent = `[Dev Mode] Verification Code: ${res.devCode}`;
+            errorDiv.style.display = 'block';
+          }
         } else if (signupMode === 'otp-verify') {
-          const response = await apiRequest('/auth/otp/verify', { method: 'POST', body: JSON.stringify({ email, code: otpInput.value }) });
+          const verifyEmail = cachedSignupData.email || emailInput.value.trim();
+          const response = await apiRequest('/auth/otp/verify', { method: 'POST', body: JSON.stringify({ email: verifyEmail, code: otpInput.value.trim() }) });
           setToken(response.token);
           setCurrentUser(response.user);
           window.location.href = 'onboarding.html';
@@ -199,7 +222,10 @@
         mainSubmitBtn.style.opacity = '1';
         mainSubmitBtn.style.cursor = 'pointer';
         
-        errorDiv.textContent = error.message;
+        errorDiv.style.background = '';
+        errorDiv.style.borderColor = '';
+        errorDiv.style.color = '';
+        errorDiv.textContent = error.message || 'Signup failed. Please try again.';
         errorDiv.style.display = 'block';
         
         // Intercept Duplicate Registration explicitly here

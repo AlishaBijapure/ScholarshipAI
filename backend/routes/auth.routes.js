@@ -37,18 +37,20 @@ function validateEmailSecure(email) {
 router.post('/signup', async (req, res) => {
     try {
         const { fullName, email, password, otpCode } = req.body;
+        const cleanEmail = (email || '').trim();
+        const cleanName = (fullName || '').trim();
 
         // Validation
-        if (!fullName || !email || !password || !otpCode) {
+        if (!cleanName || !cleanEmail || !password || !otpCode) {
             return res.status(400).json({ message: 'All fields, including verification code, are required.' });
         }
 
-        const emailCheck = validateEmailSecure(email);
+        const emailCheck = validateEmailSecure(cleanEmail);
         if (!emailCheck.valid) {
             return res.status(400).json({ message: emailCheck.message });
         }
 
-        const formattedEmail = email.toLowerCase();
+        const formattedEmail = cleanEmail.toLowerCase();
         const entry = otpStore.get(formattedEmail);
 
         if (!entry || entry.code !== otpCode || Date.now() > entry.expiresAt) {
@@ -70,7 +72,7 @@ router.post('/signup', async (req, res) => {
 
         // Create user
         const newUser = new User({
-            fullName,
+            fullName: cleanName,
             email: formattedEmail,
             password: hashedPassword,
             onboardingCompleted: false,
@@ -110,13 +112,14 @@ router.post('/signup', async (req, res) => {
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
+        const cleanEmail = (email || '').trim();
 
-        if (!email || !password) {
+        if (!cleanEmail || !password) {
             return res.status(400).json({ message: 'Email and password are required.' });
         }
 
         // Find user
-        const user = await User.findOne({ email: email.toLowerCase() });
+        const user = await User.findOne({ email: cleanEmail.toLowerCase() });
         if (!user) {
             return res.status(401).json({ message: 'Invalid email or password.' });
         }
@@ -188,13 +191,14 @@ router.get('/me', async (req, res) => {
 router.post('/otp/send', async (req, res) => {
     try {
         const { email, action } = req.body;
+        const cleanEmail = (email || '').trim();
         
-        const emailCheck = validateEmailSecure(email);
+        const emailCheck = validateEmailSecure(cleanEmail);
         if (!emailCheck.valid) {
             return res.status(400).json({ message: emailCheck.message });
         }
 
-        const formattedEmail = email.toLowerCase();
+        const formattedEmail = cleanEmail.toLowerCase();
         let user = await User.findOne({ email: formattedEmail });
         
         // Guard against duplicate accounts triggering signup OTP texts!
@@ -205,6 +209,7 @@ router.post('/otp/send', async (req, res) => {
         const code = Math.floor(100000 + Math.random() * 900000).toString();
         otpStore.set(formattedEmail, { code, expiresAt: Date.now() + 10 * 60 * 1000 }); // 10 minutes
 
+        let isLiveSent = false;
         // Dispatch Email via Live HTTP OR fallback to logs
         if (process.env.RESEND_API_KEY && !process.env.RESEND_API_KEY.includes('INSERT')) {
             const htmlPayload = `
@@ -226,7 +231,7 @@ router.post('/otp/send', async (req, res) => {
                         'Authorization': `Bearer ${process.env.RESEND_API_KEY}`
                     },
                     body: JSON.stringify({
-                        from: 'Vistonaut Security <onboarding@vistonaut.com>', // Verified Domain
+                        from: 'Vistonaut Security <onboarding@vistonaut.com>',
                         to: [formattedEmail],
                         subject: 'Your Vistonaut Security Code',
                         html: htmlPayload
@@ -234,6 +239,7 @@ router.post('/otp/send', async (req, res) => {
                 });
 
                 if (resendResponse.ok) {
+                    isLiveSent = true;
                     console.log(`[HTTP RESEND] Live OTP logically dispatched to ${formattedEmail}`);
                 } else {
                     const errorMsg = await resendResponse.text();
@@ -251,7 +257,10 @@ router.post('/otp/send', async (req, res) => {
             console.log(`=========================================\n\n`);
         }
 
-        res.json({ message: 'Security code dispatched via framework.' });
+        res.json({
+            message: 'Security code dispatched via framework.',
+            devCode: !isLiveSent ? code : undefined
+        });
     } catch (error) {
         console.error('OTP Send error:', error);
         res.status(500).json({ message: 'Internal server error while dispatching code.' });

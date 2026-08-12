@@ -125,7 +125,7 @@
       e.preventDefault();
       errorDiv.style.display = 'none';
       
-      const email = emailInput.value;
+      const email = emailInput.value.trim();
       const originalBtnText = mainSubmitBtn.textContent;
       
       mainSubmitBtn.disabled = true;
@@ -139,7 +139,7 @@
           await login(email, password);
           window.location.href = 'dashboard.html';
         } else if (loginMode === 'otp-request') {
-          await apiRequest('/auth/otp/send', { method: 'POST', body: JSON.stringify({ email }) });
+          const res = await apiRequest('/auth/otp/send', { method: 'POST', body: JSON.stringify({ email }) });
           loginMode = 'otp-verify';
           otpGroup.style.display = 'block';
           otpInput.required = true;
@@ -148,8 +148,16 @@
           mainSubmitBtn.disabled = false;
           mainSubmitBtn.style.opacity = '1';
           mainSubmitBtn.style.cursor = 'pointer';
+
+          if (res.devCode) {
+            errorDiv.style.background = 'rgba(99, 102, 241, 0.15)';
+            errorDiv.style.borderColor = 'rgba(99, 102, 241, 0.4)';
+            errorDiv.style.color = '#818cf8';
+            errorDiv.textContent = `[Dev Mode] Security Code: ${res.devCode}`;
+            errorDiv.style.display = 'block';
+          }
         } else if (loginMode === 'otp-verify') {
-          const response = await apiRequest('/auth/otp/verify', { method: 'POST', body: JSON.stringify({ email, code: otpInput.value }) });
+          const response = await apiRequest('/auth/otp/verify', { method: 'POST', body: JSON.stringify({ email, code: otpInput.value.trim() }) });
           setToken(response.token);
           setCurrentUser(response.user);
           window.location.href = 'dashboard.html';
@@ -160,7 +168,10 @@
         mainSubmitBtn.style.opacity = '1';
         mainSubmitBtn.style.cursor = 'pointer';
         
-        errorDiv.textContent = error.message;
+        errorDiv.style.background = '';
+        errorDiv.style.borderColor = '';
+        errorDiv.style.color = '';
+        errorDiv.textContent = error.message || 'Authentication failed. Please check your credentials.';
         errorDiv.style.display = 'block';
       }
     });

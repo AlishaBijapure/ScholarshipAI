@@ -20,21 +20,53 @@ const port = 3000;
 app.use(cors()); // <-- ADD THIS to allow cross-origin requests
 app.use(express.json()); // To parse JSON bodies
 
-// Get the MongoDB connection string from the .env file
-const uri = process.env.MONGO_URI;
-
-// Connect to MongoDB using Mongoose
-mongoose.connect(uri)
-  .then(() => {
-    console.log("✅ Successfully connected to MongoDB using Mongoose!");
-    app.listen(port, () => {
-      console.log(`✅ Server is running on http://localhost:${port}`);
-    });
-  })
-  .catch(err => {
-    console.error("❌ Failed to connect to MongoDB", err);
-    process.exit(1);
+// Connect to MongoDB using Mongoose with fallback options
+async function startDatabaseAndServer() {
+  app.listen(port, () => {
+    console.log(`✅ Server is running on http://localhost:${port}`);
   });
+
+  let connected = false;
+  const primaryUri = process.env.MONGO_URI;
+  
+  if (primaryUri) {
+    try {
+      await mongoose.connect(primaryUri, { serverSelectionTimeoutMS: 3000 });
+      console.log("✅ Successfully connected to Primary MongoDB!");
+      connected = true;
+    } catch (err) {
+      console.warn("⚠️ Primary MongoDB connection failed:", err.message);
+    }
+  }
+
+  if (!connected) {
+    const localUri = 'mongodb://127.0.0.1:27017/aicounsellor';
+    try {
+      console.log("🔄 Attempting fallback to local MongoDB...");
+      await mongoose.connect(localUri, { serverSelectionTimeoutMS: 2000 });
+      console.log("✅ Successfully connected to Local MongoDB!");
+      connected = true;
+    } catch (err) {
+      console.warn("⚠️ Local MongoDB connection failed:", err.message);
+    }
+  }
+
+  if (!connected) {
+    try {
+      console.log("🔄 Attempting fallback to Mongo Memory Server...");
+      const { MongoMemoryServer } = require('mongodb-memory-server');
+      const mongoServer = await MongoMemoryServer.create();
+      const mongoUri = mongoServer.getUri();
+      await mongoose.connect(mongoUri);
+      console.log("✅ Successfully connected to Mongo Memory Server!");
+      connected = true;
+    } catch (err) {
+      console.warn("⚠️ Memory server fallback deferred:", err.message);
+    }
+  }
+}
+
+startDatabaseAndServer();
 
 // ROUTES
 app.use('/api/auth', authRoutes);
