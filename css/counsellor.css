@@ -2,43 +2,33 @@
    1. VARIABLES & RESET (DARK PUNK THEME)
    ========================================= */
 :root {
-  /* Neon Punk Palette */
-  --primary-color: #d946ef;
-  /* Neon Fuchsia */
-  --primary-dark: #a21caf;
-  /* Deep Magenta */
-  --secondary-color: #8b5cf6;
-  /* Electric Violet */
-  --accent-cyan: #06b6d4;
-  /* Neon Cyan */
-  --success-color: #00ff9d;
-  /* Cyber Green */
-  --danger-color: #ff0055;
-  /* Cyber Red */
+  /* Clean Light Theme Palette */
+  --primary-color: #4f46e5;
+  --primary-dark: #4338ca;
+  --secondary-color: #6366f1;
+  --accent-cyan: #0284c7;
+  --success-color: #16a34a;
+  --danger-color: #dc2626;
 
-  /* Deep Dark Backgrounds */
-  --bg-gradient: linear-gradient(135deg, #05010a 0%, #1a0b2e 50%, #0f0518 100%);
-  --card-bg: rgba(20, 10, 35, 0.65);
-  /* Glassy Deep Purple */
+  /* Clean Light Backgrounds */
+  --bg-gradient: #faf9f6;
+  --card-bg: #ffffff;
   --chat-bg: transparent;
 
   /* Text Colors (High Contrast) */
-  --text-dark: #f8fafc;
-  /* Almost White */
-  --text-medium: #e2e8f0;
-  /* Light Grey */
-  --text-light: #94a3b8;
-  /* Muted Blue-Grey */
+  --text-dark: #0f172a;
+  --text-medium: #334155;
+  --text-light: #64748b;
 
-  /* Borders & Glows */
-  --border-color: rgba(139, 92, 246, 0.3);
-  --neon-shadow: 0 0 10px rgba(217, 70, 239, 0.4);
+  /* Borders & Shadows */
+  --border-color: rgba(15, 23, 42, 0.08);
+  --neon-shadow: 0 4px 14px rgba(79, 70, 229, 0.15);
 
   /* Message Bubbles */
-  --msg-user-bg: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+  --msg-user-bg: #4f46e5;
   --msg-user-text: #ffffff;
-  --msg-ai-bg: rgba(255, 255, 255, 0.07);
-  --msg-ai-text: #f1f5f9;
+  --msg-ai-bg: #f8fafc;
+  --msg-ai-text: #0f172a;
 }
 
 * {
@@ -48,8 +38,11 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Inter', 'Poppins', sans-serif;
-  background: var(--bg-gradient);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: #faf9f6;
+  background-image: 
+    radial-gradient(ellipse at 50% 0%, rgba(79, 70, 229, 0.06), transparent 60%),
+    radial-gradient(ellipse at 85% 30%, rgba(224, 231, 255, 0.4), transparent 50%);
   background-attachment: fixed;
   color: var(--text-dark);
   height: 100vh;
@@ -64,34 +57,35 @@ body {
    2. NAVBAR
    ========================================= */
 .navbar {
-  height: 60px;
+  height: 64px;
   padding: 0 30px;
-  background: rgba(10, 5, 16, 0.9);
-  backdrop-filter: blur(15px);
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid var(--border-color);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
   flex-shrink: 0;
   z-index: 9999;
   position: relative;
-  /* Essential for z-index to work in block layout */
 }
 
 .logo {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 700;
-  font-size: 1.2rem;
-  color: var(--primary-color);
-  text-shadow: 0 0 8px rgba(217, 70, 239, 0.5);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: #0f172a;
+  text-shadow: none;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  text-decoration: none;
 }
 
 .logo i {
-  color: var(--accent-cyan);
+  color: #4f46e5;
 }
 
 .nav-links {
@@ -104,16 +98,22 @@ body {
 
 .nav-links a {
   text-decoration: none;
-  color: var(--text-light);
+  color: #475569;
   font-weight: 500;
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
+  font-size: 0.92rem;
+  transition: all 0.2s ease;
 }
 
 .nav-links a:hover,
 .nav-links a.active {
-  color: var(--primary-color);
-  text-shadow: 0 0 5px var(--primary-color);
+  color: #4f46e5;
+  text-shadow: none;
+}
+
+.nav-links a.active {
+  background: rgba(79, 70, 229, 0.08);
+  padding: 6px 14px;
+  border-radius: 8px;
 }
 
 
