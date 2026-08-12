@@ -1,6 +1,6 @@
 @import url('counsellor.css');
 
-/* counsellor.html — Choices.js + voice / search UI */
+/* counsellor.html — Choices.js + voice / search UI (CLEAN LIGHT THEME) */
 .choices {
   margin-bottom: 0;
   min-width: 250px;
@@ -10,25 +10,28 @@
 }
 
 .choices__inner {
-  background-color: var(--card-bg) !important;
-  border: 1px solid var(--border-color) !important;
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
   border-radius: 999px !important;
-  color: var(--text-dark) !important;
+  color: #0f172a !important;
   padding: 4px 16px !important;
   min-height: auto !important;
   overflow: visible !important;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04) !important;
 }
 
 .choices__input {
   background-color: transparent !important;
-  color: var(--text-dark) !important;
+  color: #0f172a !important;
 }
 
 .choices__list--dropdown {
-  background-color: #1e293b !important;
-  border: 1px solid var(--border-color) !important;
-  color: var(--text-light) !important;
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #334155 !important;
   z-index: 1000 !important;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.1) !important;
+  border-radius: 12px !important;
 }
 
 .choices.is-flipped .choices__list--dropdown {
@@ -36,20 +39,20 @@
   top: auto !important;
   margin-bottom: 5px !important;
   border-radius: 12px 12px 0 0 !important;
-  box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.5) !important;
+  box-shadow: 0 -10px 25px rgba(15, 23, 42, 0.1) !important;
 }
 
 .choices__item--choice {
-  color: var(--text-light) !important;
+  color: #334155 !important;
 }
 
 .choices__item--choice.is-highlighted {
-  background-color: var(--primary-color) !important;
+  background-color: #4f46e5 !important;
   color: white !important;
 }
 
 .choices::after {
-  border-color: var(--text-light) transparent transparent transparent !important;
+  border-color: #64748b transparent transparent transparent !important;
 }
 
 #searchActionArea {
@@ -61,7 +64,7 @@
 .mic-input-btn {
   background: none;
   border: none;
-  color: #94a3b8;
+  color: #64748b;
   cursor: pointer;
   padding: 8px;
   margin-right: 8px;
@@ -72,11 +75,11 @@
 }
 
 .mic-input-btn:hover {
-  color: var(--primary-color);
+  color: #4f46e5;
 }
 
 .mic-input-btn.listening {
-  color: #ef4444;
+  color: #dc2626;
   animation: pulse 1.5s infinite;
 }
 
@@ -88,9 +91,9 @@
 }
 
 .voice-toggle-btn {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: white;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
   width: 36px;
   height: 36px;
   border-radius: 50%;
@@ -98,16 +101,17 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.2s;
   flex-shrink: 0;
 }
 
 .voice-toggle-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: #e2e8f0;
 }
 
 .voice-toggle-btn.active {
-  background: var(--primary-color);
-  border-color: var(--primary-color);
-  box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+  background: #4f46e5;
+  border-color: #4338ca;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
 }
