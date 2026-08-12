@@ -138,6 +138,13 @@
       }
     }
 
+    // Prefill email if coming from login redirect popup
+    const urlParams = new URLSearchParams(window.location.search);
+    const prefilledEmail = urlParams.get('email');
+    if (prefilledEmail) {
+      emailInput.value = prefilledEmail;
+    }
+
     let cachedSignupData = { fullName: '', email: '', password: '' };
 
     document.getElementById('signupForm').addEventListener('submit', async (e) => {
@@ -156,36 +163,8 @@
 
       try {
         if (signupMode === 'password') {
-          cachedSignupData = { fullName, email, password };
-          // Intercept password signup to force email verification
-          const res = await apiRequest('/auth/otp/send', { method: 'POST', body: JSON.stringify({ email, action: 'signup' }) });
-          signupMode = 'password-verify';
-          otpGroup.style.display = 'block';
-          otpInput.required = true;
-          // Disable prior fields to lock the state
-          fullNameInput.disabled = true;
-          emailInput.disabled = true;
-          passwordInput.disabled = true;
-          
-          mainSubmitBtn.textContent = 'Verify Email & Create Account';
-          mainSubmitBtn.disabled = false;
-          mainSubmitBtn.style.opacity = '1';
-          mainSubmitBtn.style.cursor = 'pointer';
-
-          if (res.devCode) {
-            errorDiv.style.background = 'rgba(99, 102, 241, 0.15)';
-            errorDiv.style.borderColor = 'rgba(99, 102, 241, 0.4)';
-            errorDiv.style.color = '#818cf8';
-            errorDiv.textContent = `[Dev Mode] Verification Code: ${res.devCode}`;
-            errorDiv.style.display = 'block';
-          }
-        } else if (signupMode === 'password-verify') {
-          const payload = {
-              fullName: cachedSignupData.fullName || fullNameInput.value.trim(),
-              email: cachedSignupData.email || emailInput.value.trim(),
-              password: cachedSignupData.password || passwordInput.value,
-              otpCode: otpInput.value.trim()
-          };
+          // Direct password signup - no OTP required!
+          const payload = { fullName, email, password };
           const response = await apiRequest('/auth/signup', { method: 'POST', body: JSON.stringify(payload) });
           setToken(response.token);
           setCurrentUser(response.user);
@@ -228,8 +207,8 @@
         errorDiv.textContent = error.message || 'Signup failed. Please try again.';
         errorDiv.style.display = 'block';
         
-        // Intercept Duplicate Registration explicitly here
-        if (error.message && error.message.includes('Redirecting')) {
+        // Intercept Duplicate Registration explicitly
+        if (error.status === 409 || (error.message && error.message.includes('Redirecting'))) {
             setTimeout(() => { window.location.href = 'login.html'; }, 1800);
         }
       }

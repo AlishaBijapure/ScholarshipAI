@@ -71,6 +71,115 @@
     </div>
   </div>
 
+  <!-- Account Not Found Signup Modal Popup -->
+  <div id="signUpModal" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="8.5" cy="7" r="4"></circle>
+          <line x1="20" y1="8" x2="20" y2="14"></line>
+          <line x1="23" y1="11" x2="17" y2="11"></line>
+        </svg>
+      </div>
+      <h2>Account Not Found</h2>
+      <p>No account exists for <strong id="modalEmailSpan"></strong>. Would you like to create a new account instead?</p>
+      <div class="modal-actions">
+        <button type="button" id="closeModalBtn" class="btn-modal-secondary">Try Again</button>
+        <a id="signupRedirectBtn" href="signup.html" class="btn-modal-primary">Sign Up Instead</a>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+    .modal-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 32px 28px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      box-sizing: border-box;
+    }
+    .modal-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: rgba(79, 70, 229, 0.1);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    .modal-card h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.4rem;
+      color: #0f172a;
+      margin: 0 0 10px 0;
+      font-weight: 700;
+    }
+    .modal-card p {
+      color: #64748b;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+    .modal-card strong {
+      color: #0f172a;
+      word-break: break-all;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+    }
+    .btn-modal-primary {
+      flex: 1;
+      padding: 12px;
+      background: #4f46e5;
+      color: #ffffff !important;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.92rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease;
+    }
+    .btn-modal-primary:hover {
+      background: #4338ca;
+    }
+    .btn-modal-secondary {
+      flex: 1;
+      padding: 12px;
+      background: #ffffff;
+      color: #0f172a;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.92rem;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    .btn-modal-secondary:hover {
+      background: #f8fafc;
+    }
+  </style>
+
   <script src="js/auth.js"></script>
   <script>
     let loginMode = 'password'; // 'password', 'otp-request', 'otp-verify'
@@ -84,6 +193,20 @@
     const otpInput = document.getElementById('otpCode');
     const emailInput = document.getElementById('email');
     const errorDiv = document.getElementById('errorMessage');
+
+    function showSignUpModal(email) {
+      const modal = document.getElementById('signUpModal');
+      const emailSpan = document.getElementById('modalEmailSpan');
+      const redirectBtn = document.getElementById('signupRedirectBtn');
+      
+      emailSpan.textContent = email;
+      redirectBtn.href = `signup.html?email=${encodeURIComponent(email)}`;
+      modal.style.display = 'flex';
+    }
+
+    document.getElementById('closeModalBtn').addEventListener('click', () => {
+      document.getElementById('signUpModal').style.display = 'none';
+    });
 
     toggleOtpBtn.addEventListener('click', () => {
       errorDiv.style.display = 'none';
@@ -168,6 +291,12 @@
         mainSubmitBtn.style.opacity = '1';
         mainSubmitBtn.style.cursor = 'pointer';
         
+        // Show modal popup if email does not exist in DB
+        if (error.status === 404 || (error.data && error.data.userNotFound)) {
+          showSignUpModal(email);
+          return;
+        }
+
         errorDiv.style.background = '';
         errorDiv.style.borderColor = '';
         errorDiv.style.color = '';

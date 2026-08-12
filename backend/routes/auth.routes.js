@@ -41,8 +41,8 @@ router.post('/signup', async (req, res) => {
         const cleanName = (fullName || '').trim();
 
         // Validation
-        if (!cleanName || !cleanEmail || !password || typeof password !== 'string' || !otpCode) {
-            return res.status(400).json({ message: 'All fields, including verification code, are required.' });
+        if (!cleanName || !cleanEmail || !password || typeof password !== 'string') {
+            return res.status(400).json({ message: 'Full name, email, and password are required.' });
         }
 
         const emailCheck = validateEmailSecure(cleanEmail);
@@ -50,21 +50,25 @@ router.post('/signup', async (req, res) => {
             return res.status(400).json({ message: emailCheck.message });
         }
 
-        const formattedEmail = cleanEmail.toLowerCase();
-        const entry = otpStore.get(formattedEmail);
-
-        if (!entry || entry.code !== String(otpCode).trim() || Date.now() > entry.expiresAt) {
-            return res.status(401).json({ message: 'Your email verification code is invalid or has expired.' });
-        }
-
         if (password.length < 6) {
             return res.status(400).json({ message: 'Password must be at least 6 characters.' });
         }
 
+        const formattedEmail = cleanEmail.toLowerCase();
+
         // Check if user already exists
         const existingUser = await User.findOne({ email: formattedEmail });
         if (existingUser) {
-            return res.status(400).json({ message: 'A verified account with this email already exists.' });
+            return res.status(409).json({ message: 'An account with this email already exists. Redirecting to login...', userExists: true });
+        }
+
+        // If OTP code was provided (optional OTP mode), verify it
+        if (otpCode) {
+            const entry = otpStore.get(formattedEmail);
+            if (!entry || entry.code !== String(otpCode).trim() || Date.now() > entry.expiresAt) {
+                return res.status(401).json({ message: 'Your email verification code is invalid or has expired.' });
+            }
+            otpStore.delete(formattedEmail);
         }
 
         // Hash password
@@ -80,9 +84,6 @@ router.post('/signup', async (req, res) => {
         });
 
         await newUser.save();
-        
-        // Wipe OTP entry securely post-verification
-        otpStore.delete(formattedEmail);
 
         // Create token
         const token = jwt.sign(
@@ -120,7 +121,14 @@ router.post('/login', async (req, res) => {
 
         // Find user
         const user = await User.findOne({ email: cleanEmail.toLowerCase() });
-        if (!user || !user.password) {
+        if (!user) {
+            return res.status(404).json({ 
+                userNotFound: true,
+                message: 'No account found with this email. Would you like to sign up instead?' 
+            });
+        }
+
+        if (!user.password) {
             return res.status(401).json({ message: 'Invalid email or password.' });
         }
 
