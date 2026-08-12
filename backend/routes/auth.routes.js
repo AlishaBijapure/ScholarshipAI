@@ -41,7 +41,7 @@ router.post('/signup', async (req, res) => {
         const cleanName = (fullName || '').trim();
 
         // Validation
-        if (!cleanName || !cleanEmail || !password || !otpCode) {
+        if (!cleanName || !cleanEmail || !password || typeof password !== 'string' || !otpCode) {
             return res.status(400).json({ message: 'All fields, including verification code, are required.' });
         }
 
@@ -53,7 +53,7 @@ router.post('/signup', async (req, res) => {
         const formattedEmail = cleanEmail.toLowerCase();
         const entry = otpStore.get(formattedEmail);
 
-        if (!entry || entry.code !== otpCode || Date.now() > entry.expiresAt) {
+        if (!entry || entry.code !== String(otpCode).trim() || Date.now() > entry.expiresAt) {
             return res.status(401).json({ message: 'Your email verification code is invalid or has expired.' });
         }
 
@@ -104,7 +104,7 @@ router.post('/signup', async (req, res) => {
         });
     } catch (error) {
         console.error('Signup error:', error);
-        res.status(500).json({ message: 'Server error during signup.' });
+        res.status(500).json({ message: error.message || 'Server error during signup.' });
     }
 });
 
@@ -114,13 +114,13 @@ router.post('/login', async (req, res) => {
         const { email, password } = req.body;
         const cleanEmail = (email || '').trim();
 
-        if (!cleanEmail || !password) {
+        if (!cleanEmail || !password || typeof password !== 'string') {
             return res.status(400).json({ message: 'Email and password are required.' });
         }
 
         // Find user
         const user = await User.findOne({ email: cleanEmail.toLowerCase() });
-        if (!user) {
+        if (!user || !user.password) {
             return res.status(401).json({ message: 'Invalid email or password.' });
         }
 
@@ -150,7 +150,7 @@ router.post('/login', async (req, res) => {
         });
     } catch (error) {
         console.error('Login error:', error);
-        res.status(500).json({ message: 'Server error during login.' });
+        res.status(500).json({ message: error.message || 'Server error during login.' });
     }
 });
 
