@@ -13,16 +13,19 @@
 
 <body>
   <nav class="navbar">
-    <div class="logo">AI Counsellor</div>
+    <a href="index.html" class="logo" style="display: flex; align-items: center; gap: 12px; color: #0f172a; text-decoration: none; font-weight: 800; font-family: 'Outfit', sans-serif;">
+      <img src="vistonaut.png" alt="Vistonaut Logo" style="height: 34px;">
+      <span style="font-size: 1.15rem; letter-spacing: 0.08em; color: #0f172a;">VISTONAUT</span>
+    </a>
     <div class="burger-menu" id="burger-menu">
       <i class="fas fa-bars"></i>
     </div>
     <ul class="nav-links">
       <li><a href="dashboard.html">Dashboard</a></li>
       <li><a href="counsellor.html">AI Counsellor</a></li>
-      <li><a href="universities.html">Universities</a></li>
+      <li><a href="universities.html" class="active">Universities</a></li>
       <li><a href="profile.html">Profile</a></li>
-      <li><a href="#" onclick="logout(); return false;">Logout</a></li>
+      <li><a href="#" onclick="logout(); return false;" class="btn-logout">Logout</a></li>
     </ul>
   </nav>
 
