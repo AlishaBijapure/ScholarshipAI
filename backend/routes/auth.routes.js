@@ -214,6 +214,14 @@ router.post('/otp/send', async (req, res) => {
             return res.status(409).json({ message: 'Account already exists. Redirecting to login...' });
         }
 
+        // Do not send OTP for non-existent users during login - trigger signup popup instead!
+        if (!user && action !== 'signup') {
+            return res.status(404).json({ 
+                userNotFound: true,
+                message: 'No account found with this email. Would you like to sign up instead?' 
+            });
+        }
+
         const code = Math.floor(100000 + Math.random() * 900000).toString();
         otpStore.set(formattedEmail, { code, expiresAt: Date.now() + 10 * 60 * 1000 }); // 10 minutes
 
