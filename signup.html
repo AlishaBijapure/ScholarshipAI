@@ -80,7 +80,7 @@
 
   <script src="js/auth.js"></script>
   <script>
-    let signupMode = 'password'; // 'password', 'otp-request', 'otp-verify'
+    let signupMode = 'password-step1'; // 'password-step1', 'password-step2', 'otp-request', 'otp-verify'
     
     const signupForm = document.getElementById('signupForm');
     const toggleOtpBtn = document.getElementById('toggleOtpBtn');
@@ -96,18 +96,21 @@
 
     toggleOtpBtn.addEventListener('click', () => {
       errorDiv.style.display = 'none';
-      if (signupMode === 'password') {
+      if (signupMode.startsWith('password')) {
         signupMode = 'otp-request';
         passwordGroup.style.display = 'none';
         fullNameGroup.style.display = 'none';
         passwordInput.disabled = false;
         fullNameInput.disabled = false;
+        emailInput.disabled = false;
         passwordInput.required = false;
         fullNameInput.required = false;
+        otpGroup.style.display = 'none';
+        otpInput.required = false;
         mainSubmitBtn.textContent = 'Request Authenticator Code';
-        toggleOtpBtn.textContent = 'Sign up with Password Instead';
+        toggleOtpBtn.textContent = 'Sign up with Password & OTP Instead';
       } else {
-        signupMode = 'password';
+        signupMode = 'password-step1';
         passwordGroup.style.display = 'block';
         fullNameGroup.style.display = 'block';
         otpGroup.style.display = 'none';
@@ -117,7 +120,7 @@
         passwordInput.required = true;
         fullNameInput.required = true;
         otpInput.required = false;
-        mainSubmitBtn.textContent = 'Sign Up';
+        mainSubmitBtn.textContent = 'Sign Up & Get Code';
         toggleOtpBtn.textContent = 'Sign up without Password (OTP)';
       }
     });
@@ -157,14 +160,45 @@
       const originalBtnText = mainSubmitBtn.textContent;
       
       mainSubmitBtn.disabled = true;
-      mainSubmitBtn.textContent = 'Authenticating...';
+      mainSubmitBtn.textContent = 'Processing...';
       mainSubmitBtn.style.opacity = '0.7';
       mainSubmitBtn.style.cursor = 'not-allowed';
 
       try {
-        if (signupMode === 'password') {
-          // Direct password signup - no OTP required!
-          const payload = { fullName, email, password };
+        if (signupMode === 'password-step1') {
+          // Step 1: Validate input, send OTP, and reveal OTP code input
+          cachedSignupData = { fullName, email, password };
+          const res = await apiRequest('/auth/otp/send', { method: 'POST', body: JSON.stringify({ email, action: 'signup' }) });
+          
+          signupMode = 'password-step2';
+          otpGroup.style.display = 'block';
+          otpInput.required = true;
+          
+          // Lock inputs so user credentials match OTP verification
+          fullNameInput.disabled = true;
+          emailInput.disabled = true;
+          passwordInput.disabled = true;
+          
+          mainSubmitBtn.textContent = 'Verify Code & Create Account';
+          mainSubmitBtn.disabled = false;
+          mainSubmitBtn.style.opacity = '1';
+          mainSubmitBtn.style.cursor = 'pointer';
+
+          if (res.devCode) {
+            errorDiv.style.background = 'rgba(99, 102, 241, 0.15)';
+            errorDiv.style.borderColor = 'rgba(99, 102, 241, 0.4)';
+            errorDiv.style.color = '#818cf8';
+            errorDiv.textContent = `[Dev Mode] Verification Code: ${res.devCode}`;
+            errorDiv.style.display = 'block';
+          }
+        } else if (signupMode === 'password-step2') {
+          // Step 2: Pass full credentials + OTP to create account in database
+          const payload = {
+            fullName: cachedSignupData.fullName || fullName,
+            email: cachedSignupData.email || email,
+            password: cachedSignupData.password || password,
+            otpCode: otpInput.value.trim()
+          };
           const response = await apiRequest('/auth/signup', { method: 'POST', body: JSON.stringify(payload) });
           setToken(response.token);
           setCurrentUser(response.user);

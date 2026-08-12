@@ -40,9 +40,9 @@ router.post('/signup', async (req, res) => {
         const cleanEmail = (email || '').trim();
         const cleanName = (fullName || '').trim();
 
-        // Validation
-        if (!cleanName || !cleanEmail || !password || typeof password !== 'string') {
-            return res.status(400).json({ message: 'Full name, email, and password are required.' });
+        // Validation - OTP code is MANDATORY for user creation
+        if (!cleanName || !cleanEmail || !password || typeof password !== 'string' || !otpCode) {
+            return res.status(400).json({ message: 'Full name, email, password, and 6-digit verification code are required.' });
         }
 
         const emailCheck = validateEmailSecure(cleanEmail);
@@ -62,19 +62,16 @@ router.post('/signup', async (req, res) => {
             return res.status(409).json({ message: 'An account with this email already exists. Redirecting to login...', userExists: true });
         }
 
-        // If OTP code was provided (optional OTP mode), verify it
-        if (otpCode) {
-            const entry = otpStore.get(formattedEmail);
-            if (!entry || entry.code !== String(otpCode).trim() || Date.now() > entry.expiresAt) {
-                return res.status(401).json({ message: 'Your email verification code is invalid or has expired.' });
-            }
-            otpStore.delete(formattedEmail);
+        // Verify mandatory OTP code
+        const entry = otpStore.get(formattedEmail);
+        if (!entry || entry.code !== String(otpCode).trim() || Date.now() > entry.expiresAt) {
+            return res.status(401).json({ message: 'Your verification code is invalid or has expired.' });
         }
 
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Create user
+        // Create user in DB ONLY after OTP is verified
         const newUser = new User({
             fullName: cleanName,
             email: formattedEmail,
@@ -84,6 +81,9 @@ router.post('/signup', async (req, res) => {
         });
 
         await newUser.save();
+
+        // Delete verified OTP code
+        otpStore.delete(formattedEmail);
 
         // Create token
         const token = jwt.sign(
