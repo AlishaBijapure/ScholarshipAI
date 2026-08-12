@@ -197,7 +197,7 @@ body {
    4. HEADER & PROGRESS TRACKER
    ========================================= */
 .counsellor-header {
-  padding: 16px 28px;
+  padding: 10px 20px;
   background: #ffffff;
   border-bottom: 1px solid rgba(15, 23, 42, 0.08);
   box-shadow: 0 4px 14px rgba(15, 23, 42, 0.03);
@@ -205,14 +205,14 @@ body {
 }
 
 .header-content h1 {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   margin: 0;
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
   color: #0f172a;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .header-content h1 i {
@@ -220,14 +220,14 @@ body {
 }
 
 .header-content p {
-  margin: 4px 0 0 0;
-  font-size: 0.88rem;
+  margin: 2px 0 0 0;
+  font-size: 0.82rem;
   color: #64748b;
 }
 
 /* Progress Stepper */
 .task-progress-container {
-  margin-top: 14px;
+  margin-top: 8px;
 }
 
 .task-indicator {
@@ -240,7 +240,7 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 500;
   color: #64748b;
   transition: all 0.2s ease;
@@ -258,15 +258,15 @@ body {
 }
 
 .step-num {
-  width: 26px;
-  height: 26px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: #f1f5f9;
   border: 1px solid #cbd5e1;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   font-weight: 700;
   transition: all 0.2s;
   color: #475569;
@@ -276,21 +276,21 @@ body {
   background: #4f46e5;
   color: #ffffff;
   border-color: #4338ca;
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
 }
 
 .completed .step-num {
   background: #16a34a;
   color: #ffffff;
   border-color: #15803d;
-  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.2);
+  box-shadow: 0 2px 6px rgba(22, 163, 74, 0.2);
 }
 
 .step-line {
   flex: 1;
   height: 2px;
   background: #e2e8f0;
-  margin: 0 12px;
+  margin: 0 10px;
   border-radius: 2px;
 }
 
@@ -302,8 +302,8 @@ body {
   display: flex;
   overflow: hidden;
   position: relative;
-  gap: 18px;
-  padding: 18px 24px;
+  gap: 12px;
+  padding: 10px 16px;
 }
 
 .chat-interface {
@@ -314,27 +314,27 @@ body {
   position: relative;
   background: #ffffff;
   border: 1px solid rgba(15, 23, 42, 0.08);
-  border-radius: 20px;
+  border-radius: 16px;
   box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.05);
 }
 
 .task-sidebar {
-  width: 260px;
+  width: 250px;
   flex-shrink: 0;
   background: #ffffff;
-  padding: 20px;
+  padding: 16px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
   border: 1px solid rgba(15, 23, 42, 0.08);
-  border-radius: 20px;
+  border-radius: 16px;
   box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.05);
 }
 
 .task-sidebar h3 {
   font-family: 'Outfit', sans-serif;
-  font-size: 1.05rem;
+  font-size: 0.98rem;
   color: #0f172a;
   margin: 0;
   font-weight: 700;
@@ -345,22 +345,22 @@ body {
 
 .sidebar-content {
   color: #475569;
-  font-size: 0.9rem;
-  line-height: 1.6;
+  font-size: 0.88rem;
+  line-height: 1.5;
 }
 
 .sidebar-content ul {
   list-style: none;
   padding: 0;
-  margin: 15px 0 0 0;
+  margin: 12px 0 0 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .sidebar-content li {
   position: relative;
-  padding-left: 20px;
+  padding-left: 18px;
 }
 
 .sidebar-content li::before {
@@ -369,20 +369,20 @@ body {
   left: 0;
   color: #4f46e5;
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
 /* Task 4 Sidebar Dynamic List */
 .sidebar-doc-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin-top: 15px;
+  gap: 12px;
+  margin-top: 12px;
 }
 
 .uni-doc-group {
-  padding: 12px;
-  border-radius: 12px;
+  padding: 10px;
+  border-radius: 10px;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   transition: all 0.2s ease;
@@ -391,14 +391,14 @@ body {
 .uni-doc-group.active-uni {
   background: #f5f3ff;
   border-color: #c7d2fe;
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.08);
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.08);
 }
 
 .uni-name {
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: #0f172a;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -410,15 +410,15 @@ body {
   margin: 0 !important;
   display: flex !important;
   flex-direction: column !important;
-  gap: 6px !important;
+  gap: 4px !important;
 }
 
 .doc-status-list li {
   padding-left: 0 !important;
-  font-size: 0.82rem !important;
+  font-size: 0.8rem !important;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .doc-status-list li.done {
@@ -437,13 +437,13 @@ body {
 
 .sidebar-tip {
   margin-top: auto;
-  padding: 14px 16px;
+  padding: 12px 14px;
   background: #f5f3ff;
   border-left: 3px solid #6366f1;
   border-radius: 8px;
-  font-size: 0.88rem;
+  font-size: 0.82rem;
   color: #4338ca;
-  line-height: 1.45;
+  line-height: 1.4;
 }
 
 @media (max-width: 900px) {
@@ -456,11 +456,11 @@ body {
 .chat-container {
   flex: 1;
   overflow-y: auto;
-  padding: 24px;
+  padding: 16px 20px;
   scroll-behavior: smooth;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 14px;
   background: #ffffff;
 }
 
@@ -486,8 +486,8 @@ body {
 .message {
   display: flex;
   align-items: flex-end;
-  gap: 12px;
-  max-width: 85%;
+  gap: 10px;
+  max-width: 88%;
   animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -502,13 +502,13 @@ body {
 
 /* AVATAR STYLES */
 .message-avatar {
-  width: 34px;
-  height: 34px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   flex-shrink: 0;
   color: #ffffff;
   z-index: 1;
@@ -516,15 +516,15 @@ body {
 
 .ai-avatar {
   background: #4f46e5;
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
 }
 
 /* Message Bubbles */
 .message-content {
-  padding: 14px 20px;
-  border-radius: 18px;
-  font-size: 0.95rem;
-  line-height: 1.55;
+  padding: 10px 16px;
+  border-radius: 16px;
+  font-size: 0.92rem;
+  line-height: 1.5;
   position: relative;
 }
 
@@ -533,14 +533,14 @@ body {
   color: #0f172a;
   border-bottom-left-radius: 4px;
   border: 1px solid #e2e8f0;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.02);
 }
 
 .user-content {
   background: #4f46e5;
   color: #ffffff;
   border-bottom-right-radius: 4px;
-  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
+  box-shadow: 0 2px 10px rgba(79, 70, 229, 0.2);
 }
 
 .message p {
@@ -583,46 +583,55 @@ body {
 }
 
 /* =========================================
-   6. FOOTER: INPUT & PROMPT BAR
+   6. FOOTER: INPUT & PROMPT BAR (COMPACT)
    ========================================= */
 .chat-footer {
   background: #ffffff;
   border-top: 1px solid rgba(15, 23, 42, 0.08);
-  padding: 12px 20px 16px 20px;
+  padding: 6px 14px 10px 14px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 4px;
   position: relative;
   z-index: 10;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+}
+
+/* Hide empty wrapper elements so footer contracts */
+.actions-scroll-wrapper:empty,
+.prompts-scroll-wrapper:empty,
+.instruction-label:empty,
+#searchActionArea:empty {
+  display: none !important;
 }
 
 /* INSTRUCTION LABEL */
 .instruction-label {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: #4f46e5;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   font-weight: 600;
   margin-left: 2px;
+  margin-bottom: 2px;
 }
 
 .instruction-label i {
   color: #4f46e5;
-  font-size: 0.9rem;
+  font-size: 0.82rem;
 }
 
 .actions-scroll-wrapper {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
   overflow: visible;
-  padding-bottom: 4px;
-  min-height: 36px;
+  padding: 2px 0;
+  min-height: 0;
   align-items: center;
 }
 
@@ -635,15 +644,15 @@ body {
   align-items: center;
   background: #f8fafc;
   border: 1px solid #cbd5e1;
-  border-radius: 14px;
-  padding: 6px 6px 6px 18px;
+  border-radius: 12px;
+  padding: 3px 4px 3px 14px;
   transition: all 0.2s ease;
 }
 
 .input-wrapper:focus-within {
   background: #ffffff;
   border-color: #4f46e5;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
 }
 
 .input-wrapper input {
@@ -651,9 +660,9 @@ body {
   border: none;
   background: transparent;
   outline: none;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   color: #0f172a;
-  padding: 8px 0;
+  padding: 4px 0;
   font-family: inherit;
 }
 
@@ -665,15 +674,15 @@ body {
   background: #4f46e5;
   color: #ffffff;
   border: none;
-  border-radius: 10px;
-  width: 42px;
-  height: 42px;
+  border-radius: 8px;
+  width: 34px;
+  height: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.2);
 }
 
 .input-wrapper button:hover {
@@ -683,29 +692,29 @@ body {
 
 .prompts-scroll-wrapper {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   overflow-x: auto;
-  padding: 4px 2px;
+  padding: 2px 0;
   white-space: nowrap;
-  min-height: 30px;
+  min-height: 0;
 }
 
 /* Chip Styles */
 .ui-chip {
-  padding: 8px 16px;
+  padding: 4px 12px;
   border-radius: 99px;
   border: 1px solid #cbd5e1;
   background: #ffffff;
   color: #334155;
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   font-weight: 500;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   transition: all 0.2s ease;
   flex-shrink: 0;
-  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.03);
 }
 
 .ui-chip:hover {
